@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1080"
+   height="1080"
+   viewBox="0 0 1080 1080"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient5">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0.20783132"
+         id="stop4" />
+      <stop
+         style="stop-color:#ff6a00;stop-opacity:1;"
+         offset="0.75903612"
+         id="stop5" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#ff6a00;stop-opacity:1;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient1"
+       id="linearGradient2"
+       x1="667.29352"
+       y1="177.33533"
+       x2="356.25412"
+       y2="844.36145"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       xlink:href="#linearGradient5"
+       id="linearGradient4"
+       x1="552.03082"
+       y1="113.97329"
+       x2="552.03082"
+       y2="953.07043"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="layer1"
+     style="fill:#000000;fill-opacity:1">
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:url(#linearGradient2);stroke-width:93.4883;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="path1"
+       d="M 690.3856,831.97945 322.97198,826.09627 144.36015,504.96515 333.16194,189.7172 700.57557,195.60038 879.1874,516.73151 Z"
+       transform="matrix(1.0138298,-0.01744062,0.01819962,1.0579511,23.928534,-1.0929167)" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:url(#linearGradient4);stroke-width:96.836;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       d="M 945.80977,285.96401 158.25193,781.07969"
+       id="path2" />
+  </g>
+</svg>
