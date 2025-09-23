@@ -1,4 +1,6 @@
-﻿namespace Hexagon
+﻿using System.ComponentModel;
+
+namespace Hexagon
 {
     public partial class App : Application
     {
@@ -9,7 +11,10 @@
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            AppShell shell = new AppShell();
+            Window window = new Window(shell);
+
+            return window;
         }
     }
 }

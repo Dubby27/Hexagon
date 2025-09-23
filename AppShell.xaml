@@ -6,19 +6,19 @@
     xmlns:local="clr-namespace:Hexagon"
     Title="Hexagon">
 
-    <TabBar>
-        <Tab>
-            <ShellContent
-                Title="Panel"
-                ContentTemplate="{DataTemplate local:MainPage}"
-                Route="MainPage" />
-        </Tab>
-        <Tab>
-            <ShellContent
-                Title="Uživatel"
-                ContentTemplate="{DataTemplate local:User}"
-                Route="User" />
-        </Tab>
-    </TabBar>
+    <FlyoutItem
+    Icon="today.png"
+    Title="Teď">
+        <ShellContent
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+    </FlyoutItem>
+    <FlyoutItem
+    Icon="settings.png"
+    Title="Nastavení">
+        <ShellContent
+        ContentTemplate="{DataTemplate local:User}"
+        Route="User" />
+    </FlyoutItem>
 
 </Shell>
