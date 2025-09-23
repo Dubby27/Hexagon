@@ -6,9 +6,19 @@
     xmlns:local="clr-namespace:Hexagon"
     Title="Hexagon">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab>
+            <ShellContent
+                Title="Panel"
+                ContentTemplate="{DataTemplate local:MainPage}"
+                Route="MainPage" />
+        </Tab>
+        <Tab>
+            <ShellContent
+                Title="Uživatel"
+                ContentTemplate="{DataTemplate local:User}"
+                Route="User" />
+        </Tab>
+    </TabBar>
 
 </Shell>
