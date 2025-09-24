@@ -14,7 +14,7 @@ namespace Hexagon
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            Shell shell = DeviceInfo.Idiom == Microsoft.Maui.Devices.DeviceIdiom.Phone ? new Shell() : new DesktopShell();
+            Shell shell = DeviceInfo.Idiom == Microsoft.Maui.Devices.DeviceIdiom.Phone ? new PhoneShell() : new DesktopShell();
             window = new Window(shell);
 
             window.TitleBar = new TitleBar
