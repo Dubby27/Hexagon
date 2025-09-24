@@ -3,10 +3,10 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace Hexagon
 {
-    public partial class AppShell : Shell
+    public partial class DesktopShell : Shell
     {
 
-        public AppShell()
+        public DesktopShell()
         {
             InitializeComponent();
         }
