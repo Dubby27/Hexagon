@@ -5,4 +5,10 @@
     xmlns:maui="using:Microsoft.Maui"
     xmlns:local="using:Hexagon.WinUI">
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="TextControlBorderThemeColor">Black</Color>
+        </ResourceDictionary>
+    </Application.Resources>
+
 </maui:MauiWinUIApplication>

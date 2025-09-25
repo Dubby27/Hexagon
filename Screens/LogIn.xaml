@@ -3,10 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hexagon.Screens.LogIn"
              Title="LogIn">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <Grid>
+        <VerticalStackLayout
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+
+            <Label
+                Text="Přihlášení"
+                FontFamily="SpaceGrotesk"
+                FontAttributes="Bold"
+                FontSize="64"/>
+            <Entry
+                x:Name="SchoolEntry"
+                HorizontalTextAlignment="Center"
+                Text=""
+                Placeholder="URL Bakalářů Školy"
+                Focused="SchoolEntry_Focused"
+                Unfocused="SchoolEntry_Unfocused"
+                />
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
