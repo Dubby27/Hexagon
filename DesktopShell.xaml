@@ -20,14 +20,14 @@
     </Shell.FlyoutBackground>
 
     <FlyoutItem
-    Icon="today.png"
+    Icon="{AppThemeBinding Light=todaydark.png, Dark=today.png}"
     Title="Teď">
         <ShellContent
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
     </FlyoutItem>
     <FlyoutItem
-    Icon="settings.png"
+    Icon="{AppThemeBinding Light=settingsdark.png, Dark=settings.png}"
     Title="Nastavení">
         <ShellContent
         ContentTemplate="{DataTemplate local:User}"
