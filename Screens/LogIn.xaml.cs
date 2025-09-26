@@ -1,7 +1,3 @@
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;
-using System;
 namespace Hexagon.Screens;
 
 public partial class LogIn : ContentPage
@@ -9,7 +5,7 @@ public partial class LogIn : ContentPage
 	public LogIn()
 	{
 	    InitializeComponent();
-	}
+    }
 
     private void SchoolEntry_Focused(object sender, FocusEventArgs e)
     {

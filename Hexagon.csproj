@@ -53,6 +53,9 @@
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 		<MauiImage Update="Resources\Images\todaydark.svg" TintColor="Black" />
 		<MauiImage Update="Resources\Images\settingsdark.svg" TintColor="Black" />
+		<MauiImage Update="Resources\Images\baddark.svg" TintColor="Black" />
+		<MauiImage Update="Resources\Images\gooddark.svg" TintColor="Black" />
+		<MauiImage Update="Resources\Images\loadingdark.svg" TintColor="Black" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -65,6 +68,7 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Maui.Graphics.Text.Markdig" Version="9.0.110" />
 	</ItemGroup>
 
 	<ItemGroup>

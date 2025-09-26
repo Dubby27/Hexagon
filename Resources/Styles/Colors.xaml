@@ -18,7 +18,7 @@
     <Color x:Key="GradientStartDark">#de6161</Color>
     <Color x:Key="GradientEndDark">#2657eb</Color>
     <Color x:Key="GradientStart">#00c3ff</Color>
-    <Color x:Key="GradientEnd">#ffff1c</Color>
+    <Color x:Key="GradientEnd">#c5f150</Color>
 
     <!-- -->
 
