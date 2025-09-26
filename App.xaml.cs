@@ -32,3 +32,29 @@ namespace Hexagon
         }
     }
 }
+
+namespace Hexagon.Drawable
+{
+    public class GradientTextDrawable : IDrawable
+    {
+        public void Draw(ICanvas canvas, RectF dirtyRect)
+        {
+            // Create a horizontal gradient
+            var gradient = new LinearGradientPaint
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                GradientStops =
+                [
+                new PaintGradientStop(0, Colors.Aqua),
+                new PaintGradientStop(1, Colors.Blue)
+                ]
+            };
+
+            // Use the gradient to draw the text
+            canvas.SetFillPaint(gradient, dirtyRect);
+            canvas.FontSize = 64;
+            canvas.DrawString("Gradient Text", dirtyRect, HorizontalAlignment.Center, VerticalAlignment.Center);
+        }
+    }
+}
