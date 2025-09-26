@@ -22,4 +22,9 @@ public partial class LogIn : ContentPage
             SchoolEntry.Text = "";
         }
     }
+
+    private void LogInSubmit_Clicked(object sender, EventArgs e)
+    {
+
+    }
 }

@@ -11,17 +11,40 @@
 
             <Label
                 Text="Přihlášení"
+                Margin="5"
                 FontFamily="SpaceGrotesk"
                 FontAttributes="Bold"
                 FontSize="64"/>
             <Entry
                 x:Name="SchoolEntry"
+                Margin="5"
                 HorizontalTextAlignment="Center"
                 Text=""
+                FontFamily="SpaceGrotesk"
                 Placeholder="URL Bakalářů Školy"
                 Focused="SchoolEntry_Focused"
-                Unfocused="SchoolEntry_Unfocused"
-                />
+                Unfocused="SchoolEntry_Unfocused"/>
+            <Entry
+                x:Name="UsernameEntry"
+                Margin="5"
+                HorizontalTextAlignment="Center"
+                Text=""
+                FontFamily="SpaceGrotesk"
+                Placeholder="Uživatelské Jméno"/>
+            <Entry
+                x:Name="PasswordEntry"
+                Margin="5"
+                HorizontalTextAlignment="Center"
+                Text=""
+                FontFamily="SpaceGrotesk"
+                Placeholder="Heslo"
+                IsPassword="True"/>
+            <Button
+                x:Name="LogInSubmit"
+                Margin="5"
+                Text="Přihlásit"
+                FontFamily="SpaceGrotesk"
+                Clicked="LogInSubmit_Clicked"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
