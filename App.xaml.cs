@@ -20,12 +20,12 @@ namespace Hexagon
             window.TitleBar = new TitleBar
             {
                 Title = "Hexagon",
-                BackgroundColor = Current.RequestedTheme == AppTheme.Light ?
-                    Application.Current.Resources["GradientStart"] as Color :
-                    Application.Current.Resources["GradientStartDark"] as Color,
+                /*BackgroundColor = Current.RequestedTheme == AppTheme.Light ?
+                    Current.Resources["GradientStart"] as Color :
+                    Current.Resources["GradientStartDark"] as Color,
                 ForegroundColor = Current.RequestedTheme == AppTheme.Light ?
-                    Application.Current.Resources["Black"] as Color :
-                    Application.Current.Resources["White"] as Color
+                    Current.Resources["Black"] as Color :
+                    Current.Resources["White"] as Color*/
             };
 
             return window;

@@ -2,8 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Drawable="clr-namespace:Hexagon.Drawable"
-             x:Class="Hexagon.Screens.LogIn"
-             Title="LogIn">
+             x:Class="Hexagon.Screens.LogIn">
 
     <ContentPage.Resources>
         <Drawable:GradientTextDrawable x:Key="Drawable"/>
@@ -14,10 +13,6 @@
             VerticalOptions="Center"
             HorizontalOptions="Center">
 
-            <?<GraphicsView x:Name="GradientTextView"
-            <?    HeightRequest="100"
-            <?    WidthRequest="300"
-            <?    Drawable="{StaticResource Drawable}"/>
             <Label
                 Text="Přihlášení"
                 Margin="5"
@@ -49,6 +44,8 @@
             <Button
                 x:Name="LogInButton"
                 Text="Přihlásit"
+                FontSize="24"
+                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                 Margin="5"
                 FontFamily="SpaceGrotesk"
                 Clicked="LogInButton_Clicked">
