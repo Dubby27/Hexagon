@@ -15,10 +15,10 @@
     
     <!-- Hexagon Gradients -->
 
-    <Color x:Key="GradientStartDark">#8800FF</Color>
-    <Color x:Key="GradientEndDark">#0037FF</Color>
-    <Color x:Key="GradientStart">#54e8ff</Color>
-    <Color x:Key="GradientEnd">#54ff85</Color>
+    <Color x:Key="GradientStartDark">#de6161</Color>
+    <Color x:Key="GradientEndDark">#2657eb</Color>
+    <Color x:Key="GradientStart">#00c3ff</Color>
+    <Color x:Key="GradientEnd">#c5f150</Color>
 
     <!-- -->
 

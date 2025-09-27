@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Drawable="clr-namespace:Hexagon.Drawable"
              x:Class="Hexagon.Screens.LogIn"
-             Title="LogIn">
+             ClassId="LoginPage"
+             NavigationPage.HasBackButton="False">
+
+    <ContentPage.Resources>
+        <Drawable:GradientTextDrawable x:Key="Drawable"/>
+    </ContentPage.Resources>
 
     <Grid>
         <VerticalStackLayout
@@ -19,32 +25,81 @@
                 x:Name="SchoolEntry"
                 Margin="5"
                 HorizontalTextAlignment="Center"
+                Margin="5"
                 Text=""
                 FontFamily="SpaceGrotesk"
                 Placeholder="URL Bakalářů Školy"
+                FontFamily="SpaceGrotesk"
                 Focused="SchoolEntry_Focused"
                 Unfocused="SchoolEntry_Unfocused"/>
             <Entry
                 x:Name="UsernameEntry"
-                Margin="5"
                 HorizontalTextAlignment="Center"
-                Text=""
+                Margin="5"
                 FontFamily="SpaceGrotesk"
                 Placeholder="Uživatelské Jméno"/>
             <Entry
                 x:Name="PasswordEntry"
-                Margin="5"
                 HorizontalTextAlignment="Center"
-                Text=""
+                Margin="5"
                 FontFamily="SpaceGrotesk"
                 Placeholder="Heslo"
                 IsPassword="True"/>
             <Button
-                x:Name="LogInSubmit"
-                Margin="5"
+                x:Name="LogInButton"
                 Text="Přihlásit"
+                FontSize="24"
+                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                Margin="5"
                 FontFamily="SpaceGrotesk"
-                Clicked="LogInSubmit_Clicked"/>
+                Clicked="LogInButton_Clicked">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}" Offset="-0.5" />
+                        <GradientStop Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout
+            x:Name="NetworkStatusBar"
+            VerticalOptions="End"
+            HorizontalOptions="Fill"
+            BackgroundColor="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}">
+
+            <HorizontalStackLayout
+                VerticalOptions="Fill"
+                HorizontalOptions="Fill">
+
+                <ActivityIndicator
+                    x:Name="NetworkActivityIndicator"
+                    IsRunning="True"
+                    Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    WidthRequest="15"
+                    HeightRequest="15"
+                    Margin="10"/>
+                <Image
+                    x:Name="NetworkBadImage"
+                    Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    Margin="5"/>
+                <Image
+                    x:Name="NetworkGoodImage"
+                    Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    Margin="5"/>
+                <Label
+                    x:Name="NetworkStatusLabel"
+                    Text="Aktualizováno"
+                    FontFamily="SpaceGrotesk"
+                    VerticalTextAlignment="Center"
+                    FontSize="14"
+                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    Margin="5"/>
+            </HorizontalStackLayout>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
