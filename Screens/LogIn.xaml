@@ -25,11 +25,9 @@
                 x:Name="SchoolEntry"
                 Margin="5"
                 HorizontalTextAlignment="Center"
-                Margin="5"
                 Text=""
                 FontFamily="SpaceGrotesk"
                 Placeholder="URL Bakalářů Školy"
-                FontFamily="SpaceGrotesk"
                 Focused="SchoolEntry_Focused"
                 Unfocused="SchoolEntry_Unfocused"/>
             <Entry
