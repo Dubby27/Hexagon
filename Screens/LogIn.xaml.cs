@@ -7,6 +7,12 @@ public partial class LogIn : ContentPage
 	    InitializeComponent();
     }
 
+    protected override bool OnBackButtonPressed()
+    {
+        // Return true to consume the event and prevent default back navigation
+        return true;
+    }
+
     private void SchoolEntry_Focused(object sender, FocusEventArgs e)
     {
 		if(SchoolEntry.Text == "")

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Drawable="clr-namespace:Hexagon.Drawable"
              x:Class="Hexagon.Screens.LogIn"
+             ClassId="LoginPage"
              NavigationPage.HasBackButton="False">
 
     <ContentPage.Resources>
@@ -92,6 +93,7 @@
                     x:Name="NetworkStatusLabel"
                     Text="Aktualizováno"
                     FontFamily="SpaceGrotesk"
+                    VerticalTextAlignment="Center"
                     FontSize="14"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     Margin="5"/>
