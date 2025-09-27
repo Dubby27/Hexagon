@@ -5,6 +5,10 @@ public partial class LogIn : ContentPage
 	public LogIn()
 	{
 	    InitializeComponent();
+
+        NetworkActivityIndicator.IsVisible = false;
+        NetworkGoodImage.IsVisible = false;
+        NetworkStatusLabel.Text = "Odhlášen";
     }
 
     protected override bool OnBackButtonPressed()
@@ -41,6 +45,10 @@ public partial class LogIn : ContentPage
                 " Správná URL by měla vypadat asi takto: https://bakalari.example.cz nebo https://www.example.cz," +
                 " případně s číslem portu na konci jako https://bakalari.example.cz:444", "Ok");
             return;
+        }
+        else
+        {
+            Bakalari.LogIn(uri, UsernameEntry.Text, PasswordEntry.Text);
         }
     }
 }

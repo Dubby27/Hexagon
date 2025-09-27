@@ -66,38 +66,47 @@
             HorizontalOptions="Fill"
             BackgroundColor="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}">
 
-            <HorizontalStackLayout
+            <ScrollView
+                Orientation="Horizontal"
+                HorizontalScrollBarVisibility="{OnIdiom Phone=Always, Default=Default}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+                <HorizontalStackLayout
                 VerticalOptions="Fill"
                 HorizontalOptions="Fill">
 
-                <ActivityIndicator
+                    <ActivityIndicator
                     x:Name="NetworkActivityIndicator"
                     IsRunning="True"
                     Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     WidthRequest="15"
                     HeightRequest="15"
                     Margin="10"/>
-                <Image
+                    <Image
                     x:Name="NetworkBadImage"
                     Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
                     WidthRequest="20"
                     HeightRequest="20"
                     Margin="5"/>
-                <Image
+                    <Image
                     x:Name="NetworkGoodImage"
                     Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
                     WidthRequest="20"
                     HeightRequest="20"
                     Margin="5"/>
-                <Label
+                    <Label
                     x:Name="NetworkStatusLabel"
                     Text="Aktualizováno"
                     FontFamily="SpaceGrotesk"
                     VerticalTextAlignment="Center"
-                    FontSize="14"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    LineBreakMode="CharacterWrap"
+                    FontSize="18"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     Margin="5"/>
-            </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </ScrollView>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
