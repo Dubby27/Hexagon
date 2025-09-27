@@ -10,6 +10,7 @@ namespace Hexagon
     static class Bakalari
     {
         public static HttpClient client = new HttpClient();
+        public static LoginResponse credentials;
 
         //Task Management
         public static int TaskCount = 0;
@@ -62,6 +63,15 @@ namespace Hexagon
         }
 
         //Log In
+        public class LoginResponse
+        {
+            required public string access_token { get; set; }
+            required public string token_type { get; set; }
+            required public int expires_in { get; set; }
+            required public string refresh_token { get; set; }
+            required public string scope { get; set; }
+        }
+
         public static async Task<bool> LogIn(Uri school, string user, string pass)
         {
             //adress check
@@ -74,15 +84,51 @@ namespace Hexagon
             {
                 //OK
                 EndTask(true);
-                OnLogInFinished?.Invoke(true);
-                return true;
+
+                //log in
+                Uri loginUri = new Uri(school, "/api/login");
+                StartTask("log_in", "Přihlašování uživatele " + user + " na " + loginUri.OriginalString);
+
+                HttpContent content = new StringContent("client_id=ANDR&grant_type=password&username=" + user + "&password=" + pass, Encoding.UTF8, "application/x-www-form-urlencoded");
+                response = await client.PostAsync(loginUri, content);
+
+                if(response.IsSuccessStatusCode)
+                {
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    credentials = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
+
+                    if(credentials != null)
+                    {
+                        //save credentials
+                        await SecureStorage.SetAsync("LoggedIn", "true");
+                        await SecureStorage.SetAsync("School", school.ToString());
+                        await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+
+                        EndTask(true);
+                        OnLogInFinished?.Invoke(true);
+                        return true;
+                    }
+                    else
+                    {
+                        //Error
+                        EndTask(false);
+                        OnLogInFinished?.Invoke(false);
+                        return false;
+                    }
+                }
+                else
+                {
+                    //Error
+                    EndTask(false);
+                    OnLogInFinished?.Invoke(false);
+                    return false;
+                }
             }
             else
             {
                 //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
-                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = response.StatusCode + " " + response.ReasonPhrase;
                 return false;
             }
         }

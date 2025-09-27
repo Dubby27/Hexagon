@@ -48,7 +48,20 @@ public partial class LogIn : ContentPage
         }
         else
         {
+            Bakalari.OnLogInFinished += LoginFinished;
             Bakalari.LogIn(uri, UsernameEntry.Text, PasswordEntry.Text);
+        }
+    }
+
+    public void LoginFinished(bool success)
+    {
+        if(success)
+        {
+            Shell.Current.Navigation.PopToRootAsync(true);
+        }
+        else
+        {
+            Shell.Current.DisplayAlert("Chyba přihlášení", "Přihlášení se nezdařilo. Zkontroluj, zda máš správně zadanou adresu školy, uživatelské jméno a heslo.", "Ok");
         }
     }
 }
