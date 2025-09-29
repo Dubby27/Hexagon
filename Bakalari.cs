@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Hexagon
@@ -10,7 +12,7 @@ namespace Hexagon
     static class Bakalari
     {
         public static HttpClient client = new HttpClient();
-        public static LoginResponse credentials;
+        public static LoginResponse? credentials;
 
         //Task Management
         public static int TaskCount = 0;
@@ -72,6 +74,13 @@ namespace Hexagon
             required public string scope { get; set; }
         }
 
+        public class ApiVersionResponse()
+        {
+            required public string ApiVersion { get; set; }
+            required public string ApplicationVersion { get; set; }
+            required public string BaseUrl { get; set; }
+        }
+
         public static async Task<bool> LogIn(Uri school, string user, string pass)
         {
             //adress check
@@ -82,37 +91,79 @@ namespace Hexagon
 
             if (response.IsSuccessStatusCode)
             {
-                //OK
-                EndTask(true);
-
-                //log in
-                Uri loginUri = new Uri(school, "/api/login");
-                StartTask("log_in", "Přihlašování uživatele " + user + " na " + loginUri.OriginalString);
-
-                HttpContent content = new StringContent("client_id=ANDR&grant_type=password&username=" + user + "&password=" + pass, Encoding.UTF8, "application/x-www-form-urlencoded");
-                response = await client.PostAsync(loginUri, content);
-
-                if(response.IsSuccessStatusCode)
+                string checkContent = await response.Content.ReadAsStringAsync();
+                ApiVersionResponse? check = null;
+                try
                 {
-                    string responseContent = await response.Content.ReadAsStringAsync();
-                    credentials = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
+                    check = JsonConvert.DeserializeObject<List<ApiVersionResponse>>(checkContent)[0];
+                }
+                catch(Exception ex)
+                {
+                    //Error
+                    EndTask(false);
+                    OnLogInFinished?.Invoke(false);
+                    Shell.Current.DisplayAlert("Špatná URL školy", "Na dané adrese nebyl nalezen API endpoint Bakalářů." +
+                            " Nezapomněl jsi náhodou subdoménu nebo port?", "Ok");
+                    return false;
+                }
 
-                    if(credentials != null)
+                if(check != null)
+                {
+                    //OK
+                    EndTask(true);
+
+                    //log in
+                    Uri loginUri = new Uri(school, "/api/login");
+                    StartTask("log_in", "Přihlašování uživatele " + user + " na " + loginUri.OriginalString);
+
+                    HttpContent content = new StringContent("client_id=ANDR&grant_type=password&username=" + user + "&password=" + pass, Encoding.UTF8, "application/x-www-form-urlencoded");
+                    response = await client.PostAsync(loginUri, content);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        //save credentials
-                        await SecureStorage.SetAsync("LoggedIn", "true");
-                        await SecureStorage.SetAsync("School", school.ToString());
-                        await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+                        string responseContent = await response.Content.ReadAsStringAsync();
+                        try
+                        {
+                            credentials = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
+                        }
+                        catch
+                        {
+                            //Error
+                            EndTask(false);
+                            OnLogInFinished?.Invoke(false);
+                            Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
+                                " Zkontroluj, jestli máš správně jméno a heslo", "Ok");
+                            return false;
+                        }
 
-                        EndTask(true);
-                        OnLogInFinished?.Invoke(true);
-                        return true;
+                        if (credentials != null)
+                        {
+                            //save credentials
+                            await SecureStorage.SetAsync("LoggedIn", "true");
+                            await SecureStorage.SetAsync("School", school.ToString());
+                            await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+
+                            EndTask(true);
+                            OnLogInFinished?.Invoke(true);
+                            return true;
+                        }
+                        else
+                        {
+                            //Error
+                            EndTask(false);
+                            Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
+                                " Zkontroluj, jestli máš správně jméno a heslo", "Ok");
+                            OnLogInFinished?.Invoke(false);
+                            return false;
+                        }
                     }
                     else
                     {
                         //Error
                         EndTask(false);
                         OnLogInFinished?.Invoke(false);
+                        Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
+                                " Zkontroluj, jestli máš správně jméno a heslo", "Ok");
                         return false;
                     }
                 }
@@ -120,6 +171,8 @@ namespace Hexagon
                 {
                     //Error
                     EndTask(false);
+                    Shell.Current.DisplayAlert("Špatná URL školy", "Na dané adrese nebyl nalezen API endpoint Bakalářů." +
+                        " Nezapomněl jsi náhodou subdoménu nebo port?", "Ok");
                     OnLogInFinished?.Invoke(false);
                     return false;
                 }
@@ -129,6 +182,8 @@ namespace Hexagon
                 //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
+                Shell.Current.DisplayAlert("Špatná URL školy", "Na dané adrese nebyl nalezen API endpoint Bakalářů." +
+                    " Nezapomněl jsi náhodou subdoménu nebo port?", "Ok");
                 return false;
             }
         }

@@ -32,12 +32,14 @@
                 Unfocused="SchoolEntry_Unfocused"/>
             <Entry
                 x:Name="UsernameEntry"
+                Text=""
                 HorizontalTextAlignment="Center"
                 Margin="5"
                 FontFamily="SpaceGrotesk"
                 Placeholder="Uživatelské Jméno"/>
             <Entry
                 x:Name="PasswordEntry"
+                Text=""
                 HorizontalTextAlignment="Center"
                 Margin="5"
                 FontFamily="SpaceGrotesk"
