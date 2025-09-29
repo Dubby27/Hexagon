@@ -10,6 +10,17 @@ namespace Hexagon
             InitializeComponent();
 
             Navigation.PushModalAsync(new LogIn());
+            /*if(SecureStorage.GetAsync("LoggedIn").Result == "true")
+            {
+                Task.Run(() =>
+                {
+                    Bakalari.LogInRefresh();
+                }).Wait();
+            }
+            else
+            {
+                Navigation.PushModalAsync(new LogIn());
+            }*/
         }
     }
 }

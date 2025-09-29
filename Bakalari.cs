@@ -133,6 +133,69 @@ namespace Hexagon
             }
         }
 
+        public static async Task<bool> LogInRefresh()
+        {
+            Uri school = new Uri(await SecureStorage.GetAsync("School"));
+
+            //adress check
+            Uri checkUri = new(school, relativeUri:"/api");
+            StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
+
+            HttpResponseMessage response = await client.GetAsync(checkUri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //OK
+                EndTask(true);
+
+                //log in
+                Uri loginUri = new Uri(school, "/api/login");
+                StartTask("log_in", "Přihlašování uživatele pomocí refresh tokenu na " + loginUri.OriginalString);
+
+                HttpContent content = new StringContent("client_id=ANDR&grant_type=refresh_token&refresh_token=" + await SecureStorage.GetAsync("RefreshToken"), Encoding.UTF8, "application/x-www-form-urlencoded");
+                response = await client.PostAsync(loginUri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    credentials = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
+
+                    if (credentials != null)
+                    {
+                        //save credentials
+                        await SecureStorage.SetAsync("LoggedIn", "true");
+                        await SecureStorage.SetAsync("School", school.ToString());
+                        await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+
+                        EndTask(true);
+                        OnLogInFinished?.Invoke(true);
+                        return true;
+                    }
+                    else
+                    {
+                        //Error
+                        EndTask(false);
+                        OnLogInFinished?.Invoke(false);
+                        return false;
+                    }
+                }
+                else
+                {
+                    //Error
+                    EndTask(false);
+                    OnLogInFinished?.Invoke(false);
+                    return false;
+                }
+            }
+            else
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
+        }
+
         //Callbacks
         public static Action<bool> OnLogInFinished;
     }
