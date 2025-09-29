@@ -49,7 +49,21 @@ public partial class LogIn : ContentPage
         else
         {
             Bakalari.OnLogInFinished += LoginFinished;
-            Bakalari.LogIn(uri, UsernameEntry.Text, PasswordEntry.Text);
+            if(UsernameEntry.Text == "")
+            {
+                Shell.Current.DisplayAlert("Neznámé údaje", "Uživatelské jméno nebylo zadáno", "Ok");
+            }
+            else
+            {
+                if (PasswordEntry.Text == "")
+                {
+                    Shell.Current.DisplayAlert("Neznámé údaje", "Heslo nebylo zadáno", "Ok");
+                }
+                else
+                {
+                    Bakalari.LogIn(uri, UsernameEntry.Text, PasswordEntry.Text);
+                }
+            }
         }
     }
 
@@ -61,7 +75,7 @@ public partial class LogIn : ContentPage
         }
         else
         {
-            Shell.Current.DisplayAlert("Chyba přihlášení", "Přihlášení se nezdařilo. Zkontroluj, zda máš správně zadanou adresu školy, uživatelské jméno a heslo.", "Ok");
+            //Shell.Current.DisplayAlert("Chyba přihlášení", "Přihlášení se nezdařilo. Zkontroluj, zda máš správně zadanou adresu školy, uživatelské jméno a heslo.", "Ok");
         }
     }
 }
