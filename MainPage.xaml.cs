@@ -9,18 +9,19 @@ namespace Hexagon
         {
             InitializeComponent();
 
-            Navigation.PushModalAsync(new LogIn());
-            /*if(SecureStorage.GetAsync("LoggedIn").Result == "true")
-            {
-                Task.Run(() =>
-                {
-                    Bakalari.LogInRefresh();
-                }).Wait();
-            }
-            else
+            if(SecureStorage.GetAsync("LoggedIn").Result != "true")
             {
                 Navigation.PushModalAsync(new LogIn());
-            }*/
+            }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (SecureStorage.GetAsync("LoggedIn").Result == "true" && Bakalari.credentials == null)
+            {
+                Bakalari.LogInRefresh();
+            }
         }
     }
 }

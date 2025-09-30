@@ -17,24 +17,68 @@ namespace Hexagon
         //Task Management
         public static int TaskCount = 0;
         public static bool IsSynced = false;
+        public static List<IDispatcherTimer> RunningTimers = new List<IDispatcherTimer>();
+
+        public static string StatusLabel = "";
+        public static bool StatusActivity = false;
+        public static bool BadImage = false;
+        public static bool GoodImage = false;
 
         public static void StartTask(string id, string desc)
         {
-            if(TaskCount == 0)
+            StatusLabel = desc;
+            TaskCount++;
+            StatusActivity = true;
+            BadImage = false;
+            GoodImage = false;
+
+            var dispatcher = Application.Current?.Dispatcher;
+            bool running = false;
+            foreach(IDispatcherTimer timer in RunningTimers)
             {
-                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = desc + "...";
-            }
-            else
-            {
-                if (!Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text.Contains("a další úkoly..."))
+                running = timer.IsRunning;
+                if (!running)
                 {
-                    Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text + " a další úkoly...";
+                    RunningTimers.Remove(timer);
                 }
             }
-            TaskCount++;
-            Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible = true;
-            Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible = false;
-            Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible = false;
+            if (running == false)
+            {
+                IDispatcherTimer? timer = dispatcher?.CreateTimer();
+                if (timer != null)
+                {
+                    timer.Interval = TimeSpan.FromSeconds(0.016);
+                    timer.Tick += (s, e) =>
+                    {
+                        if (TaskCount > 1)
+                        {
+                            if (TaskCount == 2)
+                            {
+                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                            }
+                            else
+                            {
+                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                            }
+                        }
+                        else
+                        {
+                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                StatusLabel + "...";
+                        }
+                        Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
+                            StatusActivity;
+                        Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
+                            BadImage;
+                        Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
+                            GoodImage;
+                    };
+                    timer.Start();
+                    RunningTimers.Add(timer);
+                }
+            }
         }
 
         public static void EndTask(bool result)
