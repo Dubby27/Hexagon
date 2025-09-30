@@ -15,8 +15,8 @@
     
     <!-- Hexagon Gradients -->
 
-    <Color x:Key="GradientStartDark">#de6161</Color>
-    <Color x:Key="GradientEndDark">#2657eb</Color>
+    <Color x:Key="GradientStartDark">#7F00FF</Color>
+    <Color x:Key="GradientEndDark">#E100FF</Color>
     <Color x:Key="GradientStart">#00F260</Color>
     <Color x:Key="GradientEnd">#0575E6</Color>
 

@@ -65,8 +65,15 @@ namespace Hexagon
                         }
                         else
                         {
-                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                            if(TaskCount == 0)
+                            {
+                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                            }
+                            else
+                            {
+                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
                                 StatusLabel + "...";
+                            }
                         }
                         Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
                             StatusActivity;
@@ -90,20 +97,20 @@ namespace Hexagon
                 {
                     if (result)
                     {
-                        Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible = false;
-                        Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible = true;
-                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = "Aktualizováno";
+                        StatusActivity = false;
+                        GoodImage = true;
+                        StatusLabel = "Aktualizováno";
                     }
                     else
                     {
-                        Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible = false;
-                        Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible = true;
-                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = "Offline";
+                        StatusActivity = false;
+                        BadImage = true;
+                        StatusLabel = "Offline";
                     }
                 }
                 else
                 {
-                    Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = "Dokončování úkolů...";
+                    StatusLabel = "Dokončování úkolů";
                 }
             }
         }

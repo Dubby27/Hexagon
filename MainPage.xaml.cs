@@ -8,19 +8,23 @@ namespace Hexagon
         public MainPage()
         {
             InitializeComponent();
-
-            if(SecureStorage.GetAsync("LoggedIn").Result != "true")
-            {
-                Navigation.PushModalAsync(new LogIn());
-            }
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            if (SecureStorage.GetAsync("LoggedIn").Result == "true" && Bakalari.credentials == null)
+            StartLoginProcess();
+        }
+
+        public async void StartLoginProcess()
+        {
+            if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
-                Bakalari.LogInRefresh();
+                await Navigation.PushModalAsync(new LogIn());
+            }
+            if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
+            {
+                await Bakalari.LogInRefresh();
             }
         }
     }
