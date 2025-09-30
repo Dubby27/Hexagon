@@ -20,6 +20,12 @@
                     x:Name="StatusDescription"
                     Text="před 3 minutami"
                     FontFamily="SpaceGrotesk"/>
+                <Button
+                    Text="Odhlasit"
+                    FontFamily="SpaceGrotesk"
+                    FontSize="24"
+                    TextColor="White"
+                    Clicked="Button_Clicked"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout

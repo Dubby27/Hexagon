@@ -50,7 +50,12 @@ namespace Hexagon
                     timer.Interval = TimeSpan.FromSeconds(0.016);
                     timer.Tick += (s, e) =>
                     {
-                        if (TaskCount > 1)
+                        if(Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel") != null &&
+                            Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator") != null &&
+                            Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage") != null &&
+                            Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage") != null)
+                        {
+                            if (TaskCount > 1)
                         {
                             if (TaskCount == 2)
                             {
@@ -81,6 +86,7 @@ namespace Hexagon
                             BadImage;
                         Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
                             GoodImage;
+                        }
                     };
                     timer.Start();
                     RunningTimers.Add(timer);
