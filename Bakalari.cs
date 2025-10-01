@@ -358,6 +358,7 @@ namespace Hexagon
 
         public static Timetable actualTimetable;
         public static Timetable nextTimetable;
+        public static Timetable permanentTimetable;
 
         //Refreshing timetables
         public static async Task<bool> RefreshActualTimetable()
@@ -420,7 +421,7 @@ namespace Hexagon
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
-            StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
+            StartTask("get_next_timetable", "Přenášení dat z " + uri.OriginalString);
             HttpResponseMessage response = await client.GetAsync(uri);
 
             if (response.IsSuccessStatusCode)
@@ -431,6 +432,50 @@ namespace Hexagon
                 {
                     nextTimetable = timetableResponse;
                     await SecureStorage.SetAsync("NextTimetable", responseBody);
+                    EndTask(true);
+                }
+                else
+                {
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<bool> RefreshPermanentTimetable()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return false;
+            }
+
+            Uri uri = new(school + "/api/3/timetable/permanent");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_perma_timetable", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Timetable? timetableResponse = JsonConvert.DeserializeObject<Timetable>(responseBody);
+                if (timetableResponse is not null)
+                {
+                    permanentTimetable = timetableResponse;
+                    await SecureStorage.SetAsync("PermanentTimetable", responseBody);
                     EndTask(true);
                 }
                 else
