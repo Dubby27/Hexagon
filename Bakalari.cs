@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Hexagon.Screens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,42 +51,49 @@ namespace Hexagon
                     timer.Interval = TimeSpan.FromSeconds(0.016);
                     timer.Tick += (s, e) =>
                     {
-                        if(Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel") != null &&
+                        try
+                        {
+                            if (Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel") != null &&
                             Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage") != null)
-                        {
-                            if (TaskCount > 1)
-                        {
-                            if (TaskCount == 2)
                             {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
-                            }
-                            else
-                            {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                if (TaskCount > 1)
+                                {
+                                    if (TaskCount == 2)
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                        StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                    }
+                                    else
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                        StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                    }
+                                }
+                                else
+                                {
+                                    if (TaskCount == 0)
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                    }
+                                    else
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                        StatusLabel + "...";
+                                    }
+                                }
+                                Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
+                                    StatusActivity;
+                                Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
+                                    BadImage;
+                                Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
+                                    GoodImage;
                             }
                         }
-                        else
+                        catch
                         {
-                            if(TaskCount == 0)
-                            {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
-                            }
-                            else
-                            {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                StatusLabel + "...";
-                            }
-                        }
-                        Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
-                            StatusActivity;
-                        Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
-                            BadImage;
-                        Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
-                            GoodImage;
+                            //ignore
                         }
                     };
                     timer.Start();
@@ -195,13 +203,7 @@ namespace Hexagon
 
                         if (credentials != null)
                         {
-                            //save credentials
-                            await SecureStorage.SetAsync("LoggedIn", "true");
-                            await SecureStorage.SetAsync("School", school.ToString());
-                            await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
-
-                            EndTask(true);
-                            OnLogInFinished?.Invoke(true);
+                            AfterLogIn(school);
                             return true;
                         }
                         else
@@ -247,6 +249,11 @@ namespace Hexagon
 
         public static async Task<bool> LogInRefresh()
         {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+
             Uri school = new Uri(await SecureStorage.GetAsync("School"));
 
             //adress check
@@ -274,13 +281,7 @@ namespace Hexagon
 
                     if (credentials != null)
                     {
-                        //save credentials
-                        await SecureStorage.SetAsync("LoggedIn", "true");
-                        await SecureStorage.SetAsync("School", school.ToString());
-                        await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
-
-                        EndTask(true);
-                        OnLogInFinished?.Invoke(true);
+                        AfterLogIn(school);
                         return true;
                     }
                     else
@@ -308,7 +309,297 @@ namespace Hexagon
             }
         }
 
+        public static async void AfterLogIn(Uri school)
+        {
+            //save credentials
+            await SecureStorage.SetAsync("LoggedIn", "true");
+            await SecureStorage.SetAsync("School", school.ToString());
+            Bakalari.school = school;
+            await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+
+            //init refresh
+            await RefreshAll();
+
+            EndTask(true);
+            OnLogInFinished?.Invoke(true);
+        }
+
+        public async static Task<bool> ValidateSavedCredentals()
+        {
+            if (await SecureStorage.GetAsync("School") is not string school)
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            else if (string.IsNullOrEmpty(school))
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            else if(await SecureStorage.GetAsync("RefreshToken") is not string token)
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            else if (string.IsNullOrEmpty(token))
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            Bakalari.school = new Uri(await SecureStorage.GetAsync("School"));
+            return true;
+        }
+
+        //Refreshing data
+        public static Uri school;
+        public static async Task<bool> RefreshAll()
+        {
+            await RefreshActualTimetable();
+            await RefreshNextTimetable();
+            await RefreshPermanentTimetable();
+            return true;
+        }
+
+        public static Timetable actualTimetable;
+        public static Timetable nextTimetable;
+        public static Timetable permanentTimetable;
+
+        //Refreshing timetables
+        public static async Task<bool> RefreshActualTimetable()
+        {
+            if(await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+            else if(credentials == null)
+            {
+                await LogInRefresh();
+                return false;
+            }
+
+            Uri uri = new(school + "/api/3/timetable/actual");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Timetable? timetableResponse = JsonConvert.DeserializeObject<Timetable>(responseBody);
+                if (timetableResponse is not null)
+                {
+                    actualTimetable = timetableResponse;
+                    await SecureStorage.SetAsync("ActualTimetable", responseBody);
+                    EndTask(true);
+                }
+                else
+                {
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<bool> RefreshNextTimetable()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return false;
+            }
+
+            Uri uri = new(school + "/api/3/timetable/actual?date=" + DateTime.Now.AddDays(7).ToString("yyyy-MM-dd"));
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_next_timetable", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Timetable? timetableResponse = JsonConvert.DeserializeObject<Timetable>(responseBody);
+                if (timetableResponse is not null)
+                {
+                    nextTimetable = timetableResponse;
+                    await SecureStorage.SetAsync("NextTimetable", responseBody);
+                    EndTask(true);
+                }
+                else
+                {
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<bool> RefreshPermanentTimetable()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return false;
+            }
+
+            Uri uri = new(school + "/api/3/timetable/permanent");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_perma_timetable", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Timetable? timetableResponse = JsonConvert.DeserializeObject<Timetable>(responseBody);
+                if (timetableResponse is not null)
+                {
+                    permanentTimetable = timetableResponse;
+                    await SecureStorage.SetAsync("PermanentTimetable", responseBody);
+                    EndTask(true);
+                }
+                else
+                {
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
+
+            return true;
+        }
+
         //Callbacks
         public static Action<bool> OnLogInFinished;
     }
+
+    //Timetable classes
+    public class TimetableHour
+    {
+        public int Id { get; set; }
+        public string Caption { get; set; } = "";
+        public string BeginTime { get; set; } = "";
+        public string EndTime { get; set; } = "";
+    }
+
+    public class TimetableChange
+    {
+        public string ChangeSubject { get; set; } = "";
+        public string Day { get; set; } = "";
+        public string Hours { get; set; } = "";
+        public string ChangeType { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string TypeAbbrev { get; set; } = "";
+        public string TypeName { get; set; } = "";
+    }
+
+    public class TimetableAtom
+    {
+        public int HourId { get; set; }
+        public List<string> GroupIds { get; set; } = new List<string>();
+        public string SubjectId { get; set; } = "";
+        public string TeacherId { get; set; } = "";
+        public string RoomId { get; set; } = "";
+        public bool IsLastRoomLesson { get; set; } = false;
+        public List<string> CycleIds { get; set; } = new List<string>();
+        public TimetableChange? Change { get; set; } = null;
+        public List<string> HomeworkIds { get; set; } = new List<string>();
+        public string? Theme { get; set; } = null;
+    }
+
+    public class TimetableClass
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableDay
+    {
+        public List<TimetableAtom> Atoms { get; set; } = new List<TimetableAtom>();
+        public int DayOfWeek { get; set; }
+        public string Date { get; set; } = "";
+        public string DayType { get; set; } = "";
+    }
+
+    public class TimetableGroup
+    {
+        public string ClassId { get; set; } = "";
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableSubject
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableTeacher
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableRoom
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableCycle
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class Timetable
+    {
+        public List<TimetableHour> Hours { get; set; } = new List<TimetableHour>();
+        public List<TimetableDay> Days { get; set; } = new List<TimetableDay>();
+        public List<TimetableClass> Classes { get; set; } = new List<TimetableClass>();
+        public List<TimetableGroup> Groups { get; set; } = new List<TimetableGroup>();
+        public List<TimetableSubject> Subjects { get; set; } = new List<TimetableSubject>();
+        public List<TimetableTeacher> Teachers { get; set; } = new List<TimetableTeacher>();
+        public List<TimetableRoom> Rooms { get; set; } = new List<TimetableRoom>();
+        public List<TimetableCycle> Cycles { get; set; } = new List<TimetableCycle>();
+    }
+
 }

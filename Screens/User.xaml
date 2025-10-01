@@ -18,7 +18,8 @@
                 Orientation="Horizontal"
                 HorizontalScrollBarVisibility="{OnIdiom Phone=Always, Default=Default}"
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill">
+                VerticalOptions="Fill"
+                HeightRequest="32">
                 <HorizontalStackLayout
                     VerticalOptions="Fill"
                     HorizontalOptions="Fill">

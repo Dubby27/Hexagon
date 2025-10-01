@@ -25,11 +25,9 @@
                 x:Name="SchoolEntry"
                 Margin="5"
                 HorizontalTextAlignment="Center"
-                Margin="5"
                 Text=""
                 FontFamily="SpaceGrotesk"
                 Placeholder="URL Bakalářů Školy"
-                FontFamily="SpaceGrotesk"
                 Focused="SchoolEntry_Focused"
                 Unfocused="SchoolEntry_Unfocused"/>
             <Entry
@@ -74,7 +72,8 @@
                 Orientation="Horizontal"
                 HorizontalScrollBarVisibility="{OnIdiom Phone=Always, Default=Default}"
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill">
+                VerticalOptions="Fill"
+                HeightRequest="32">
                 <HorizontalStackLayout
                 VerticalOptions="Fill"
                 HorizontalOptions="Fill">
