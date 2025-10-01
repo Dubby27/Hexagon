@@ -2,10 +2,9 @@ namespace Hexagon.Screens;
 
 public partial class LogIn : ContentPage
 {
-	public LogIn()
-	{
+	  public LogIn()
+	  {
 	    InitializeComponent();
-
         NetworkActivityIndicator.IsVisible = false;
         NetworkGoodImage.IsVisible = false;
         NetworkStatusLabel.Text = "Odhlášen";
