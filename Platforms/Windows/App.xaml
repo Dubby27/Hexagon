@@ -8,6 +8,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <Color x:Key="TextControlBorderThemeColor">Black</Color>
+            <CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius>
         </ResourceDictionary>
     </Application.Resources>
 

@@ -8,8 +8,43 @@ namespace Hexagon
         public MainPage()
         {
             InitializeComponent();
+        }
 
-            Navigation.PushModalAsync(new LogIn());
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            StartLoginProcess();
+        }
+
+        public async void StartLoginProcess()
+        {
+            if (await SecureStorage.GetAsync("LoggedIn") != "true")
+            {
+                await Navigation.PushModalAsync(new LogIn());
+            }
+            if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
+            {
+                await Bakalari.LogInRefresh();
+            }
+        }
+
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            //log out for testing purposes
+            Bakalari.credentials = null;
+            Bakalari.IsSynced = false;
+
+            Bakalari.StatusLabel = "Odhlášen";
+            Bakalari.GoodImage = false;
+            Bakalari.StatusActivity = false;
+            Bakalari.BadImage = true;
+
+            //delete credentials
+            SecureStorage.Remove("LoggedIn");
+            SecureStorage.Remove("School");
+            SecureStorage.Remove("RefreshToken");
+
+            await Navigation.PushModalAsync(new LogIn());
         }
     }
 }

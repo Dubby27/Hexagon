@@ -9,7 +9,7 @@
     FlyoutWidth="64">
 
     <Shell.FlyoutBackground>
-        <LinearGradientBrush StartPoint="0,0.1" EndPoint="0,1">
+        <LinearGradientBrush StartPoint="0,0.1" EndPoint="0,0.9">
             <GradientStop 
                 Color="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}"
                 Offset="0"/>
