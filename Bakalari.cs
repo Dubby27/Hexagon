@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Hexagon.Screens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -308,7 +309,148 @@ namespace Hexagon
             }
         }
 
+        public async static Task<bool> ValidateSavedCredentals()
+        {
+            if (await SecureStorage.GetAsync("school") is not string school)
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            else if (string.IsNullOrEmpty(school))
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            else if(await SecureStorage.GetAsync("RefreshToken") is not string token)
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            else if (string.IsNullOrEmpty(token))
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                return false;
+            }
+            return true;
+        }
+
+        //Refreshing data
+        public static async Task<bool> RefreshAll()
+        {
+            await RefreshActualTimetable();
+            return true;
+        }
+
+        //Refreshing timetables
+        public static async Task<bool> RefreshActualTimetable()
+        {
+            
+            return true;
+        }
+
         //Callbacks
         public static Action<bool> OnLogInFinished;
     }
+
+    //Timetable classes
+    public class TimetableHour
+    {
+        public int Id { get; set; }
+        public string Caption { get; set; } = "";
+        public string BeginTime { get; set; } = "";
+        public string EndTime { get; set; } = "";
+    }
+
+    public class TimetableChange
+    {
+        public string ChangeSubject { get; set; } = "";
+        public string Day { get; set; } = "";
+        public string Hours { get; set; } = "";
+        public string ChangeType { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string TypeAbbrev { get; set; } = "";
+        public string TypeName { get; set; } = "";
+    }
+
+    public class TimetableAtom
+    {
+        public int HourId { get; set; }
+        public List<string> GroupIds { get; set; } = new List<string>();
+        public string SubjectId { get; set; } = "";
+        public string TeacherId { get; set; } = "";
+        public string RoomId { get; set; } = "";
+        public bool IsLastRoomLesson { get; set; } = false;
+        public List<string> CycleIds { get; set; } = new List<string>();
+        public TimetableChange? Change { get; set; } = null;
+        public List<string> HomeworkIds { get; set; } = new List<string>();
+        public string? Theme { get; set; } = null;
+    }
+
+    public class TimetableClass
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableDay
+    {
+        public List<TimetableAtom> Atoms { get; set; } = new List<TimetableAtom>();
+        public int DayOfWeek { get; set; }
+        public string Date { get; set; } = "";
+        public string DayType { get; set; } = "";
+    }
+
+    public class TimetableGroup
+    {
+        public string ClassId { get; set; } = "";
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableSubject
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableTeacher
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableRoom
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class TimetableCycle
+    {
+        public string Id { get; set; } = "";
+        public string Abbrev { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class Timetable
+    {
+        public List<TimetableHour> Hours { get; set; } = new List<TimetableHour>();
+        public List<TimetableDay> Days { get; set; } = new List<TimetableDay>();
+        public List<TimetableClass> Classes { get; set; } = new List<TimetableClass>();
+        public List<TimetableGroup> Groups { get; set; } = new List<TimetableGroup>();
+        public List<TimetableSubject> Subjects { get; set; } = new List<TimetableSubject>();
+        public List<TimetableTeacher> Teachers { get; set; } = new List<TimetableTeacher>();
+        public List<TimetableRoom> Rooms { get; set; } = new List<TimetableRoom>();
+        public List<TimetableCycle> Cycles { get; set; } = new List<TimetableCycle>();
+    }
+
 }
