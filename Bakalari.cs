@@ -51,42 +51,49 @@ namespace Hexagon
                     timer.Interval = TimeSpan.FromSeconds(0.016);
                     timer.Tick += (s, e) =>
                     {
-                        if(Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel") != null &&
+                        try
+                        {
+                            if (Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel") != null &&
                             Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage") != null)
-                        {
-                            if (TaskCount > 1)
-                        {
-                            if (TaskCount == 2)
                             {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
-                            }
-                            else
-                            {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                if (TaskCount > 1)
+                                {
+                                    if (TaskCount == 2)
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                        StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                    }
+                                    else
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                        StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                    }
+                                }
+                                else
+                                {
+                                    if (TaskCount == 0)
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                    }
+                                    else
+                                    {
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                        StatusLabel + "...";
+                                    }
+                                }
+                                Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
+                                    StatusActivity;
+                                Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
+                                    BadImage;
+                                Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
+                                    GoodImage;
                             }
                         }
-                        else
+                        catch
                         {
-                            if(TaskCount == 0)
-                            {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
-                            }
-                            else
-                            {
-                                Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                StatusLabel + "...";
-                            }
-                        }
-                        Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
-                            StatusActivity;
-                        Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
-                            BadImage;
-                        Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
-                            GoodImage;
+                            //ignore
                         }
                     };
                     timer.Start();
@@ -353,6 +360,7 @@ namespace Hexagon
         {
             await RefreshActualTimetable();
             await RefreshNextTimetable();
+            await RefreshPermanentTimetable();
             return true;
         }
 
