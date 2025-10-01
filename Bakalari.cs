@@ -196,13 +196,7 @@ namespace Hexagon
 
                         if (credentials != null)
                         {
-                            //save credentials
-                            await SecureStorage.SetAsync("LoggedIn", "true");
-                            await SecureStorage.SetAsync("School", school.ToString());
-                            await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
-
-                            EndTask(true);
-                            OnLogInFinished?.Invoke(true);
+                            AfterLogIn(school);
                             return true;
                         }
                         else
@@ -248,6 +242,11 @@ namespace Hexagon
 
         public static async Task<bool> LogInRefresh()
         {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+
             Uri school = new Uri(await SecureStorage.GetAsync("School"));
 
             //adress check
@@ -275,13 +274,7 @@ namespace Hexagon
 
                     if (credentials != null)
                     {
-                        //save credentials
-                        await SecureStorage.SetAsync("LoggedIn", "true");
-                        await SecureStorage.SetAsync("School", school.ToString());
-                        await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
-
-                        EndTask(true);
-                        OnLogInFinished?.Invoke(true);
+                        AfterLogIn(school);
                         return true;
                     }
                     else
@@ -309,9 +302,24 @@ namespace Hexagon
             }
         }
 
+        public static async void AfterLogIn(Uri school)
+        {
+            //save credentials
+            await SecureStorage.SetAsync("LoggedIn", "true");
+            await SecureStorage.SetAsync("School", school.ToString());
+            Bakalari.school = school;
+            await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+
+            //init refresh
+            await RefreshAll();
+
+            EndTask(true);
+            OnLogInFinished?.Invoke(true);
+        }
+
         public async static Task<bool> ValidateSavedCredentals()
         {
-            if (await SecureStorage.GetAsync("school") is not string school)
+            if (await SecureStorage.GetAsync("School") is not string school)
             {
                 await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
                 await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
@@ -335,20 +343,62 @@ namespace Hexagon
                 await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
                 return false;
             }
+            Bakalari.school = new Uri(await SecureStorage.GetAsync("School"));
             return true;
         }
 
         //Refreshing data
+        public static Uri school;
         public static async Task<bool> RefreshAll()
         {
             await RefreshActualTimetable();
             return true;
         }
 
+        public static Timetable actualTimetable;
+
         //Refreshing timetables
         public static async Task<bool> RefreshActualTimetable()
         {
-            
+            if(await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+            else if(credentials == null)
+            {
+                await LogInRefresh();
+                return false;
+            }
+
+            Uri uri = new(school + "/api/3/timetable/actual");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Timetable? timetableResponse = JsonConvert.DeserializeObject<Timetable>(responseBody);
+                if (timetableResponse is not null)
+                {
+                    actualTimetable = timetableResponse;
+                    await SecureStorage.SetAsync("ActualTimetable", responseBody);
+                    EndTask(true);
+                }
+                else
+                {
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
+
             return true;
         }
 

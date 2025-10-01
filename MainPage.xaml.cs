@@ -46,5 +46,10 @@ namespace Hexagon
 
             await Navigation.PushModalAsync(new LogIn());
         }
+
+        private async void Button_Clicked_1(object sender, EventArgs e)
+        {
+            await Bakalari.RefreshAll();
+        }
     }
 }
