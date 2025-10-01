@@ -352,10 +352,12 @@ namespace Hexagon
         public static async Task<bool> RefreshAll()
         {
             await RefreshActualTimetable();
+            await RefreshNextTimetable();
             return true;
         }
 
         public static Timetable actualTimetable;
+        public static Timetable nextTimetable;
 
         //Refreshing timetables
         public static async Task<bool> RefreshActualTimetable()
@@ -385,6 +387,50 @@ namespace Hexagon
                 {
                     actualTimetable = timetableResponse;
                     await SecureStorage.SetAsync("ActualTimetable", responseBody);
+                    EndTask(true);
+                }
+                else
+                {
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<bool> RefreshNextTimetable()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return false;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return false;
+            }
+
+            Uri uri = new(school + "/api/3/timetable/actual?date=" + DateTime.Now.AddDays(7).ToString("yyyy-MM-dd"));
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Timetable? timetableResponse = JsonConvert.DeserializeObject<Timetable>(responseBody);
+                if (timetableResponse is not null)
+                {
+                    nextTimetable = timetableResponse;
+                    await SecureStorage.SetAsync("NextTimetable", responseBody);
                     EndTask(true);
                 }
                 else
