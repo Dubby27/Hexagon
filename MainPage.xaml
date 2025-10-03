@@ -50,7 +50,7 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <Border.Shadow>
-                        <Shadow Opacity="0.7"
+                        <Shadow Opacity="0.5"
                                 Offset="7,7"
                                 Radius="30">
                             <Shadow.Brush>

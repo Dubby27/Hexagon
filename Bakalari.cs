@@ -127,6 +127,21 @@ namespace Hexagon
                     StatusLabel = "Dokončování úkolů";
                 }
             }
+            else
+            {
+                if (result)
+                {
+                    StatusActivity = false;
+                    GoodImage = true;
+                    StatusLabel = "Aktualizováno";
+                }
+                else
+                {
+                    StatusActivity = false;
+                    BadImage = true;
+                    StatusLabel = "Offline";
+                }
+            }
         }
 
         //Log In
@@ -152,7 +167,25 @@ namespace Hexagon
             Uri checkUri = new Uri(school, "/api");
             StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
 
-            HttpResponseMessage response = await client.GetAsync(checkUri);
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await client.GetAsync(checkUri);
+            }
+            catch
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
+            if (response.Version != null)
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -182,7 +215,25 @@ namespace Hexagon
                     StartTask("log_in", "Přihlašování uživatele " + user + " na " + loginUri.OriginalString);
 
                     HttpContent content = new StringContent("client_id=ANDR&grant_type=password&username=" + user + "&password=" + pass, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    response = await client.PostAsync(loginUri, content);
+                    response = new HttpResponseMessage();
+                    try
+                    {
+                        response = await client.PostAsync(loginUri, content);
+                    }
+                    catch
+                    {
+                        //Error
+                        EndTask(false);
+                        OnLogInFinished?.Invoke(false);
+                        return false;
+                    }
+                    if (response.Version != null)
+                    {
+                        //Error
+                        EndTask(false);
+                        OnLogInFinished?.Invoke(false);
+                        return false;
+                    }
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -260,7 +311,25 @@ namespace Hexagon
             Uri checkUri = new(school, relativeUri:"/api");
             StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
 
-            HttpResponseMessage response = await client.GetAsync(checkUri);
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await client.GetAsync(checkUri);
+            }
+            catch
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
+            if(response.Version != null)
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -272,7 +341,25 @@ namespace Hexagon
                 StartTask("log_in", "Přihlašování uživatele pomocí refresh tokenu na " + loginUri.OriginalString);
 
                 HttpContent content = new StringContent("client_id=ANDR&grant_type=refresh_token&refresh_token=" + await SecureStorage.GetAsync("RefreshToken"), Encoding.UTF8, "application/x-www-form-urlencoded");
-                response = await client.PostAsync(loginUri, content);
+                response = new HttpResponseMessage();
+                try
+                {
+                    response = await client.PostAsync(loginUri, content);
+                }
+                catch
+                {
+                    //Error
+                    EndTask(false);
+                    OnLogInFinished?.Invoke(false);
+                    return false;
+                }
+                if (response.Version != null)
+                {
+                    //Error
+                    EndTask(false);
+                    OnLogInFinished?.Invoke(false);
+                    return false;
+                }
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -358,10 +445,19 @@ namespace Hexagon
         public static Uri school;
         public static async Task<bool> RefreshAll()
         {
-            await RefreshActualTimetable();
-            await RefreshNextTimetable();
-            await RefreshPermanentTimetable();
-            return true;
+            bool a = await RefreshActualTimetable();
+            bool b = await RefreshNextTimetable();
+            bool c = await RefreshPermanentTimetable();
+
+            if(a & b & c)
+            {
+                return true;
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
         }
 
         public static Timetable actualTimetable;
@@ -386,7 +482,25 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
+            if (response.Version != null)
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -430,7 +544,25 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_next_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
+            if (response.Version != null)
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -474,7 +606,25 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_perma_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
+            if (response.Version != null)
+            {
+                //Error
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
