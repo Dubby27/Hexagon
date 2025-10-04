@@ -39,7 +39,7 @@ namespace Hexagon
                 switch (today.DayType)
                 {
                     case "WorkDay":
-                        panelStruct = EvaluateWorkDay(false); break;
+                        panelStruct = EvaluateWorkDay(today, false); break;
                     case "Weekend":
                         panelStruct = EvaluateWeekend(WeekendType.Normal, false); break;
                     case "Celebration":
@@ -51,7 +51,7 @@ namespace Hexagon
                     case "Undefined":
                         Shell.Current.DisplayAlert("Chyba rozvrhu", "Rozvrh pro tento den není definován. Bude použit stálý rozvrh.", "Ok");
                         today = Bakalari.permanentTimetable.Days.FirstOrDefault((a) => DateTime.Parse(a.Date) == DateTime.Today, null);
-                        panelStruct = EvaluateWorkDay(true); break;
+                        panelStruct = EvaluateWorkDay(today, true); break;
                 }
             }
             
@@ -138,9 +138,79 @@ namespace Hexagon
             }
         }
 
-        public static QuickPanelStruct EvaluateWorkDay(bool usePermanent)
+        public static QuickPanelStruct EvaluateWorkDay(TimetableDay today, bool usePermanent)
         {
             QuickPanelStruct panelStruct = new QuickPanelStruct();
+
+            Timetable current = usePermanent ? Bakalari.permanentTimetable : Bakalari.actualTimetable;
+
+            if(today.Atoms.Count == 0)
+            {
+                panelStruct = NoHours();
+            }
+            else
+            {
+                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed", null);
+                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed", null);
+
+                if(lastClass == null)
+                {
+                    lastClass = today.Atoms.LastOrDefault((a) => a.Change.ChangeType != "Removed", null);
+                }
+                if (firstClass == null)
+                {
+                    firstClass = today.Atoms.FirstOrDefault((a) => a.Change.ChangeType != "Removed", null);
+                }
+
+                if(DateTime.Parse(Bakalari.GetTimetableHour(current, lastClass).EndTime) < DateTime.Now)
+                {
+                    TimetableDay? lastDay = current.Days.LastOrDefault((a) => a.DayType == "WorkDay");
+                    if(lastDay == today)
+                    {
+                        panelStruct = EvaluateWeekend(WeekendType.Normal, usePermanent);
+                    }
+                    else
+                    {
+                        TimetableDay? nextWorkDay = current.Days.FirstOrDefault((a) => a.DayType == "WorkDay" && current.Days.IndexOf(a) > current.Days.IndexOf(today));
+                        panelStruct.title = "Je po škole";
+                        panelStruct.lower = "Rozvrh na zítra:";
+                        panelStruct.timetable = TimetableRenderer.Render(current, nextWorkDay);
+                    }
+                }
+                else
+                {
+                    if (DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime) > DateTime.Now)
+                    {
+                        panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je:";
+                        panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description : 
+                            Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
+                    }
+                    else
+                    {
+                        TimetableAtom? currentClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
+                            DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
+                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""));
+
+                        TimetableAtom? nextClass = today.Atoms.LastOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
+                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""));
+
+                        if(currentClass != null)
+                        {
+                            panelStruct.upper = "Právě je";
+                            panelStruct.title = currentClass.Change != null ? currentClass.Change.ChangeType == "Canceled" ? currentClass.Change.Description :
+                                Bakalari.GetTimetableSubject(current, currentClass).Name : Bakalari.GetTimetableSubject(current, currentClass).Name;
+                            panelStruct.lower = "Další hodina je" + nextClass.Change != null ? nextClass.Change.ChangeType == "Canceled" ? nextClass.Change.Description :
+                                Bakalari.GetTimetableSubject(current, nextClass).Name : Bakalari.GetTimetableSubject(current, nextClass).Name;
+                        }
+                        else
+                        {
+                            panelStruct.upper = "Je přestávka\nPříští hodina je:";
+                            panelStruct.title = nextClass.Change != null ? nextClass.Change.ChangeType == "Canceled" ? nextClass.Change.Description :
+                                Bakalari.GetTimetableSubject(current, nextClass).Name : Bakalari.GetTimetableSubject(current, nextClass).Name;
+                        }
+                    }
+                }
+            }
 
             return panelStruct;
         }

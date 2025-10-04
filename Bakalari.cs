@@ -672,6 +672,17 @@ namespace Hexagon
 
         //Callbacks
         public static Action<bool> OnLogInFinished;
+
+        //Timetable Getters
+        public static TimetableHour? GetTimetableHour(Timetable table, TimetableAtom atom)
+        {
+            return table.Hours.FirstOrDefault((a) => a.Id == atom.HourId, null);
+        }
+
+        public static TimetableSubject? GetTimetableSubject(Timetable table, TimetableAtom atom)
+        {
+            return table.Subjects.FirstOrDefault((a) => a.Id == atom.SubjectId, null);
+        }
     }
 
     //Timetable classes
@@ -770,5 +781,4 @@ namespace Hexagon
         public List<TimetableRoom> Rooms { get; set; } = new List<TimetableRoom>();
         public List<TimetableCycle> Cycles { get; set; } = new List<TimetableCycle>();
     }
-
 }
