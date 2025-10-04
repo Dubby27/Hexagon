@@ -124,7 +124,7 @@
                             VerticalTextAlignment="Center"
                             HorizontalOptions="Fill"
                             VerticalOptions="Fill"
-                            LineBreakMode="CharacterWrap"
+                            LineBreakMode="CharacterWrap" 
                             FontSize="18"
                             TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                             Margin="5"/>

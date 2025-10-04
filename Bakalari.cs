@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -165,12 +166,12 @@ namespace Hexagon
         {
             if(await SecureStorage.GetAsync("LoggedIn") == "true")
             {
-                if (DatesAreInTheSameWeek(DateTime.Parse(await SecureStorage.GetAsync("ActualValid")), DateTime.Today))
+                if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("ActualValid")), DateTime.Today))
                 {
                     actualTimetable = JsonConvert.DeserializeObject<Timetable>(
                         await SecureStorage.GetAsync("ActualTimetable"));
                 }
-                else if (DatesAreInTheSameWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today))
+                else if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today))
                 {
                     actualTimetable = JsonConvert.DeserializeObject<Timetable>(
                         await SecureStorage.GetAsync("NextTimetable"));
@@ -183,7 +184,7 @@ namespace Hexagon
                         " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
                 }
                 
-                if (DatesAreInTheSameWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))
+                if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))
                 {
                     nextTimetable = JsonConvert.DeserializeObject<Timetable>(
                         await SecureStorage.GetAsync("NextTimetable"));
@@ -203,13 +204,34 @@ namespace Hexagon
             }
         }
 
-        public static bool DatesAreInTheSameWeek(DateTime date1, DateTime date2)
+        static bool IsSameIsoWeek(DateTime d1, DateTime d2)
         {
-            var cal = System.Globalization.DateTimeFormatInfo.CurrentInfo.Calendar;
-            var d1 = date1.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date1));
-            var d2 = date2.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date2));
+            (int year1, int week1) = GetIsoWeekAndYear(d1);
+            (int year2, int week2) = GetIsoWeekAndYear(d2);
 
-            return d1 == d2;
+            return year1 == year2 && week1 == week2;
+        }
+
+        static (int isoYear, int isoWeek) GetIsoWeekAndYear(DateTime date)
+        {
+            // ISO 8601: používá pondělí jako první den týdne a pravidlo "FirstFourDayWeek"
+            var cal = CultureInfo.InvariantCulture.Calendar;
+            var weekRule = CalendarWeekRule.FirstFourDayWeek;
+            var firstDayOfWeek = DayOfWeek.Monday;
+
+            int week = cal.GetWeekOfYear(date, weekRule, firstDayOfWeek);
+
+            // Rok ISO týdne nemusí být stejný jako rok kalendářní
+            int year = date.Year;
+
+            // Oprava přelomů: poslední dny prosince mohou patřit do týdne příštího roku
+            if (week == 1 && date.Month == 12)
+                year++;
+            // první dny ledna mohou patřit do posledního týdne minulého roku
+            else if (week >= 52 && date.Month == 1)
+                year--;
+
+            return (year, week);
         }
 
         public static async Task<bool> LogIn(Uri school, string user, string pass)
@@ -218,21 +240,13 @@ namespace Hexagon
             Uri checkUri = new Uri(school, "/api");
             StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            HttpResponseMessage response;
             try
             {
                 response = await client.GetAsync(checkUri);
             }
-            catch
+            catch (HttpRequestException ex)
             {
-                //Error
-                EndTask(false);
-                OnLogInFinished?.Invoke(false);
-                return false;
-            }
-            if (response.Version != null)
-            {
-                //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
                 return false;
@@ -266,21 +280,12 @@ namespace Hexagon
                     StartTask("log_in", "Přihlašování uživatele " + user + " na " + loginUri.OriginalString);
 
                     HttpContent content = new StringContent("client_id=ANDR&grant_type=password&username=" + user + "&password=" + pass, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    response = new HttpResponseMessage();
                     try
                     {
                         response = await client.PostAsync(loginUri, content);
                     }
-                    catch
+                    catch (HttpRequestException ex)
                     {
-                        //Error
-                        EndTask(false);
-                        OnLogInFinished?.Invoke(false);
-                        return false;
-                    }
-                    if (response.Version != null)
-                    {
-                        //Error
                         EndTask(false);
                         OnLogInFinished?.Invoke(false);
                         return false;
@@ -362,21 +367,13 @@ namespace Hexagon
             Uri checkUri = new(school, relativeUri:"/api");
             StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            HttpResponseMessage response;
             try
             {
                 response = await client.GetAsync(checkUri);
             }
-            catch
+            catch(HttpRequestException ex)
             {
-                //Error
-                EndTask(false);
-                OnLogInFinished?.Invoke(false);
-                return false;
-            }
-            if(response.Version != null)
-            {
-                //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
                 return false;
@@ -392,21 +389,12 @@ namespace Hexagon
                 StartTask("log_in", "Přihlašování uživatele pomocí refresh tokenu na " + loginUri.OriginalString);
 
                 HttpContent content = new StringContent("client_id=ANDR&grant_type=refresh_token&refresh_token=" + await SecureStorage.GetAsync("RefreshToken"), Encoding.UTF8, "application/x-www-form-urlencoded");
-                response = new HttpResponseMessage();
                 try
                 {
                     response = await client.PostAsync(loginUri, content);
                 }
-                catch
+                catch (HttpRequestException ex)
                 {
-                    //Error
-                    EndTask(false);
-                    OnLogInFinished?.Invoke(false);
-                    return false;
-                }
-                if (response.Version != null)
-                {
-                    //Error
                     EndTask(false);
                     OnLogInFinished?.Invoke(false);
                     return false;
@@ -533,21 +521,13 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = new HttpResponseMessage();
+            HttpResponseMessage response;
             try
             {
                 response = await client.GetAsync(uri);
             }
-            catch
+            catch (HttpRequestException ex)
             {
-                //Error
-                EndTask(false);
-                OnLogInFinished?.Invoke(false);
-                return false;
-            }
-            if (response.Version != null)
-            {
-                //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
                 return false;
@@ -597,21 +577,13 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_next_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = new HttpResponseMessage();
+            HttpResponseMessage response;
             try
             {
                 response = await client.GetAsync(uri);
             }
-            catch
+            catch (HttpRequestException ex)
             {
-                //Error
-                EndTask(false);
-                OnLogInFinished?.Invoke(false);
-                return false;
-            }
-            if (response.Version != null)
-            {
-                //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
                 return false;
@@ -661,21 +633,13 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_perma_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = new HttpResponseMessage();
+            HttpResponseMessage response;
             try
             {
                 response = await client.GetAsync(uri);
             }
-            catch
+            catch (HttpRequestException ex)
             {
-                //Error
-                EndTask(false);
-                OnLogInFinished?.Invoke(false);
-                return false;
-            }
-            if (response.Version != null)
-            {
-                //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
                 return false;

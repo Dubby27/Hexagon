@@ -18,14 +18,13 @@ namespace Hexagon
 
         public async void StartLoginProcess()
         {
-            await Bakalari.LoadOfflineData();
-
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
                 await Navigation.PushModalAsync(new LogIn());
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
+                await Bakalari.LoadOfflineData();
                 await Bakalari.LogInRefresh();
             }
         }
