@@ -16,6 +16,13 @@ namespace Hexagon
 
     internal static class QuickPanel
     {
-
+        public static QuickPanelStruct EvaluateQuickPanel()
+        {
+            QuickPanelStruct panelStruct = new QuickPanelStruct();
+            //get today
+            TimetableDay today = Bakalari.actualTimetable.Days.FirstOrDefault((a) => DateTime.Parse(a.Date) == DateTime.Today);
+            
+            return panelStruct;
+        }
     }
 }
