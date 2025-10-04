@@ -35,6 +35,7 @@
                     FontAttributes="Bold"
                     LineBreakMode="WordWrap"
                     FontSize="28"
+                    IsVisible="False"
                     HorizontalTextAlignment="Center"
                     Margin="15,0"/>      
                 <Border
@@ -63,7 +64,7 @@
                     </Border.Shadow>
                     <Label
                         x:Name="QuickTitle"
-                        Text="Je víkend"
+                        Text="Načítání..."
                         FontFamily="SpaceGrotesk"
                         FontAttributes="Bold"
                         LineBreakMode="WordWrap"
@@ -79,7 +80,10 @@
                     LineBreakMode="WordWrap"
                     FontSize="28"
                     HorizontalTextAlignment="Center"
-                    Margin="15,0"/> 
+                    IsVisible="False"
+                    Margin="15,0"/>
+                <HorizontalStackLayout
+                    x:Name="QuickTimetable"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout
