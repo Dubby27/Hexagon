@@ -24,9 +24,13 @@ namespace Hexagon
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
-                await Bakalari.LoadOfflineData();
-                RefreshQuickPanel();
+                bool r = await Bakalari.LoadOfflineData();
+                if (r) RefreshQuickPanel();
                 await Bakalari.LogInRefresh();
+                RefreshQuickPanel();
+            }
+            if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
+            {
                 RefreshQuickPanel();
             }
         }

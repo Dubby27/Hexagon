@@ -166,37 +166,46 @@ namespace Hexagon
         {
             if(await SecureStorage.GetAsync("LoggedIn") == "true")
             {
-                if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("ActualValid")), DateTime.Today))
+                try
                 {
-                    actualTimetable = JsonConvert.DeserializeObject<Timetable>(
-                        await SecureStorage.GetAsync("ActualTimetable"));
-                }
-                else if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today))
-                {
-                    actualTimetable = JsonConvert.DeserializeObject<Timetable>(
-                        await SecureStorage.GetAsync("NextTimetable"));
-                }
-                else
-                {
-                    actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                    if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("ActualValid")), DateTime.Today))
+                    {
+                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("ActualTimetable"));
+                    }
+                    else if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today))
+                    {
+                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("NextTimetable"));
+                    }
+                    else
+                    {
+                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("PermanentTimetable"));
+                        Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
+                            " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
+                    }
+
+                    if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))
+                    {
+                        nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("NextTimetable"));
+                    }
+                    else
+                    {
+                        nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("PermanentTimetable"));
+                    }
+                    permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
                         await SecureStorage.GetAsync("PermanentTimetable"));
-                    Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
-                        " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
+                    return true;
                 }
-                
-                if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))
+                catch
                 {
-                    nextTimetable = JsonConvert.DeserializeObject<Timetable>(
-                        await SecureStorage.GetAsync("NextTimetable"));
+                    Shell.Current.DisplayAlert("Chyba získávání dat", "Tohle by se mělo spravit samo. " +
+                        "Pokud problém přetrvává, zkus se odhlásit a přihlásit znovu.", "Ok");
+                    return false;
                 }
-                else
-                {
-                    nextTimetable = JsonConvert.DeserializeObject<Timetable>(
-                        await SecureStorage.GetAsync("PermanentTimetable"));
-                }
-                permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
-                    await SecureStorage.GetAsync("PermanentTimetable"));
-                return true;
             }
             else
             {
@@ -682,6 +691,11 @@ namespace Hexagon
         public static TimetableSubject? GetTimetableSubject(Timetable table, TimetableAtom atom)
         {
             return table.Subjects.FirstOrDefault((a) => a.Id == atom.SubjectId, null);
+        }
+
+        public static TimetableRoom? GetTimetableRoom(Timetable table, TimetableAtom atom)
+        {
+            return table.Rooms.FirstOrDefault((a) => a.Id == atom.RoomId, null);
         }
     }
 

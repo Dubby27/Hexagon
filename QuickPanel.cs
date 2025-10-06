@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Markdig.Extensions.Tables;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -188,25 +189,59 @@ namespace Hexagon
                     else
                     {
                         TimetableAtom? currentClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
-                            DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""));
+                            DateTime.Parse(Bakalari.GetTimetableHour(current, a).EndTime) > DateTime.Now &&
 
-                        TimetableAtom? nextClass = today.Atoms.LastOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""));
+                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""), null);
+
+                        TimetableAtom? nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
+                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""), null
+                            );
 
                         if(currentClass != null)
                         {
                             panelStruct.upper = "Právě je";
                             panelStruct.title = currentClass.Change != null ? currentClass.Change.ChangeType == "Canceled" ? currentClass.Change.Description :
                                 Bakalari.GetTimetableSubject(current, currentClass).Name : Bakalari.GetTimetableSubject(current, currentClass).Name;
-                            panelStruct.lower = "Další hodina je" + nextClass.Change != null ? nextClass.Change.ChangeType == "Canceled" ? nextClass.Change.Description :
-                                Bakalari.GetTimetableSubject(current, nextClass).Name : Bakalari.GetTimetableSubject(current, nextClass).Name;
+                            string nextSubject = "";
+                            if(nextClass.Change == null)
+                            {
+                                nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
+                            }
+                            else
+                            {
+                                if(nextClass.Change.ChangeType == "Canceled")
+                                {
+                                    nextSubject = nextClass.Change.Description;
+                                }
+                            }
+                            panelStruct.lower = "Další hodina je " + nextSubject;
+                            string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
+                            if (nextRoom != null)
+                            {
+                                panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                            }
                         }
                         else
                         {
                             panelStruct.upper = "Je přestávka\nPříští hodina je:";
-                            panelStruct.title = nextClass.Change != null ? nextClass.Change.ChangeType == "Canceled" ? nextClass.Change.Description :
-                                Bakalari.GetTimetableSubject(current, nextClass).Name : Bakalari.GetTimetableSubject(current, nextClass).Name;
+                            string nextSubject = "";
+                            if (nextClass.Change == null)
+                            {
+                                nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
+                            }
+                            else
+                            {
+                                if (nextClass.Change.ChangeType == "Canceled")
+                                {
+                                    nextSubject = nextClass.Change.Description;
+                                }
+                            }
+                            string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
+                            if(nextRoom != null)
+                            {
+                                panelStruct.lower = "v " + nextRoom;
+                            }
+                            panelStruct.title = nextSubject;
                         }
                     }
                 }
