@@ -10,12 +10,6 @@
                 VerticalOptions="Start"
                 HorizontalOptions="Center">
                 <Button
-                    Text="Odhlasit"
-                    FontFamily="SpaceGrotesk"
-                    FontSize="24"
-                    TextColor="White"
-                    Clicked="Button_Clicked"/>
-                <Button
                     Text="Refresh"
                     FontFamily="SpaceGrotesk"
                     FontSize="24"

@@ -21,6 +21,13 @@ namespace Hexagon
         public static QuickPanelStruct EvaluateQuickPanel()
         {
             QuickPanelStruct panelStruct = new QuickPanelStruct();
+            //null check
+            if(Bakalari.actualTimetable == null || Bakalari.nextTimetable == null || Bakalari.permanentTimetable == null)
+            {
+                panelStruct.title = "Chyba";
+                panelStruct.lower = "Nejsou dostupná žádná uložená data";
+            }
+
             //get today
             TimetableDay? today = Bakalari.actualTimetable.Days.FirstOrDefault((a) => DateTime.Parse(a.Date) == DateTime.Today, null);
 
@@ -208,22 +215,25 @@ namespace Hexagon
                             panelStruct.title = currentClass.Change != null ? currentClass.Change.ChangeType == "Canceled" ? currentClass.Change.Description :
                                 Bakalari.GetTimetableSubject(current, currentClass).Name : Bakalari.GetTimetableSubject(current, currentClass).Name;
                             string nextSubject = "";
-                            if(nextClass.Change == null)
+                            if(nextClass != null)
                             {
-                                nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
-                            }
-                            else
-                            {
-                                if(nextClass.Change.ChangeType == "Canceled")
+                                if (nextClass.Change == null)
                                 {
-                                    nextSubject = nextClass.Change.Description;
+                                    nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
                                 }
-                            }
-                            panelStruct.lower = "Další hodina je " + nextSubject;
-                            string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
-                            if (nextRoom != null)
-                            {
-                                panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                                else
+                                {
+                                    if (nextClass.Change.ChangeType == "Canceled")
+                                    {
+                                        nextSubject = nextClass.Change.Description;
+                                    }
+                                }
+                                panelStruct.lower = "Další hodina je " + nextSubject;
+                                string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
+                                if (nextRoom != null)
+                                {
+                                    panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                                }
                             }
                         }
                         else
