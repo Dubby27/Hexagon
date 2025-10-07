@@ -211,9 +211,17 @@ namespace Hexagon
 
                         if(currentClass != null)
                         {
-                            panelStruct.upper = "Právě je";
+                            string? currentRoom = Bakalari.GetTimetableRoom(current, currentClass)?.Abbrev;
+                            if (currentRoom != null)
+                            {
+                                panelStruct.upper = "Právě je v " + currentRoom;
+                            }
+                            else
+                            {
+                                panelStruct.upper = "Právě je";
+                            }
                             panelStruct.title = currentClass.Change != null ? currentClass.Change.ChangeType == "Canceled" ? currentClass.Change.Description :
-                                Bakalari.GetTimetableSubject(current, currentClass).Name : Bakalari.GetTimetableSubject(current, currentClass).Name;
+                            Bakalari.GetTimetableSubject(current, currentClass).Name : Bakalari.GetTimetableSubject(current, currentClass).Name;
                             string nextSubject = "";
                             if(nextClass != null)
                             {
