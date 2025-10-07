@@ -182,9 +182,14 @@ namespace Hexagon
                 {
                     if (DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime) > DateTime.Now)
                     {
-                        panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je:";
+                        panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je";
                         panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description : 
                             Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
+                        string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
+                        if (nextRoom != null)
+                        {
+                            panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                        }
                     }
                     else
                     {
