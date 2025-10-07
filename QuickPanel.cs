@@ -236,11 +236,29 @@ namespace Hexagon
                                         nextSubject = nextClass.Change.Description;
                                     }
                                 }
-                                panelStruct.lower = "Další hodina je " + nextSubject;
                                 string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
-                                if (nextRoom != null)
+                                if (nextSubject == panelStruct.title)
                                 {
-                                    panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                                    //stejna hodina pokracuje
+                                    panelStruct.lower = "Stejný předmět pokračuje příští hodinu";
+                                    if(currentRoom != null && nextRoom != null)
+                                    {
+                                        if(currentRoom != nextRoom)
+                                        {
+                                            panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (nextRoom != null)
+                                    {
+                                        panelStruct.lower = "Další hodina je " + nextSubject + " v " + nextRoom;
+                                    }
+                                    else
+                                    {
+                                        panelStruct.lower = "Další hodina je " + nextSubject;
+                                    }
                                 }
                             }
                         }
