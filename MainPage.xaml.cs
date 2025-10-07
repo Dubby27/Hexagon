@@ -4,10 +4,12 @@ namespace Hexagon
 {
     public partial class MainPage : ContentPage
     {
+        public static MainPage Instance { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
+            Instance = this;
         }
 
         protected override void OnAppearing()
@@ -20,14 +22,31 @@ namespace Hexagon
         {
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
-                await Navigation.PushModalAsync(new LogIn());
+                await Navigation.PushModalAsync(new LogIn()); 
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
                 bool r = await Bakalari.LoadOfflineData();
-                if (r) RefreshQuickPanel();
+                if (r)
+                {
+                    try
+                    {
+                        RefreshQuickPanel();
+                    }
+                    catch
+                    {
+                        //fail
+                    }
+                }
                 await Bakalari.LogInRefresh();
-                RefreshQuickPanel();
+                try
+                {
+                    RefreshQuickPanel();
+                }
+                catch
+                {
+                    //fail
+                }
             }
             if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {

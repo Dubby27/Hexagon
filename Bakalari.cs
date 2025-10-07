@@ -90,6 +90,11 @@ namespace Hexagon
                                     BadImage;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
                                     GoodImage;
+                                if (BadImage)
+                                {
+                                    Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
+                                        false;
+                                }
                             }
                         }
                         catch
@@ -499,6 +504,7 @@ namespace Hexagon
 
             if(a & b & c)
             {
+                MainPage.Instance.RefreshQuickPanel();
                 return true;
             }
             else
