@@ -211,6 +211,7 @@ namespace Hexagon
 
                         if(currentClass != null)
                         {
+                            //POČAS HODINY
                             string? currentRoom = Bakalari.GetTimetableRoom(current, currentClass)?.Abbrev;
                             if (currentRoom != null)
                             {
@@ -246,6 +247,8 @@ namespace Hexagon
                                         if(currentRoom != nextRoom)
                                         {
                                             panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+
+
                                         }
                                     }
                                 }
@@ -261,10 +264,30 @@ namespace Hexagon
                                     }
                                 }
                             }
+                            //
                         }
                         else
                         {
-                            panelStruct.upper = "Je přestávka\nPříští hodina je:";
+                            //PŘESTÁVKA NEBO VOLNÁ HODINA
+                            TimetableAtom? beforeClass = today.Atoms.LastOrDefault((a) => 
+                                DateTime.Parse(Bakalari.GetTimetableHour(current, a).EndTime) < DateTime.Now);
+                            string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
+                            if (nextRoom != null)
+                            {
+                                panelStruct.lower = "v " + nextRoom;
+                            }
+                            if (nextClass.HourId - beforeClass.HourId > 1)
+                            {
+                                //volná hodina
+                                panelStruct.upper = "Je volná hodina\nPříští hodina je";
+                                panelStruct.lower = panelStruct.lower + " o " + Bakalari.GetTimetableHour(current, nextClass)
+                                    .BeginTime;
+                            }
+                            else
+                            {
+                                //prestavka
+                                panelStruct.upper = "Je přestávka\nPříští hodina je";
+                            }
                             string nextSubject = "";
                             if (nextClass.Change == null)
                             {
@@ -277,12 +300,8 @@ namespace Hexagon
                                     nextSubject = nextClass.Change.Description;
                                 }
                             }
-                            string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
-                            if(nextRoom != null)
-                            {
-                                panelStruct.lower = "v " + nextRoom;
-                            }
                             panelStruct.title = nextSubject;
+                            //
                         }
                     }
                 }
