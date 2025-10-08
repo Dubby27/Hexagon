@@ -8,12 +8,15 @@
         <Grid>
             <VerticalStackLayout
                 VerticalOptions="Start"
-                HorizontalOptions="Center">
+                HorizontalOptions="End">
                 <Button
-                    Text="Refresh"
+                    ImageSource="{AppThemeBinding Light=loadingdark.png, Dark=loading.png}"
                     FontFamily="SpaceGrotesk"
                     FontSize="24"
                     TextColor="White"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    Background="Transparent"
                     Clicked="Button_Clicked_1"/>
             </VerticalStackLayout>
 
@@ -64,7 +67,7 @@
                         LineBreakMode="WordWrap"
                         FontSize="48"
                         HorizontalTextAlignment="Center"
-                        Padding="35, 15"/>
+                        Padding="35, 10"/>
                 </Border>
                 <Label
                     x:Name="QuickLower"
