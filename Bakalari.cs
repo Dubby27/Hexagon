@@ -160,6 +160,12 @@ namespace Hexagon
             required public string scope { get; set; }
         }
 
+        public class FailResponse
+        {
+            required public string error { get; set; }
+            required public string error_description { get; set; }
+        }
+
         public class ApiVersionResponse()
         {
             required public string ApiVersion { get; set; }
@@ -442,6 +448,34 @@ namespace Hexagon
             }
             else
             {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                FailResponse? fail = System.Text.Json.JsonSerializer.Deserialize<FailResponse>(responseContent);
+
+                if(fail != null)
+                {
+                    if(fail.error_description == "The specified token is invalid." ||
+                        fail.error_description == "The specified refresh token has already been redeemed.")
+                    {
+                        if (await SecureStorage.GetAsync("Username") != null &&
+                            await SecureStorage.GetAsync("Password") != null)
+                        {
+                            bool r = await LogIn(school, await SecureStorage.GetAsync("Username"), await SecureStorage.GetAsync("Password"));
+                            if (!r)
+                            {
+                                await Shell.Current.Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
+                                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíte zadat své údaje znova." +
+                                    " Pokud povolíte uložení údajů, Hexagon bude vaše přihlášení obnovovat za vás.", "Ok");
+                            }
+                        }
+                        else
+                        {
+                            await Shell.Current.Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
+                            await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíte zadat své údaje znova." +
+                                " Pokud povolíte uložení údajů, Hexagon bude vaše přihlášení obnovovat za vás.", "Ok");
+                        }
+                    }
+                }
+
                 //Error
                 EndTask(false);
                 OnLogInFinished?.Invoke(false);
@@ -499,10 +533,25 @@ namespace Hexagon
         public static async Task<bool> RefreshAll()
         {
             bool a = await RefreshActualTimetable();
+            if (!a)
+            {
+                EndTask(false);
+                return false;
+            }
             bool b = await RefreshNextTimetable();
+            if(!b)
+            {
+                EndTask(false);
+                return false;
+            }
             bool c = await RefreshPermanentTimetable();
+            if(!c)
+            {
+                EndTask(false);
+                return false;
+            }
 
-            if(a & b & c)
+            if (a & b & c)
             {
                 MainPage.Instance.RefreshQuickPanel();
                 return true;
