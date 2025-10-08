@@ -492,10 +492,10 @@ namespace Hexagon
             await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
 
             //init refresh
-            await RefreshAll();
+            bool r = await RefreshAll();
 
-            EndTask(true);
-            OnLogInFinished?.Invoke(true);
+            EndTask(r);
+            OnLogInFinished?.Invoke(r);
         }
 
         public async static Task<bool> ValidateSavedCredentals()
