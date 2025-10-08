@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Hexagon.Screens;
 
 public partial class LogIn : ContentPage
@@ -66,11 +68,16 @@ public partial class LogIn : ContentPage
         }
     }
 
-    public void LoginFinished(bool success)
+    public async void LoginFinished(bool success)
     {
         if(success)
         {
-            Shell.Current.Navigation.PopToRootAsync(true);
+            if (RememberCheck.IsChecked)
+            {
+                _ = SecureStorage.SetAsync("Username", UsernameEntry.Text);
+                _ = SecureStorage.SetAsync("Password", PasswordEntry.Text);
+            }
+            _ = Shell.Current.Navigation.PopToRootAsync(true);
         }
         else
         {

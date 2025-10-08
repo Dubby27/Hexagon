@@ -45,6 +45,18 @@
                 FontFamily="SpaceGrotesk"
                 Placeholder="Heslo"
                 IsPassword="True"/>
+            <HorizontalStackLayout
+                HorizontalOptions="Center">
+                <Label
+                    Text="Zapamatovat údaje"
+                    Margin="5"
+                    VerticalTextAlignment="Center"
+                    FontSize="20"
+                    FontFamily="SpaceGrotesk"/>
+                <CheckBox
+                    x:Name="RememberCheck"
+                    Color="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}"/>
+            </HorizontalStackLayout>
             <Button
                 x:Name="LogInButton"
                 Text="Přihlásit"
