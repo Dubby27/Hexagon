@@ -8,18 +8,15 @@
         <Grid>
             <VerticalStackLayout
                 VerticalOptions="Start"
-                HorizontalOptions="Center">
+                HorizontalOptions="End">
                 <Button
-                    Text="Odhlasit"
+                    ImageSource="{AppThemeBinding Light=loadingdark.png, Dark=loading.png}"
                     FontFamily="SpaceGrotesk"
                     FontSize="24"
                     TextColor="White"
-                    Clicked="Button_Clicked"/>
-                <Button
-                    Text="Refresh"
-                    FontFamily="SpaceGrotesk"
-                    FontSize="24"
-                    TextColor="White"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    Background="Transparent"
                     Clicked="Button_Clicked_1"/>
             </VerticalStackLayout>
 
@@ -35,6 +32,7 @@
                     FontAttributes="Bold"
                     LineBreakMode="WordWrap"
                     FontSize="28"
+                    IsVisible="False"
                     HorizontalTextAlignment="Center"
                     Margin="15,0"/>      
                 <Border
@@ -63,13 +61,13 @@
                     </Border.Shadow>
                     <Label
                         x:Name="QuickTitle"
-                        Text="Je víkend"
+                        Text="Načítání..."
                         FontFamily="SpaceGrotesk"
                         FontAttributes="Bold"
                         LineBreakMode="WordWrap"
                         FontSize="48"
                         HorizontalTextAlignment="Center"
-                        Padding="35, 15"/>
+                        Padding="35, 10"/>
                 </Border>
                 <Label
                     x:Name="QuickLower"
@@ -79,7 +77,10 @@
                     LineBreakMode="WordWrap"
                     FontSize="28"
                     HorizontalTextAlignment="Center"
-                    Margin="15,0"/> 
+                    IsVisible="False"
+                    Margin="15,0"/>
+                <HorizontalStackLayout
+                    x:Name="QuickTimetable"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout
@@ -89,47 +90,44 @@
                 BackgroundColor="{OnIdiom Phone={AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}, 
                 Default={AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}}">
 
-                <ScrollView
-                    Orientation="Horizontal"
-                    HorizontalOptions="Fill"
+                <HorizontalStackLayout
                     VerticalOptions="Fill"
-                    HeightRequest="32">
-                    <HorizontalStackLayout
-                        VerticalOptions="Fill"
-                        HorizontalOptions="Fill">
+                    HorizontalOptions="Fill">   
 
-                        <ActivityIndicator
-                            x:Name="NetworkActivityIndicator"
-                            IsRunning="True"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            WidthRequest="15"
-                            HeightRequest="15"
-                            Margin="10"/>
-                        <Image
-                            x:Name="NetworkBadImage"
-                            Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
-                            WidthRequest="20"
-                            HeightRequest="20"
-                            Margin="5"/>
-                        <Image
-                            x:Name="NetworkGoodImage"
-                            Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
-                            WidthRequest="20"
-                            HeightRequest="20"
-                            Margin="5"/>
-                        <Label
-                            x:Name="NetworkStatusLabel"
-                            Text="Aktualizováno"
-                            FontFamily="SpaceGrotesk"
-                            VerticalTextAlignment="Center"
-                            HorizontalOptions="Fill"
-                            VerticalOptions="Fill"
-                            LineBreakMode="CharacterWrap"
-                            FontSize="18"
-                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Margin="5"/>
-                    </HorizontalStackLayout>
-                </ScrollView>
+                    <ActivityIndicator
+                        x:Name="NetworkActivityIndicator"
+                        IsRunning="True"
+                        Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        WidthRequest="15"
+                        HeightRequest="15"
+                        IsVisible="False"
+                        Margin="10"/>
+                    <Image
+                        x:Name="NetworkBadImage"
+                        Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        IsVisible="False"
+                        Margin="5"/>
+                    <Image
+                        x:Name="NetworkGoodImage"
+                        Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        IsVisible="False"
+                        Margin="5"/>
+                    <Label
+                        x:Name="NetworkStatusLabel"
+                        Text="Aktualizováno"
+                        FontFamily="SpaceGrotesk"
+                        VerticalTextAlignment="Center"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        LineBreakMode="CharacterWrap" 
+                        FontSize="18"
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        Margin="5"/>
+                </HorizontalStackLayout>
             </VerticalStackLayout>
 
             <BoxView

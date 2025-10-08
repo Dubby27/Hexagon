@@ -6,4 +6,23 @@ public partial class User : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        //log out for testing purposes
+        Bakalari.credentials = null;
+        Bakalari.IsSynced = false;
+
+        Bakalari.StatusLabel = "Odhlášen";
+        Bakalari.GoodImage = false;
+        Bakalari.StatusActivity = false;
+        Bakalari.BadImage = true;
+
+        //delete credentials
+        SecureStorage.Remove("LoggedIn");
+        SecureStorage.Remove("School");
+        SecureStorage.Remove("RefreshToken");
+
+        await Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
+    }
 }

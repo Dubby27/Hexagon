@@ -45,6 +45,18 @@
                 FontFamily="SpaceGrotesk"
                 Placeholder="Heslo"
                 IsPassword="True"/>
+            <HorizontalStackLayout
+                HorizontalOptions="Center">
+                <Label
+                    Text="Zapamatovat údaje"
+                    Margin="5"
+                    VerticalTextAlignment="Center"
+                    FontSize="20"
+                    FontFamily="SpaceGrotesk"/>
+                <CheckBox
+                    x:Name="RememberCheck"
+                    Color="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}"/>
+            </HorizontalStackLayout>
             <Button
                 x:Name="LogInButton"
                 Text="Přihlásit"
@@ -68,36 +80,32 @@
             HorizontalOptions="Fill"
             BackgroundColor="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}">
 
-            <ScrollView
-                Orientation="Horizontal"
-                HorizontalScrollBarVisibility="{OnIdiom Phone=Always, Default=Default}"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill"
-                HeightRequest="32">
-                <HorizontalStackLayout
+            <HorizontalStackLayout
                 VerticalOptions="Fill"
                 HorizontalOptions="Fill">
 
-                    <ActivityIndicator
+                <ActivityIndicator
                     x:Name="NetworkActivityIndicator"
                     IsRunning="True"
                     Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     WidthRequest="15"
                     HeightRequest="15"
+                    IsVisible="False"
                     Margin="10"/>
-                    <Image
+                <Image
                     x:Name="NetworkBadImage"
                     Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
                     WidthRequest="20"
                     HeightRequest="20"
                     Margin="5"/>
-                    <Image
+                <Image
                     x:Name="NetworkGoodImage"
                     Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
                     WidthRequest="20"
                     HeightRequest="20"
+                    IsVisible="False"
                     Margin="5"/>
-                    <Label
+                <Label
                     x:Name="NetworkStatusLabel"
                     Text="Aktualizováno"
                     FontFamily="SpaceGrotesk"
@@ -108,8 +116,7 @@
                     FontSize="18"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     Margin="5"/>
-                </HorizontalStackLayout>
-            </ScrollView>
+            </HorizontalStackLayout>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
