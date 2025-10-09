@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Hexagon"
              x:Class="Hexagon.MainPage"
              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=WhiteSmoke, Dark=OffBlack}, Default={AppThemeBinding Light=White, Dark=OffBlack}}">
 
@@ -67,7 +68,11 @@
                         LineBreakMode="WordWrap"
                         FontSize="48"
                         HorizontalTextAlignment="Center"
-                        Padding="35, 10"/>
+                        Padding="35, 10">
+                        <Label.Behaviors>
+                            <local:AutoFontSizeBehavior/>
+                        </Label.Behaviors>
+                    </Label>
                 </Border>
                 <Label
                     x:Name="QuickLower"
