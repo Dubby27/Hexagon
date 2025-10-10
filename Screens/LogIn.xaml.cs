@@ -14,8 +14,16 @@ public partial class LogIn : ContentPage
 
     protected override bool OnBackButtonPressed()
     {
-        // Return true to consume the event and prevent default back navigation
-        return true;
+        if (Bakalari.refreshInvalid)
+        {
+            base.OnBackButtonPressed();
+            return false;
+        }
+        else
+        {
+            // Return true to consume the event and prevent default back navigation
+            return true;
+        }
     }
 
     private void SchoolEntry_Focused(object sender, FocusEventArgs e)

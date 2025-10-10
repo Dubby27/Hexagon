@@ -349,8 +349,19 @@ namespace Hexagon
                         //Error
                         EndTask(false);
                         OnLogInFinished?.Invoke(false);
-                        Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
+                        string r = await response.Content.ReadAsStringAsync();
+                        FailResponse? fail = JsonConvert.DeserializeObject<FailResponse>(r);
+                        if(fail != null)
+                        {
+                            if (fail.error_description == "Špatný login nebo heslo.")
+                            {
+                                Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
                                 " Zkontroluj, jestli máš správně jméno a heslo", "Ok");
+                                return false;
+                            }
+                        }
+
+                        Shell.Current.DisplayAlert("Neznámá chyba", "Server pravděpodobně není dostupný", "Ok");
                         return false;
                     }
                 }
@@ -375,6 +386,7 @@ namespace Hexagon
             }
         }
 
+        public static bool refreshInvalid = false;
         public static async Task<bool> LogInRefresh()
         {
             if (await ValidateSavedCredentals() == false)
@@ -454,16 +466,20 @@ namespace Hexagon
                                 bool r = await LogIn(school, await SecureStorage.GetAsync("Username"), await SecureStorage.GetAsync("Password"));
                                 if (!r)
                                 {
-                                    await Shell.Current.Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
-                                    await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíte zadat své údaje znova." +
-                                        " Pokud povolíte uložení údajů, Hexagon bude vaše přihlášení obnovovat za vás.", "Ok");
+                                    await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
+                                    await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                                        " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                                        "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+                                    refreshInvalid = true;
                                 }
                             }
                             else
                             {
-                                await Shell.Current.Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
-                                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíte zadat své údaje znova." +
-                                    " Pokud povolíte uložení údajů, Hexagon bude vaše přihlášení obnovovat za vás.", "Ok");
+                                await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
+                                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                                    " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                                    "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+                                refreshInvalid = true;
                             }
                         }
                     }
@@ -490,6 +506,7 @@ namespace Hexagon
             await SecureStorage.SetAsync("School", school.ToString());
             Bakalari.school = school;
             await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+            refreshInvalid = false;
 
             //init refresh
             bool r = await RefreshAll();
