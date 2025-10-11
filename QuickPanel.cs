@@ -1,4 +1,5 @@
 ﻿using Markdig.Extensions.Tables;
+using Microsoft.Maui.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,17 +159,10 @@ namespace Hexagon
             }
             else
             {
-                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed", null);
-                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed", null);
-
-                if(lastClass == null)
-                {
-                    lastClass = today.Atoms.LastOrDefault((a) => a.Change.ChangeType != "Removed", null);
-                }
-                if (firstClass == null)
-                {
-                    firstClass = today.Atoms.FirstOrDefault((a) => a.Change.ChangeType != "Removed", null);
-                }
+                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed"
+                 || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase), null);
+                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed"
+                 || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase), null);
 
                 if(DateTime.Parse(Bakalari.GetTimetableHour(current, lastClass).EndTime) < DateTime.Now)
                 {
@@ -197,6 +191,7 @@ namespace Hexagon
                         {
                             panelStruct.lower = panelStruct.lower + " v " + nextRoom;
                         }
+                        ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime));
                     }
                     else
                     {
@@ -264,6 +259,7 @@ namespace Hexagon
                                     }
                                 }
                             }
+                            ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, currentClass).EndTime));
                             //
                         }
                         else
@@ -301,6 +297,7 @@ namespace Hexagon
                                 }
                             }
                             panelStruct.title = nextSubject;
+                            ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime));
                             //
                         }
                     }
@@ -318,6 +315,30 @@ namespace Hexagon
             panelStruct.lower = "Pro jistotu zkonroluj web vašich Bakalářů";
 
             return panelStruct;
+        }
+
+        public static IDispatcherTimer autoRefreshTimer;
+
+        public static void ScheduleQuickPanelRefresh(DateTime dateTime)
+        {
+            if(autoRefreshTimer != null)
+            {
+                autoRefreshTimer.Stop();
+            }
+
+            var dispatcher = Application.Current?.Dispatcher;
+            IDispatcherTimer? timer = dispatcher?.CreateTimer();
+            if (timer != null)
+            {
+                timer.Interval = dateTime - DateTime.Now;
+                timer.Tick += (s, e) =>
+                {
+                    MainPage.RefreshQuickPanelExt();
+                    timer.Stop();
+                };
+                timer.Start();
+                autoRefreshTimer = timer;
+            }
         }
     }
 }
