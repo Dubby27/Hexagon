@@ -203,10 +203,10 @@ namespace Hexagon
                         TimetableAtom? currentClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
                             DateTime.Parse(Bakalari.GetTimetableHour(current, a).EndTime) > DateTime.Now &&
 
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""), null);
+                            (a.Change == null || a.Change.Description != null || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)), null);
 
                         TimetableAtom? nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != ""), null
+                            (a.Change == null || a.Change.Description != null || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)), null
                             );
 
                         if(currentClass != null)
@@ -232,7 +232,7 @@ namespace Hexagon
                                 }
                                 else
                                 {
-                                    if (nextClass.Change.ChangeType == "Canceled")
+                                    if (nextClass.Change.ChangeType == "Canceled" && !nextClass.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         nextSubject = nextClass.Change.Description;
                                     }
@@ -295,7 +295,7 @@ namespace Hexagon
                             }
                             else
                             {
-                                if (nextClass.Change.ChangeType == "Canceled")
+                                if (nextClass.Change.ChangeType == "Canceled" && !nextClass.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     nextSubject = nextClass.Change.Description;
                                 }

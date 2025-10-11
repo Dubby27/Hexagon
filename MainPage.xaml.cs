@@ -6,6 +6,14 @@ namespace Hexagon
     {
         public static MainPage Instance { get; set; }
 
+        public static void RefreshQuickPanelExt()
+        {
+            if(Instance != null)
+            {
+                Instance.StartLoginProcess();
+            }
+        }
+
         public MainPage()
         {
             InitializeComponent();
@@ -50,6 +58,7 @@ namespace Hexagon
             }
             if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
+                await Bakalari.RefreshAll();
                 RefreshQuickPanel();
             }
         }

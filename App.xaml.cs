@@ -26,6 +26,11 @@ namespace Hexagon
             {
                 Title = "Hexagon"
             };
+
+            window.Activated += (s, e) =>
+            {
+                Hexagon.MainPage.RefreshQuickPanelExt();
+            };
 #if ANDROID
             Current.RequestedThemeChanged += (s, a) =>
             {
