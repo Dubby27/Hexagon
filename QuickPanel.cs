@@ -100,7 +100,7 @@ namespace Hexagon
                 if (nextDay.DayType == "WorkDay")
                 {
                     panelStruct.lower = "Rozvrh na " + PrintDayOfWeek(DateTime.Parse(nextDay.Date).DayOfWeek) + ":";
-                    panelStruct.timetable = TimetableRenderer.Render(nextTimetable, nextDay);
+                    panelStruct.timetable = TimetableRenderer.RenderDay(nextTimetable, nextDay);
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace Hexagon
                     if(nextDay != null)
                     {
                         panelStruct.lower = "Rozvrh na " + PrintDayOfWeek(DateTime.Parse(nextDay.Date).DayOfWeek) + ":";
-                        panelStruct.timetable = TimetableRenderer.Render(nextTimetable, nextDay);
+                        panelStruct.timetable = TimetableRenderer.RenderDay(nextTimetable, nextDay);
                     }
                     else
                     {
@@ -176,7 +176,7 @@ namespace Hexagon
                         TimetableDay? nextWorkDay = current.Days.FirstOrDefault((a) => a.DayType == "WorkDay" && current.Days.IndexOf(a) > current.Days.IndexOf(today));
                         panelStruct.title = "Je po škole";
                         panelStruct.lower = "Rozvrh na zítra:";
-                        panelStruct.timetable = TimetableRenderer.Render(current, nextWorkDay);
+                        panelStruct.timetable = TimetableRenderer.RenderDay(current, nextWorkDay);
                     }
                 }
                 else
