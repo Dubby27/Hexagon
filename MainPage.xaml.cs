@@ -84,7 +84,8 @@ namespace Hexagon
             }
             if (panelStruct.timetable != null)
             {
-                QuickTimetable = panelStruct.timetable;
+                QuickTimetable.Clear();
+                QuickTimetable.Add(panelStruct.timetable);
             }
             else
             {

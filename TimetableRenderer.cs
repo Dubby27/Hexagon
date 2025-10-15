@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Maui.Extensions;
+using Microsoft.Maui.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,9 +60,9 @@ namespace Hexagon
                 }
             }
 
+            views = CalculateRenderAtoms(renderAtoms);
 
-
-            return new HorizontalStackLayout();
+            return views;
         }
 
         public static HorizontalStackLayout CalculateRenderAtoms(List<TimetableAtom> atoms)
@@ -68,8 +70,9 @@ namespace Hexagon
             HorizontalStackLayout views = new HorizontalStackLayout();
 
             //TIME HEADER
-            views.Add(CreateTimeHeader(
-                DateTime.Parse(Bakalari.GetTimetableHour(timetable, atoms.First()).BeginTime)));
+            var startHeader = CreateTimeHeader(
+                DateTime.Parse(Bakalari.GetTimetableHour(timetable, atoms.First()).BeginTime));
+            views.Add(startHeader);
             //CELLS
             foreach (TimetableAtom atom in atoms)
             {
@@ -86,18 +89,9 @@ namespace Hexagon
                 WidthRequest = 25,
                 HeightRequest = 100,
                 HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill,
-                Background = new LinearGradientBrush
-                {
-                    StartPoint = new Point(0, 0),
-                    EndPoint = new Point(0, 1),
-                    GradientStops = new GradientStopCollection
-                        {
-                            new GradientStop(Colors.Red, 0),
-                            new GradientStop(Colors.OrangeRed, 1)
-                        }
-                }
+                VerticalOptions = LayoutOptions.Fill
             };
+            startLayout.SetAppTheme(startLayout.Background, HexagonGradient.Light, HexagonGradient.Dark);
 
             return startLayout;
         }
@@ -121,6 +115,41 @@ namespace Hexagon
             views.Add(label);
 
             return views;
+        }
+    }
+
+    internal static class HexagonGradient
+    {
+        public static LinearGradientBrush Light(float up, float down)
+        {
+            Application.Current.Resources.TryGetValue("GradientStart", out object start);
+            Application.Current.Resources.TryGetValue("GradientEnd", out object end);
+            return new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                GradientStops = new GradientStopCollection
+                {
+                    new GradientStop((Color)start, up),
+                    new GradientStop((Color)end, down)
+                }
+            };
+        }
+
+        public static LinearGradientBrush Dark(float up, float down)
+        {
+            Application.Current.Resources.TryGetValue("GradientStartDark", out object start);
+            Application.Current.Resources.TryGetValue("GradientEndDark", out object end);
+            return new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                GradientStops = new GradientStopCollection
+                {
+                    new GradientStop((Color)start, up),
+                    new GradientStop((Color)end, down)
+                }
+            };
         }
     }
 }
