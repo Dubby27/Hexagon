@@ -231,6 +231,10 @@ namespace Hexagon
                                     {
                                         nextSubject = nextClass.Change.Description;
                                     }
+                                    else
+                                    {
+                                        nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
+                                    }
                                 }
                                 string? nextRoom = Bakalari.GetTimetableRoom(current, nextClass)?.Abbrev;
                                 if (nextSubject == panelStruct.title)
