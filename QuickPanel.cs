@@ -50,8 +50,8 @@ namespace Hexagon
                     case "WorkDay":
                         panelStruct = EvaluateWorkDay(today, false);
                         //TESTING
-                        panelStruct.timetable = TimetableRenderer.RenderDay(Bakalari.actualTimetable,
-                            today); break;
+                        panelStruct.timetable = TimetableRenderer.RenderDay(Bakalari.actualTimetable, today);
+                        break;
                     case "Weekend":
                         panelStruct = EvaluateWeekend(WeekendType.Normal, false); break;
                     case "Celebration":

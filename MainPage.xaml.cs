@@ -82,14 +82,12 @@ namespace Hexagon
             {
                 QuickLower.Text = panelStruct.lower;
             }
+            QuickTimetable.IsVisible = panelStruct.timetable != null;
             if (panelStruct.timetable != null)
             {
                 QuickTimetable.Clear();
                 QuickTimetable.Add(panelStruct.timetable);
-            }
-            else
-            {
-                QuickTimetable.IsVisible = false;
+                //QuickTitle.Text = QuickTimetable.Children[0].Background.BackgroundColor.ToString();
             }
         }
 

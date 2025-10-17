@@ -67,7 +67,11 @@ namespace Hexagon
 
         public static HorizontalStackLayout CalculateRenderAtoms(List<TimetableAtom> atoms)
         {
-            HorizontalStackLayout views = new HorizontalStackLayout();
+            HorizontalStackLayout views = new HorizontalStackLayout
+            {
+                Background = new SolidColorBrush(Colors.WhiteSmoke),
+                HorizontalOptions = LayoutOptions.Center
+            };
 
             //TIME HEADER
             var startHeader = CreateTimeHeader(
@@ -82,16 +86,18 @@ namespace Hexagon
             return views;
         }
 
-        public static AbsoluteLayout CreateTimeHeader(DateTime time)
+        public static BindableAbsoluteLayout CreateTimeHeader(DateTime time)
         {
-            AbsoluteLayout startLayout = new AbsoluteLayout
+            BindableAbsoluteLayout startLayout = new BindableAbsoluteLayout
             {
                 WidthRequest = 25,
                 HeightRequest = 100,
                 HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill
+                VerticalOptions = LayoutOptions.Fill,
+                BackgroundColor = Colors.Azure
             };
-            startLayout.SetAppTheme(startLayout.Background, HexagonGradient.Light, HexagonGradient.Dark);
+            //startLayout.SetAppTheme(BindableAbsoluteLayout.BackgroundProperty, 
+            //    HexagonColors.Light(0, 1), HexagonColors.Dark(0, 1));
 
             return startLayout;
         }
@@ -118,7 +124,7 @@ namespace Hexagon
         }
     }
 
-    internal static class HexagonGradient
+    internal static class HexagonColors
     {
         public static LinearGradientBrush Light(float up, float down)
         {
@@ -130,8 +136,8 @@ namespace Hexagon
                 EndPoint = new Point(0, 1),
                 GradientStops = new GradientStopCollection
                 {
-                    new GradientStop((Color)start, up),
-                    new GradientStop((Color)end, down)
+                    new GradientStop(Colors.Blue, up),
+                    new GradientStop(Colors.BlueViolet, down)
                 }
             };
         }
@@ -151,5 +157,38 @@ namespace Hexagon
                 }
             };
         }
+
+        public static Color PanelColor()
+        {
+            return DeviceInfo.Idiom == DeviceIdiom.Phone ?
+                Application.Current.RequestedTheme == AppTheme.Light ?
+                    Colors.White : Colors.WhiteSmoke :
+                Application.Current.RequestedTheme == AppTheme.Light ?
+                    Colors.WhiteSmoke : Colors.Black ;
+        }
     }
+
+    public class BindableAbsoluteLayout : AbsoluteLayout
+    {
+        public static readonly BindableProperty BackgroundProperty =
+            BindableProperty.Create(
+                nameof(Background),
+                typeof(Brush),
+                typeof(BindableAbsoluteLayout),
+                defaultValue: null,
+                propertyChanged: OnBackgroundChanged);
+
+        public Brush Background
+        {
+            get => (Brush)GetValue(BackgroundProperty);
+            set => SetValue(BackgroundProperty, value);
+        }
+
+        private static void OnBackgroundChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var layout = (BindableAbsoluteLayout)bindable;
+            layout.Background = (Brush)newValue; // volá se interní setter v MAUI
+        }
+    }
+
 }
