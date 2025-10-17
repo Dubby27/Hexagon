@@ -2,6 +2,7 @@
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -159,10 +160,10 @@ namespace Hexagon
             }
             else
             {
-                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed"
-                 || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase), null);
-                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed"
-                 || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase), null);
+                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed"
+                 && (a.Change.Description != "" && !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase))), null);
+                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed"
+                 && (a.Change.Description != "" && !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase))), null);
 
                 if(DateTime.Parse(Bakalari.GetTimetableHour(current, lastClass).EndTime) < DateTime.Now)
                 {
@@ -197,11 +198,12 @@ namespace Hexagon
                     {
                         TimetableAtom? currentClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
                             DateTime.Parse(Bakalari.GetTimetableHour(current, a).EndTime) > DateTime.Now &&
-
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)), null);
+                            (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed"
+                 && (a.Change.Description != "" && !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)))), null);
 
                         TimetableAtom? nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)), null
+                            (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed"
+                 && (a.Change.Description != "" && !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)))), null
                             );
 
                         if(currentClass != null)
