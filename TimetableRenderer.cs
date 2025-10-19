@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Maui.Extensions;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Shapes;
+using Microsoft.Maui.Layouts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +15,9 @@ namespace Hexagon
     {
         public static Timetable? timetable;
 
-        public static HorizontalStackLayout RenderDay(Timetable timetable, TimetableDay day)
+        public static View RenderDay(Timetable timetable, TimetableDay day)
         {
-            HorizontalStackLayout views = new HorizontalStackLayout();
+            View views = new HorizontalStackLayout();
             TimetableRenderer.timetable = timetable;
 
             List<TimetableAtom> renderAtoms = new List<TimetableAtom>();
@@ -40,14 +43,14 @@ namespace Hexagon
             //NAJIT VSECHNY OSTATNI
             foreach (TimetableHour hour in timetable.Hours)
             {
-                if(hour.Id > renderAtoms[0].HourId)
+                if (hour.Id > renderAtoms[0].HourId)
                 {
                     TimetableAtom? thisClass = day.Atoms.FirstOrDefault((a) =>
                     a.HourId == hour.Id, null);
                     if (thisClass != null)
                     {
                         renderAtoms.Add(thisClass);
-                        break;
+                        continue;
                     }
                     else
                     {
@@ -60,46 +63,162 @@ namespace Hexagon
                 }
             }
 
+            //ODREZAT PRAZDNE NA KONCI
+            int lastIndex = renderAtoms.FindLastIndex(a => a.HourId != -27);
+            renderAtoms.RemoveRange(lastIndex + 1, renderAtoms.Count - lastIndex - 1);
+
             views = CalculateRenderAtoms(renderAtoms);
 
             return views;
         }
 
-        public static HorizontalStackLayout CalculateRenderAtoms(List<TimetableAtom> atoms)
+        public static View CalculateRenderAtoms(List<TimetableAtom> atoms)
         {
-            HorizontalStackLayout views = new HorizontalStackLayout
+            Shadow shadow = new Shadow
             {
-                Background = new SolidColorBrush(Colors.WhiteSmoke),
-                HorizontalOptions = LayoutOptions.Center
+                Opacity = 0.5f,
+                Offset = new Point(7, 7),
+                Radius = 30
+            };
+            FlexLayout views = new FlexLayout
+            {
+                Background = new SolidColorBrush(HexagonColors.PanelColor()),
+                Wrap = FlexWrap.Wrap,
+                Direction = FlexDirection.Row,
+                HorizontalOptions = LayoutOptions.Center,
+                AlignContent = FlexAlignContent.Center,
+                Padding = 5
+            };
+            Border border = new Border
+            {
+                StrokeShape = new RoundRectangle
+                {
+                    CornerRadius = 10
+                },
+                StrokeThickness = 0,
+                Background = new SolidColorBrush(HexagonColors.PanelColor()),
+                Content = views,
+                Shadow = shadow
             };
 
             //TIME HEADER
             var startHeader = CreateTimeHeader(
-                DateTime.Parse(Bakalari.GetTimetableHour(timetable, atoms.First()).BeginTime));
+                DateTime.Parse(Bakalari.GetTimetableHour(timetable, atoms.First()).BeginTime), false);
             views.Add(startHeader);
             //CELLS
             foreach (TimetableAtom atom in atoms)
             {
-
+                CreateAtomCell(atom);
+                views.Add(CreateAtomCell(atom));
             }
+            //TIME HEADER
+            var endHeader = CreateTimeHeader(
+                DateTime.Parse(Bakalari.GetTimetableHour(timetable, atoms.Last()).EndTime), true);
+            views.Add(endHeader);
 
-            return views;
+            return border;
         }
 
-        public static BindableAbsoluteLayout CreateTimeHeader(DateTime time)
+        public static View CreateTimeHeader(DateTime time, bool isEnd)
         {
-            BindableAbsoluteLayout startLayout = new BindableAbsoluteLayout
+            BindableHorizontalLayout startLayout = new BindableHorizontalLayout
             {
                 WidthRequest = 25,
                 HeightRequest = 100,
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill,
-                BackgroundColor = Colors.Azure
+                Margin = 1
             };
-            //startLayout.SetAppTheme(BindableAbsoluteLayout.BackgroundProperty, 
-            //    HexagonColors.Light(0, 1), HexagonColors.Dark(0, 1));
+            Border border = new Border
+            {
+                StrokeShape = new RoundRectangle
+                {
+                    CornerRadius = isEnd ? new CornerRadius(0, 10, 0, 10) :
+                                          new CornerRadius(10, 0, 10, 0)
+                },
+                StrokeThickness = 0,
+                Background = new SolidColorBrush(HexagonColors.PanelColor()),
+                Content = startLayout
+            }; 
+            AbsoluteLayout insideLayout = new AbsoluteLayout
+            {
+                WidthRequest = 25,
+                HeightRequest = 100,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            Label timeLabel = new Label
+            {
+                Text = time.ToString("H:mm"),
+                FontFamily = "SpaceGrotesk",
+                FontAttributes = FontAttributes.Bold,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+                FontSize = 16,
+                Rotation = isEnd ? 90 : -90,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            startLayout.Add(insideLayout);
+            insideLayout.SetLayoutBounds(timeLabel, new Rect(0.5, 0.5, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
+            insideLayout.SetLayoutFlags(timeLabel, AbsoluteLayoutFlags.PositionProportional);
+            insideLayout.Add(timeLabel);
+            startLayout.SetAppTheme(BindableHorizontalLayout.BackgroundProperty,
+                HexagonColors.Light(BoolToFloat(!isEnd), BoolToFloat(isEnd)), HexagonColors.Dark(BoolToFloat(!isEnd), BoolToFloat(isEnd)));
 
-            return startLayout;
+            return border;
+        }
+
+        static float BoolToFloat(bool val)
+        {
+            return val ? 1f : 0f;
+        }
+
+        public static BindableHorizontalLayout CreateAtomCell(TimetableAtom atom)
+        {
+            BindableHorizontalLayout cellLayout = new BindableHorizontalLayout
+            {
+                WidthRequest = 75,
+                HeightRequest = 100,
+                Margin = 1
+            };
+            Grid insideLayout = new Grid
+            {
+                WidthRequest = 75,
+                HeightRequest = 100,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill
+            };
+            Label subjectLabel = new Label
+            {
+                Text = Bakalari.GetTimetableSubject(timetable, atom)?.Abbrev,
+                FontFamily = "SpaceGrotesk",
+                FontAttributes = FontAttributes.Bold,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+                FontSize = 24,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            Label teacherLabel = new Label
+            {
+                Text = atom.Theme,
+                FontFamily = "SpaceGrotesk",
+                FontAttributes = FontAttributes.Bold,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.End,
+                LineBreakMode = LineBreakMode.NoWrap,
+                FontSize = 16,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            cellLayout.Add(insideLayout);
+            insideLayout.Add(subjectLabel);
+            insideLayout.Add(teacherLabel);
+            cellLayout.SetAppTheme(BindableHorizontalLayout.BackgroundProperty,
+                HexagonColors.BackgroundColor(), HexagonColors.BackgroundColor());
+
+            return cellLayout;
         }
 
         public static HorizontalStackLayout GenerateError()
@@ -162,23 +281,33 @@ namespace Hexagon
         {
             return DeviceInfo.Idiom == DeviceIdiom.Phone ?
                 Application.Current.RequestedTheme == AppTheme.Light ?
-                    Colors.White : Colors.WhiteSmoke :
+                    Colors.White : Colors.Black :
                 Application.Current.RequestedTheme == AppTheme.Light ?
                     Colors.WhiteSmoke : Colors.Black ;
         }
+
+        public static Color BackgroundColor()
+        {
+            Application.Current.Resources.TryGetValue("OffBlack", out object value);
+            return DeviceInfo.Idiom == DeviceIdiom.Phone ?
+                Application.Current.RequestedTheme == AppTheme.Light ?
+                    Colors.WhiteSmoke : Colors.Black :
+                Application.Current.RequestedTheme == AppTheme.Light ?
+                    Colors.White : (Color)value;
+        }
     }
 
-    public class BindableAbsoluteLayout : AbsoluteLayout
+    public class BindableHorizontalLayout : HorizontalStackLayout
     {
         public static readonly BindableProperty BackgroundProperty =
             BindableProperty.Create(
                 nameof(Background),
                 typeof(Brush),
-                typeof(BindableAbsoluteLayout),
+                typeof(BindableHorizontalLayout),
                 defaultValue: null,
                 propertyChanged: OnBackgroundChanged);
 
-        public Brush Background
+        public new Brush Background
         {
             get => (Brush)GetValue(BackgroundProperty);
             set => SetValue(BackgroundProperty, value);
@@ -186,8 +315,18 @@ namespace Hexagon
 
         private static void OnBackgroundChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            var layout = (BindableAbsoluteLayout)bindable;
-            layout.Background = (Brush)newValue; // volá se interní setter v MAUI
+            var layout = (BindableHorizontalLayout)bindable;
+            layout.SetAppBackground((Brush)newValue);
+        }
+
+        private void SetAppBackground(Brush brush)
+        {
+            // Nastavení pozadí pro MAUI 7 (kde Background není bindable)
+#if NET7_0_OR_GREATER
+            base.Background = brush;
+#else
+            this.Background = brush;
+#endif
         }
     }
 

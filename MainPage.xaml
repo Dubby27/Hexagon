@@ -84,8 +84,9 @@
                     HorizontalTextAlignment="Center"
                     IsVisible="False"
                     Margin="15,0"/>
-                <HorizontalStackLayout
-                    x:Name="QuickTimetable"/>
+                <Grid
+                    x:Name="QuickTimetable"
+                    HorizontalOptions="Center"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout
