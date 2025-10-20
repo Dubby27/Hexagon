@@ -86,7 +86,8 @@
                     Margin="15,0"/>
                 <Grid
                     x:Name="QuickTimetable"
-                    HorizontalOptions="Center"/>
+                    HorizontalOptions="Center"
+                    Margin="15,0"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout
