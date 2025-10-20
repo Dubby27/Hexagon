@@ -246,6 +246,11 @@ namespace Hexagon
             return cellLayout;
         }
 
+        public static FontAttributes GetCellTitleAttributes(TimetableAtom atom)
+        {
+            return FontAttributes.Bold;
+        }
+
         public static HorizontalStackLayout GenerateError()
         {
             HorizontalStackLayout views = new HorizontalStackLayout();
