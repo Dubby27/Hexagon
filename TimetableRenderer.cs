@@ -50,7 +50,6 @@ namespace Hexagon
                     if (thisClass != null)
                     {
                         renderAtoms.Add(thisClass);
-                        continue;
                     }
                     else
                     {
@@ -76,8 +75,7 @@ namespace Hexagon
         {
             Shadow shadow = new Shadow
             {
-                Opacity = Application.Current.RequestedTheme == AppTheme.Light ?
-                    0.2f : 0.5f,
+                Opacity = 0.2f,
                 Offset = new Point(9, 9),
                 Radius = 30
             };
@@ -189,57 +187,62 @@ namespace Hexagon
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Fill
             };
-            Label subjectLabel = new Label
+            if(atom.HourId != -27)
             {
-                Text = Bakalari.GetTimetableSubject(timetable, atom)?.Abbrev,
-                FontFamily = "SpaceGrotesk",
-                FontAttributes = FontAttributes.Bold,
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                LineBreakMode = LineBreakMode.NoWrap,
-                FontSize = 24,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
-            };
-            Label teacherLabel = new Label
-            {
-                Text = Bakalari.GetTimetableTeacher(timetable, atom).Abbrev,
-                FontFamily = "SpaceGrotesk",
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                LineBreakMode = LineBreakMode.NoWrap,
-                FontSize = 10,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.End
-            };
-            Label roomLabel = new Label
-            {
-                Text = Bakalari.GetTimetableRoom(timetable, atom).Abbrev,
-                FontFamily = "SpaceGrotesk",
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                LineBreakMode = LineBreakMode.NoWrap,
-                FontSize = 10,
-                HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.Start
-            };
-            List<TimetableGroup> groupList = Bakalari.GetTimetableGroups(timetable, atom);
-            Label groupLabel = new Label
-            {
-                Text = groupList[0].Abbrev + (groupList.Count > 1 ? (" + " + (groupList.Count - 1)) : ""),
-                FontFamily = "SpaceGrotesk",
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                LineBreakMode = LineBreakMode.NoWrap,
-                FontSize = 10,
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.Start
-            };
+                Label subjectLabel = new Label
+                {
+                    Text = Bakalari.GetTimetableSubject(timetable, atom)?.Abbrev,
+                    FontFamily = "SpaceGrotesk",
+                    FontAttributes = GetCellTitleAttributes(atom),
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    FontSize = 24,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                Label teacherLabel = new Label
+                {
+                    Text = Bakalari.GetTimetableTeacher(timetable, atom).Abbrev,
+                    FontFamily = "SpaceGrotesk",
+                    FontAttributes = GetTeacherTitleAttributes(atom),
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    FontSize = 10,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.End
+                };
+                Label roomLabel = new Label
+                {
+                    Text = Bakalari.GetTimetableRoom(timetable, atom).Abbrev,
+                    FontFamily = "SpaceGrotesk",
+                    FontAttributes = GetRoomTitleAttributes(atom),
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    FontSize = 10,
+                    HorizontalOptions = LayoutOptions.End,
+                    VerticalOptions = LayoutOptions.Start
+                };
+                List<TimetableGroup> groupList = Bakalari.GetTimetableGroups(timetable, atom);
+                Label groupLabel = new Label
+                {
+                    Text = groupList[0].Abbrev + (groupList.Count > 1 ? (" + " + (groupList.Count - 1)) : ""),
+                    FontFamily = "SpaceGrotesk",
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    FontSize = 10,
+                    HorizontalOptions = LayoutOptions.Start,
+                    VerticalOptions = LayoutOptions.Start
+                };
+                insideLayout.Add(subjectLabel);
+                insideLayout.Add(teacherLabel);
+                insideLayout.Add(roomLabel);
+                insideLayout.Add(groupLabel);
+            }
             cellLayout.Add(insideLayout);
-            insideLayout.Add(subjectLabel);
-            insideLayout.Add(teacherLabel);
-            insideLayout.Add(roomLabel);
-            insideLayout.Add(groupLabel);
             cellLayout.SetAppTheme(BindableHorizontalLayout.BackgroundProperty,
                 HexagonColors.BackgroundColor(), HexagonColors.BackgroundColor());
 
@@ -248,7 +251,37 @@ namespace Hexagon
 
         public static FontAttributes GetCellTitleAttributes(TimetableAtom atom)
         {
-            return FontAttributes.Bold;
+            if (atom.Change != null && atom.Change.ChangeType == "Added" && atom.Change.ChangeType == "Removed")
+            {
+                return FontAttributes.Italic;
+            }
+            else
+            {
+                return FontAttributes.Bold;
+            }
+        }
+
+        public static FontAttributes GetRoomTitleAttributes(TimetableAtom atom)
+        {
+            if (atom.Change != null && atom.Change.ChangeType == "RoomChanged")
+            {
+                return FontAttributes.Italic;
+            }
+            else
+            {
+                return FontAttributes.None;
+            }
+        }
+        public static FontAttributes GetTeacherTitleAttributes(TimetableAtom atom)
+        {
+            if (atom.Change != null && atom.Change.ChangeType == "Substitution")
+            {
+                return FontAttributes.Italic;
+            }
+            else
+            {
+                return FontAttributes.None;
+            }
         }
 
         public static HorizontalStackLayout GenerateError()
