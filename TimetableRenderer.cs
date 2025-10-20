@@ -76,8 +76,9 @@ namespace Hexagon
         {
             Shadow shadow = new Shadow
             {
-                Opacity = 0.5f,
-                Offset = new Point(7, 7),
+                Opacity = Application.Current.RequestedTheme == AppTheme.Light ?
+                    0.2f : 0.5f,
+                Offset = new Point(9, 9),
                 Radius = 30
             };
             FlexLayout views = new FlexLayout
@@ -202,19 +203,43 @@ namespace Hexagon
             };
             Label teacherLabel = new Label
             {
-                Text = atom.Theme,
+                Text = Bakalari.GetTimetableTeacher(timetable, atom).Abbrev,
                 FontFamily = "SpaceGrotesk",
-                FontAttributes = FontAttributes.Bold,
                 HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.End,
+                VerticalTextAlignment = TextAlignment.Center,
                 LineBreakMode = LineBreakMode.NoWrap,
-                FontSize = 16,
+                FontSize = 10,
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
+                VerticalOptions = LayoutOptions.End
+            };
+            Label roomLabel = new Label
+            {
+                Text = Bakalari.GetTimetableRoom(timetable, atom).Abbrev,
+                FontFamily = "SpaceGrotesk",
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+                FontSize = 10,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Start
+            };
+            List<TimetableGroup> groupList = Bakalari.GetTimetableGroups(timetable, atom);
+            Label groupLabel = new Label
+            {
+                Text = groupList[0].Abbrev + (groupList.Count > 1 ? (" + " + (groupList.Count - 1)) : ""),
+                FontFamily = "SpaceGrotesk",
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+                FontSize = 10,
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start
             };
             cellLayout.Add(insideLayout);
             insideLayout.Add(subjectLabel);
             insideLayout.Add(teacherLabel);
+            insideLayout.Add(roomLabel);
+            insideLayout.Add(groupLabel);
             cellLayout.SetAppTheme(BindableHorizontalLayout.BackgroundProperty,
                 HexagonColors.BackgroundColor(), HexagonColors.BackgroundColor());
 
@@ -255,8 +280,8 @@ namespace Hexagon
                 EndPoint = new Point(0, 1),
                 GradientStops = new GradientStopCollection
                 {
-                    new GradientStop(Colors.Blue, up),
-                    new GradientStop(Colors.BlueViolet, down)
+                    new GradientStop((Color)start, up),
+                    new GradientStop((Color)end, down)
                 }
             };
         }

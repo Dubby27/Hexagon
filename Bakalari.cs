@@ -769,6 +769,21 @@ namespace Hexagon
         {
             return table.Rooms.FirstOrDefault((a) => a.Id == atom.RoomId, null);
         }
+
+        public static TimetableTeacher? GetTimetableTeacher(Timetable table, TimetableAtom atom)
+        {
+            return table.Teachers.FirstOrDefault((a) => a.Id == atom.TeacherId, null);
+        }
+
+        public static List<TimetableGroup>? GetTimetableGroups(Timetable table, TimetableAtom atom)
+        {
+            List<TimetableGroup> list = new List<TimetableGroup>();
+            foreach(string groupId in atom.GroupIds)
+            {
+                list.Add(table.Groups.FirstOrDefault((a) => a.Id == groupId, null));
+            }
+            return list;
+        }
     }
 
     //Timetable classes
