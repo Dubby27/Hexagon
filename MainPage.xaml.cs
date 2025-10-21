@@ -20,12 +20,6 @@ namespace Hexagon
             Instance = this;
         }
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            StartLoginProcess();
-        }
-
         public async void StartLoginProcess()
         {
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
@@ -93,8 +87,14 @@ namespace Hexagon
 
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
-            await Bakalari.RefreshAll();
-            RefreshQuickPanel();
+            if(Bakalari.TaskCount == 0)
+            {
+                Button button = (Button)sender;
+                button.IsVisible = false;
+                await Bakalari.RefreshAll();
+                RefreshQuickPanel();
+                button.IsVisible = true;
+            }
         }
     }
 }

@@ -407,7 +407,7 @@ namespace Hexagon
                 Application.Current.RequestedTheme == AppTheme.Light ?
                     Colors.White : Colors.Black :
                 Application.Current.RequestedTheme == AppTheme.Light ?
-                    Colors.WhiteSmoke : Colors.Black ;
+                    Colors.White : Colors.Black ;
         }
 
         public static Color BackgroundColor()
@@ -417,7 +417,7 @@ namespace Hexagon
                 Application.Current.RequestedTheme == AppTheme.Light ?
                     Colors.WhiteSmoke : Colors.Black :
                 Application.Current.RequestedTheme == AppTheme.Light ?
-                    Colors.White : (Color)value;
+                    Colors.WhiteSmoke : (Color)value;
         }
     }
 
