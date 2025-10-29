@@ -95,10 +95,38 @@ namespace Hexagon
             }
 
             //find next day
+            Timetable currentTimetable = usePermanent ? Bakalari.permanentTimetable : Bakalari.actualTimetable;
             Timetable nextTimetable = usePermanent ? Bakalari.permanentTimetable : Bakalari.nextTimetable;
             TimetableDay nextDay = nextTimetable.Days[0];
 
-            if(nextDay != null)
+            if(type != WeekendType.Normal)
+            {
+                //try to find next workday in current timetable first
+                nextDay = currentTimetable.Days[0];
+                if (nextDay != null)
+                {
+                    if (nextDay.DayType == "WorkDay")
+                    {
+                        panelStruct.lower = "Rozvrh na " + PrintDayOfWeek(DateTime.Parse(nextDay.Date).DayOfWeek) + ":";
+                        panelStruct.timetable = TimetableRenderer.RenderDay(currentTimetable, nextDay);
+                        return panelStruct;
+                    }
+                    else
+                    {
+                        nextDay = currentTimetable.Days.FirstOrDefault((a) => a.DayType == "WorkDay", null);
+                        if (nextDay != null)
+                        {
+                            panelStruct.lower = "Rozvrh na " + PrintDayOfWeek(DateTime.Parse(nextDay.Date).DayOfWeek) + ":";
+                            panelStruct.timetable = TimetableRenderer.RenderDay(currentTimetable, nextDay);
+                            return panelStruct;
+                        }
+                    }
+                }
+            }
+
+            nextDay = nextTimetable.Days[0];
+
+            if (nextDay != null)
             {
                 if (nextDay.DayType == "WorkDay")
                 {
