@@ -136,15 +136,15 @@ namespace Hexagon
                 case DayOfWeek.Tuesday:
                     return "úterý";
                 case DayOfWeek.Wednesday:
-                    return "středa";
+                    return "středu";
                 case DayOfWeek.Thursday:
                     return "čtvrtek";
                 case DayOfWeek.Friday:
                     return "pátek";
                 case DayOfWeek.Saturday:
-                    return "sobota";
+                    return "sobotu";
                 case DayOfWeek.Sunday:
-                    return "neděle";
+                    return "neděli";
                 default:
                     return "pondělí";
             }
