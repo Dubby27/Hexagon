@@ -213,15 +213,47 @@ namespace Hexagon
                 {
                     if (DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime) > DateTime.Now)
                     {
-                        panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je";
-                        panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
-                            Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
-                        string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
-                        if (nextRoom != null)
+                        //PŘED HODINAMI
+                        if(firstClass == today.Atoms[0])
                         {
-                            panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                            panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je";
+                            panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
+                                Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
+                            string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
+                            if (nextRoom != null)
+                            {
+                                panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                            }
+                            ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime));
                         }
-                        ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime));
+                        else
+                        {
+                            if(firstClass.HourId - today.Atoms[0].HourId > 1)
+                            {
+                                //je víc volných hodin
+                                if (firstClass.HourId - today.Atoms[0].HourId > 4)
+                                {
+                                    panelStruct.upper = "Prvních " + (firstClass.HourId - today.Atoms[0].HourId) + " hodin je zrušeno, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
+                                }
+                                else
+                                {
+                                    panelStruct.upper = "První " + (firstClass.HourId - today.Atoms[0].HourId) + " hodiny jsou zrušeny, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
+                                }
+                            }
+                            else
+                            {
+                                //je jedna volná hodina
+                                panelStruct.upper = "První hodina je zrušená, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
+                            }
+                            panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
+                                Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
+                            string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
+                            if (nextRoom != null)
+                            {
+                                panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                            }
+                            ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime));
+                        }
                     }
                     else
                     {
