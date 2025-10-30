@@ -330,6 +330,10 @@ namespace Hexagon
                                 {
                                     nextSubject = nextClass.Change.Description;
                                 }
+                                else
+                                {
+                                    nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
+                                }
                             }
                             panelStruct.title = nextSubject;
                             ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime));
