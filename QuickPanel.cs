@@ -2,6 +2,7 @@
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -190,12 +191,10 @@ namespace Hexagon
             }
             else
             {
-                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed"
-                 || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase), null);
-                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => a.Change == null || a.Change.ChangeType != "Canceled" || a.Change.ChangeType != "Removed"
-                 || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase), null);
+                TimetableAtom? lastClass = today.Atoms.LastOrDefault((a) => (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
+                TimetableAtom? firstClass = today.Atoms.FirstOrDefault((a) => (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
 
-                if(DateTime.Parse(Bakalari.GetTimetableHour(current, lastClass).EndTime) < DateTime.Now)
+                if (DateTime.Parse(Bakalari.GetTimetableHour(current, lastClass).EndTime) < DateTime.Now)
                 {
                     TimetableDay? lastDay = current.Days.LastOrDefault((a) => a.DayType == "WorkDay");
                     if(lastDay == today)
@@ -215,7 +214,7 @@ namespace Hexagon
                     if (DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime) > DateTime.Now)
                     {
                         panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je";
-                        panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description : 
+                        panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
                             Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
                         string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
                         if (nextRoom != null)
@@ -228,14 +227,12 @@ namespace Hexagon
                     {
                         TimetableAtom? currentClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) < DateTime.Now &&
                             DateTime.Parse(Bakalari.GetTimetableHour(current, a).EndTime) > DateTime.Now &&
-
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)), null);
+                            (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
 
                         TimetableAtom? nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
-                            (a.Change == null || a.Change.Description != null || a.Change.Description != "" || !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)), null
-                            );
+                            (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
 
-                        if(currentClass != null)
+                        if (currentClass != null)
                         {
                             //POČAS HODINY
                             string? currentRoom = Bakalari.GetTimetableRoom(current, currentClass)?.Abbrev;
