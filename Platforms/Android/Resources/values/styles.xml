@@ -4,4 +4,7 @@
 		<item name="android:windowSplashScreenBackground">@color/colorPrimary</item>
 		<item name="android:windowLightStatusBar">true</item>
 	</style>
+	<style name="LaunchTheme" parent="Theme.AppCompat">
+		<item name="android:windowBackground">@drawable/splash_screen_night</item>
+	</style>
 </resources>

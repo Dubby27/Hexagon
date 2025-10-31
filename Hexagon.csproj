@@ -69,6 +69,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\splash_screen.xml" />
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\splash_screen_night.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
 	</ItemGroup>
 
