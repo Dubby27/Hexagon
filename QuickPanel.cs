@@ -306,8 +306,6 @@ namespace Hexagon
                                         if(currentRoom != nextRoom)
                                         {
                                             panelStruct.lower = panelStruct.lower + " v " + nextRoom;
-
-
                                         }
                                     }
                                 }
@@ -322,6 +320,12 @@ namespace Hexagon
                                         panelStruct.lower = "Další hodina je " + nextSubject;
                                     }
                                 }
+                            }
+                            else
+                            {
+                                //POSLEDNI HODINA
+                                panelStruct.lower = "Toto je poslední hodina";
+                                //
                             }
                             ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, currentClass).EndTime));
                             //
