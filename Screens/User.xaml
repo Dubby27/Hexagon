@@ -1,16 +1,46 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Hexagon.User">
+             x:Class="Hexagon.User"
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=WhiteSmoke, Dark=OffBlack}, Default={AppThemeBinding Light=White, Dark=OffBlack}}">
     <Grid>
-        <Button
-            Text="Odhlasit"
-            FontFamily="SpaceGrotesk"
-            FontSize="24"
-            TextColor="White"
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Clicked="Button_Clicked"/>
+        <Border
+            StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10"/>
+            </Border.StrokeShape>
+            
+            <VerticalStackLayout
+                VerticalOptions="Start"
+                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
+                Padding="5,5">
+                <VerticalStackLayout.Shadow>
+                    <Shadow
+                        Radius="30"
+                        Opacity="0.2"
+                        Offset="9,9"/>
+                </VerticalStackLayout.Shadow>
+
+                <Label
+                    x:Name="UserName"
+                    Text="UserName"
+                    FontFamily="SpaceGrotesk"
+                    FontAttributes="Bold"
+                    LineBreakMode="WordWrap"
+                    FontSize="48"
+                    HorizontalTextAlignment="Center"
+                    Padding="35, 10"/>
+                <Button
+                    Text="Odhlasit"
+                    FontFamily="SpaceGrotesk"
+                    FontSize="24"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Clicked="Button_Clicked"/>
+            </VerticalStackLayout>
+        </Border>
         <VerticalStackLayout
             x:Name="NetworkStatusBar"
             VerticalOptions="{OnIdiom Phone=Start, Default=End}"
@@ -57,5 +87,16 @@
                     Margin="5"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>
+        
+        <BoxView
+            HeightRequest="1"
+            VerticalOptions="End"
+            BackgroundColor="{AppThemeBinding Light=LightGray, Dark=Black}"
+            IsVisible="{OnIdiom Phone=True, Default=False}">
+            <BoxView.Shadow>
+                <Shadow
+                    Radius="30"/>
+            </BoxView.Shadow>
+        </BoxView>
     </Grid>
 </ContentPage>
