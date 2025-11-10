@@ -175,7 +175,7 @@ namespace Hexagon
             required public string BaseUrl { get; set; }
         }
 
-        public static async Task<bool> LoadOfflineData()
+        public static async Task<bool> LoadOfflineTimetables()
         {
             if(await SecureStorage.GetAsync("LoggedIn") == "true")
             {
@@ -211,14 +211,33 @@ namespace Hexagon
                     }
                     permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
                         await SecureStorage.GetAsync("PermanentTimetable"));
-                    userData = JsonConvert.DeserializeObject<UserData>(
-                        await SecureStorage.GetAsync("UserData"));
                     return true;
                 }
                 catch
                 {
                     Shell.Current.DisplayAlert("Chyba získávání dat", "Tohle by se mělo spravit samo. " +
                         "Pokud problém přetrvává, zkus se odhlásit a přihlásit znovu.", "Ok");
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> LoadOfflineData()
+        {
+            if (await SecureStorage.GetAsync("LoggedIn") == "true")
+            {
+                try
+                {
+                    userData = JsonConvert.DeserializeObject<UserData>(
+                        await SecureStorage.GetAsync("UserData"));
+                    return true;
+                }
+                catch
+                {
                     return false;
                 }
             }

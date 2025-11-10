@@ -5,23 +5,22 @@
              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=WhiteSmoke, Dark=OffBlack}, Default={AppThemeBinding Light=White, Dark=OffBlack}}">
     <Grid>
         <Border
-            StrokeThickness="0">
+            StrokeThickness="0"
+            BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
+            VerticalOptions="Center"
+            HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+            Padding="5,5">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="10"/>
             </Border.StrokeShape>
-            
-            <VerticalStackLayout
-                VerticalOptions="Start"
-                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
-                BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
-                Padding="5,5">
-                <VerticalStackLayout.Shadow>
-                    <Shadow
-                        Radius="30"
-                        Opacity="0.2"
-                        Offset="9,9"/>
-                </VerticalStackLayout.Shadow>
+            <Border.Shadow>
+                <Shadow
+                    Radius="30"
+                    Opacity="0.2"
+                    Offset="9,9"/>
+            </Border.Shadow>
 
+            <VerticalStackLayout>
                 <Label
                     x:Name="UserName"
                     Text="UserName"
@@ -30,15 +29,25 @@
                     LineBreakMode="WordWrap"
                     FontSize="48"
                     HorizontalTextAlignment="Center"
-                    Padding="35, 10"/>
+                    Padding="5"/>
+                <Label
+                    x:Name="SchoolURL"
+                    Text="SchoolURL"
+                    FontFamily="SpaceGrotesk"
+                    FontAttributes="Bold"
+                    LineBreakMode="WordWrap"
+                    FontSize="24"
+                    HorizontalTextAlignment="Center"
+                    Padding="5"/>
                 <Button
-                    Text="Odhlasit"
+                    Text="Odhlásit"
                     FontFamily="SpaceGrotesk"
                     FontSize="24"
-                    TextColor="White"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
-                    Clicked="Button_Clicked"/>
+                    Clicked="Button_Clicked"
+                    Margin="5"/>
             </VerticalStackLayout>
         </Border>
         <VerticalStackLayout

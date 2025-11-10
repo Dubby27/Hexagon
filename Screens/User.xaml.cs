@@ -9,6 +9,7 @@ public partial class User : ContentPage
         try
         {
             UserName.Text = Bakalari.userData.FullName;
+            SchoolURL.Text = Bakalari.school.ToString();
         }
         catch { }
 	}
