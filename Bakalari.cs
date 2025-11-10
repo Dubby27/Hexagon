@@ -16,6 +16,7 @@ namespace Hexagon
     {
         public static HttpClient client = new HttpClient();
         public static LoginResponse? credentials;
+        public static UserData? userData;
 
         //Task Management
         public static int TaskCount = 0;
@@ -210,6 +211,8 @@ namespace Hexagon
                     }
                     permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
                         await SecureStorage.GetAsync("PermanentTimetable"));
+                    userData = JsonConvert.DeserializeObject<UserData>(
+                        await SecureStorage.GetAsync("UserData"));
                     return true;
                 }
                 catch
@@ -549,6 +552,16 @@ namespace Hexagon
         public static Uri school;
         public static async Task<bool> RefreshAll()
         {
+            UserData? u = await GetUserData();
+            if (u == null)
+            {
+                EndTask(false);
+                return false;
+            }
+            else
+            {
+                userData = u;
+            }
             bool a = await RefreshActualTimetable();
             if (!a)
             {
@@ -769,6 +782,69 @@ namespace Hexagon
         {
             return table.Rooms.FirstOrDefault((a) => a.Id == atom.RoomId, null);
         }
+
+        //user data
+        public static async Task<UserData?> GetUserData()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return null;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return null;
+            }
+
+            Uri uri = new(school + "/api/3/user");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_user", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return null;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                UserData? dataResponse = JsonConvert.DeserializeObject<UserData>(responseBody);
+                if (dataResponse is not null)
+                {
+                    await SecureStorage.SetAsync("UserData", responseBody);
+                    EndTask(true);
+                    return dataResponse;
+                }
+                else
+                {
+                    EndTask(false);
+                    return null;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return null;
+            }
+
+            return null;
+        }
+    }
+
+    //User class
+    public class UserData
+    {
+        public string UserUID { get; set; } = "";
+        public string FullName { get; set; } = "";
+        public string UserType { get; set; } = "";
     }
 
     //Timetable classes

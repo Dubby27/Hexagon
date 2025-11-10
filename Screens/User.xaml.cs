@@ -5,6 +5,12 @@ public partial class User : ContentPage
 	public User()
 	{
 		InitializeComponent();
+
+        try
+        {
+            UserName.Text = Bakalari.userData.FullName;
+        }
+        catch { }
 	}
 
     private async void Button_Clicked(object sender, EventArgs e)
