@@ -32,4 +32,12 @@ public partial class User : ContentPage
 
         await Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
     }
+
+    private void Button_Clicked_1(object sender, EventArgs e)
+    {
+        Shell.Current.DisplayAlert("Pokroèilé informace:",
+            "UserUID: " + Bakalari.userData.UserUID + ", " +
+            "Je Rodiè: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
+            "Zavøít");
+    }
 }

@@ -39,15 +39,27 @@
                     FontSize="24"
                     HorizontalTextAlignment="Center"
                     Padding="5"/>
-                <Button
-                    Text="Odhlásit"
-                    FontFamily="SpaceGrotesk"
-                    FontSize="24"
-                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Clicked="Button_Clicked"
-                    Margin="5"/>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <Button
+                        Text="Odhlásit"
+                        FontFamily="SpaceGrotesk"
+                        FontSize="24"
+                        TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="Button_Clicked"
+                        Margin="5"/>
+                    <Button
+                        Text="Info"
+                        FontFamily="SpaceGrotesk"
+                        FontSize="24"
+                        TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="Button_Clicked_1"
+                        Margin="5"/>
+                </HorizontalStackLayout>
             </VerticalStackLayout>
         </Border>
         <VerticalStackLayout
