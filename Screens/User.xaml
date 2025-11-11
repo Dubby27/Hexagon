@@ -71,7 +71,7 @@
 
             <HorizontalStackLayout
                 VerticalOptions="Fill"
-                HorizontalOptions="Fill">   
+                HorizontalOptions="Fill">
 
                 <ActivityIndicator
                     x:Name="NetworkActivityIndicator"
@@ -107,8 +107,20 @@
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     Margin="5"/>
             </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Label
+                    Text="Podrobné hlášení procesu "
+                    FontFamily="SpaceGrotesk"
+                    VerticalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    FontSize="18"/>
+                <Switch
+                    x:Name="ProcessDetailSwitch"
+                    ThumbColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    BackgroundColor="{OnIdiom Phone={AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}}"/>
+            </HorizontalStackLayout>
         </VerticalStackLayout>
-        
+
         <BoxView
             HeightRequest="1"
             VerticalOptions="End"
