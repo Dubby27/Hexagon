@@ -5,8 +5,9 @@
         android:width="215dp"
         android:height="105dp"
         android:gravity="center">
+		<!--
 		<bitmap
             android:src="@drawable/appicon.svg"
-            android:gravity="fill"/>
+            android:gravity="fill"/>-->
 	</item>
 </layer-list>
