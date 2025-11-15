@@ -26,7 +26,7 @@
                 </Border.Shadow>
 
                 <VerticalStackLayout
-                    Padding="10">
+                    Padding="15, 10, 15, 15">
                     <Label
                         x:Name="UserName"
                         Text="UserName"
@@ -40,11 +40,11 @@
                         x:Name="SchoolURL"
                         Text="SchoolURL"
                         FontFamily="SpaceGrotesk"
-                        FontAttributes="Bold"
                         LineBreakMode="WordWrap"
-                        FontSize="24"
+                        FontSize="20"
                         HorizontalTextAlignment="Center"
-                        Padding="5"/>
+                        Padding="5"
+                        Margin="5, 0, 5, 10"/>
                     <HorizontalStackLayout
                         HorizontalOptions="Center">
                         <Button
