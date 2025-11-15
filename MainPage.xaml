@@ -92,6 +92,7 @@
 
             <VerticalStackLayout
                 x:Name="NetworkStatusBar"
+                MaximumHeightRequest="32"
                 VerticalOptions="{OnIdiom Phone=Start, Default=End}"
                 HorizontalOptions="Fill"
                 BackgroundColor="{OnIdiom Phone={AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}, 

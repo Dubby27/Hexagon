@@ -16,11 +16,13 @@ namespace Hexagon
     {
         public static HttpClient client = new HttpClient();
         public static LoginResponse? credentials;
+        public static UserData? userData;
 
         //Task Management
         public static int TaskCount = 0;
         public static bool IsSynced = false;
         public static List<IDispatcherTimer> RunningTimers = new List<IDispatcherTimer>();
+        public static bool ProcessDetails = false;
 
         public static string StatusLabel = "";
         public static bool StatusActivity = false;
@@ -60,33 +62,48 @@ namespace Hexagon
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage") != null)
                             {
-                                if (TaskCount > 1)
+                                if (ProcessDetails)
                                 {
-                                    if (TaskCount == 2)
+                                    if (TaskCount > 1)
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                        if (TaskCount == 2)
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                        }
+                                        else
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                        }
                                     }
                                     else
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                        if (TaskCount == 0)
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                        }
+                                        else
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + "...";
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    if (TaskCount == 0)
+                                    if (TaskCount > 0)
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = "Synchronizace...";
                                     }
                                     else
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + "...";
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
                                     }
                                 }
+
                                 Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
-                                    StatusActivity;
+                                        StatusActivity;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
                                     BadImage;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
@@ -174,7 +191,7 @@ namespace Hexagon
             required public string BaseUrl { get; set; }
         }
 
-        public static async Task<bool> LoadOfflineData()
+        public static async Task<bool> LoadOfflineTimetables()
         {
             if(await SecureStorage.GetAsync("LoggedIn") == "true")
             {
@@ -216,6 +233,27 @@ namespace Hexagon
                 {
                     Shell.Current.DisplayAlert("Chyba získávání dat", "Tohle by se mělo spravit samo. " +
                         "Pokud problém přetrvává, zkus se odhlásit a přihlásit znovu.", "Ok");
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> LoadOfflineData()
+        {
+            if (await SecureStorage.GetAsync("LoggedIn") == "true")
+            {
+                try
+                {
+                    userData = JsonConvert.DeserializeObject<UserData>(
+                        await SecureStorage.GetAsync("UserData"));
+                    return true;
+                }
+                catch
+                {
                     return false;
                 }
             }
@@ -549,6 +587,16 @@ namespace Hexagon
         public static Uri school;
         public static async Task<bool> RefreshAll()
         {
+            UserData? u = await GetUserData();
+            if (u == null)
+            {
+                EndTask(false);
+                return false;
+            }
+            else
+            {
+                userData = u;
+            }
             bool a = await RefreshActualTimetable();
             if (!a)
             {
@@ -784,6 +832,69 @@ namespace Hexagon
             }
             return list;
         }
+
+        //user data
+        public static async Task<UserData?> GetUserData()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return null;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return null;
+            }
+
+            Uri uri = new(school + "/api/3/user");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_user", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return null;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                UserData? dataResponse = JsonConvert.DeserializeObject<UserData>(responseBody);
+                if (dataResponse is not null)
+                {
+                    await SecureStorage.SetAsync("UserData", responseBody);
+                    EndTask(true);
+                    return dataResponse;
+                }
+                else
+                {
+                    EndTask(false);
+                    return null;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return null;
+            }
+
+            return null;
+        }
+    }
+
+    //User class
+    public class UserData
+    {
+        public string UserUID { get; set; } = "";
+        public string FullName { get; set; } = "";
+        public string UserType { get; set; } = "";
     }
 
     //Timetable classes

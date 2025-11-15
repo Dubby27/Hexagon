@@ -22,13 +22,18 @@ namespace Hexagon
 
         public async void StartLoginProcess()
         {
+            try
+            {
+                Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
+            }
+            catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
                 await Navigation.PushModalAsync(new LogIn()); 
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
-                bool r = await Bakalari.LoadOfflineData();
+                bool r = await Bakalari.LoadOfflineTimetables();
                 if (r)
                 {
                     try
@@ -40,6 +45,7 @@ namespace Hexagon
                         //fail
                     }
                 }
+                await Bakalari.LoadOfflineData();
                 await Bakalari.LogInRefresh();
                 try
                 {
