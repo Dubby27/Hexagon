@@ -1,89 +1,151 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Hexagon.MainPage">
+             xmlns:local="clr-namespace:Hexagon"
+             x:Class="Hexagon.MainPage"
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=WhiteSmoke, Dark=OffBlack}, Default={AppThemeBinding Light=White, Dark=OffBlack}}">
 
     <ScrollView>
         <Grid>
             <VerticalStackLayout
                 VerticalOptions="Start"
-                HorizontalOptions="Center">
-                <HorizontalStackLayout
-                    HorizontalOptions="Center">
-                    <Label
-                        x:Name="StatusTitle"
-                        Text="Aktualizováno"
-                        HorizontalTextAlignment="Center"
-                        FontFamily="SpaceGrotesk"/>
-                </HorizontalStackLayout>
-                <Label
-                    x:Name="StatusDescription"
-                    Text="před 3 minutami"
-                    FontFamily="SpaceGrotesk"/>
+                HorizontalOptions="End">
                 <Button
-                    Text="Odhlasit"
+                    ImageSource="{AppThemeBinding Light=loadingdark.png, Dark=loading.png}"
                     FontFamily="SpaceGrotesk"
                     FontSize="24"
                     TextColor="White"
-                    Clicked="Button_Clicked"/>
-                <Button
-                    Text="Refresh"
-                    FontFamily="SpaceGrotesk"
-                    FontSize="24"
-                    TextColor="White"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    Background="Transparent"
                     Clicked="Button_Clicked_1"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout
+                x:Name="QuickPanel"
+                VerticalOptions="Center"
+                HorizontalOptions="Center">
+
+                <Label
+                    x:Name="QuickUpper"
+                    Text="QuickUpper"
+                    FontFamily="SpaceGrotesk"
+                    FontAttributes="Bold"
+                    LineBreakMode="WordWrap"
+                    FontSize="28"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center"
+                    Margin="15,0"/>      
+                <Border
+                    Margin="20,5"
+                    StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="90"/>
+                    </Border.StrokeShape>
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
+                            <GradientStop Color="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}" Offset="0" />
+                            <GradientStop Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Shadow>
+                        <Shadow Opacity="0.5"
+                                Offset="7,7"
+                                Radius="30">
+                            <Shadow.Brush>
+                                <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
+                                    <GradientStop Color="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}" Offset="0" />
+                                    <GradientStop Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}" Offset="1" />
+                                </LinearGradientBrush>
+                            </Shadow.Brush>
+                        </Shadow>
+                    </Border.Shadow>
+                    <Label
+                        x:Name="QuickTitle"
+                        Text="Načítání..."
+                        FontFamily="SpaceGrotesk"
+                        FontAttributes="Bold"
+                        LineBreakMode="WordWrap"
+                        FontSize="48"
+                        HorizontalTextAlignment="Center"
+                        Padding="35, 10">
+                        <Label.Behaviors>
+                            <local:AutoFontSizeBehavior/>
+                        </Label.Behaviors>
+                    </Label>
+                </Border>
+                <Label
+                    x:Name="QuickLower"
+                    Text="QuickLower"
+                    FontFamily="SpaceGrotesk"
+                    FontAttributes="Bold"
+                    LineBreakMode="WordWrap"
+                    FontSize="28"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="False"
+                    Margin="15,0"/>
+                <HorizontalStackLayout
+                    x:Name="QuickTimetable"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout
                 x:Name="NetworkStatusBar"
+                MaximumHeightRequest="32"
                 VerticalOptions="{OnIdiom Phone=Start, Default=End}"
                 HorizontalOptions="Fill"
                 BackgroundColor="{OnIdiom Phone={AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}, 
                 Default={AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}}">
 
-                <ScrollView
-                    Orientation="Horizontal"
-                    HorizontalScrollBarVisibility="{OnIdiom Phone=Always, Default=Default}"
-                    HorizontalOptions="Fill"
+                <HorizontalStackLayout
                     VerticalOptions="Fill"
-                    HeightRequest="32">
-                    <HorizontalStackLayout
-                        VerticalOptions="Fill"
-                        HorizontalOptions="Fill">
+                    HorizontalOptions="Fill">   
 
-                        <ActivityIndicator
-                            x:Name="NetworkActivityIndicator"
-                            IsRunning="True"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            WidthRequest="15"
-                            HeightRequest="15"
-                            Margin="10"/>
-                        <Image
-                            x:Name="NetworkBadImage"
-                            Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
-                            WidthRequest="20"
-                            HeightRequest="20"
-                            Margin="5"/>
-                        <Image
-                            x:Name="NetworkGoodImage"
-                            Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
-                            WidthRequest="20"
-                            HeightRequest="20"
-                            Margin="5"/>
-                        <Label
-                            x:Name="NetworkStatusLabel"
-                            Text="Aktualizováno"
-                            FontFamily="SpaceGrotesk"
-                            VerticalTextAlignment="Center"
-                            HorizontalOptions="Fill"
-                            VerticalOptions="Fill"
-                            LineBreakMode="CharacterWrap"
-                            FontSize="18"
-                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Margin="5"/>
-                    </HorizontalStackLayout>
-                </ScrollView>
+                    <ActivityIndicator
+                        x:Name="NetworkActivityIndicator"
+                        IsRunning="True"
+                        Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        WidthRequest="15"
+                        HeightRequest="15"
+                        IsVisible="False"
+                        Margin="10"/>
+                    <Image
+                        x:Name="NetworkBadImage"
+                        Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        IsVisible="False"
+                        Margin="5"/>
+                    <Image
+                        x:Name="NetworkGoodImage"
+                        Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        IsVisible="False"
+                        Margin="5"/>
+                    <Label
+                        x:Name="NetworkStatusLabel"
+                        Text="Aktualizováno"
+                        FontFamily="SpaceGrotesk"
+                        VerticalTextAlignment="Center"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        LineBreakMode="CharacterWrap" 
+                        FontSize="18"
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        Margin="5"/>
+                </HorizontalStackLayout>
             </VerticalStackLayout>
+
+            <BoxView
+                HeightRequest="1"
+                VerticalOptions="End"
+                BackgroundColor="{AppThemeBinding Light=LightGray, Dark=Black}"
+                IsVisible="{OnIdiom Phone=True, Default=False}">
+                <BoxView.Shadow>
+                    <Shadow
+                        Radius="30"/>
+                </BoxView.Shadow>
+            </BoxView>
         </Grid>
     </ScrollView>
 

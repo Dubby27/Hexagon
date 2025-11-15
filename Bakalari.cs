@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,11 +16,13 @@ namespace Hexagon
     {
         public static HttpClient client = new HttpClient();
         public static LoginResponse? credentials;
+        public static UserData? userData;
 
         //Task Management
         public static int TaskCount = 0;
         public static bool IsSynced = false;
         public static List<IDispatcherTimer> RunningTimers = new List<IDispatcherTimer>();
+        public static bool ProcessDetails = false;
 
         public static string StatusLabel = "";
         public static bool StatusActivity = false;
@@ -58,37 +62,57 @@ namespace Hexagon
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage") != null)
                             {
-                                if (TaskCount > 1)
+                                if (ProcessDetails)
                                 {
-                                    if (TaskCount == 2)
+                                    if (TaskCount > 1)
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                        if (TaskCount == 2)
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                        }
+                                        else
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                        }
                                     }
                                     else
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                        if (TaskCount == 0)
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                        }
+                                        else
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + "...";
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    if (TaskCount == 0)
+                                    if (TaskCount > 0)
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = "Synchronizace...";
                                     }
                                     else
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + "...";
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
                                     }
                                 }
+
                                 Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
-                                    StatusActivity;
+                                        StatusActivity;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
                                     BadImage;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
                                     GoodImage;
+                                if (BadImage)
+                                {
+                                    Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
+                                        false;
+                                }
                             }
                         }
                         catch
@@ -127,6 +151,21 @@ namespace Hexagon
                     StatusLabel = "Dokončování úkolů";
                 }
             }
+            else
+            {
+                if (result)
+                {
+                    StatusActivity = false;
+                    GoodImage = true;
+                    StatusLabel = "Aktualizováno";
+                }
+                else
+                {
+                    StatusActivity = false;
+                    BadImage = true;
+                    StatusLabel = "Offline";
+                }
+            }
         }
 
         //Log In
@@ -139,11 +178,119 @@ namespace Hexagon
             required public string scope { get; set; }
         }
 
+        public class FailResponse
+        {
+            required public string error { get; set; }
+            required public string error_description { get; set; }
+        }
+
         public class ApiVersionResponse()
         {
             required public string ApiVersion { get; set; }
             required public string ApplicationVersion { get; set; }
             required public string BaseUrl { get; set; }
+        }
+
+        public static async Task<bool> LoadOfflineTimetables()
+        {
+            if(await SecureStorage.GetAsync("LoggedIn") == "true")
+            {
+                try
+                {
+                    if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("ActualValid")), DateTime.Today))
+                    {
+                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("ActualTimetable"));
+                    }
+                    else if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today))
+                    {
+                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("NextTimetable"));
+                    }
+                    else
+                    {
+                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("PermanentTimetable"));
+                        Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
+                            " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
+                    }
+
+                    if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))
+                    {
+                        nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("NextTimetable"));
+                    }
+                    else
+                    {
+                        nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                            await SecureStorage.GetAsync("PermanentTimetable"));
+                    }
+                    permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
+                        await SecureStorage.GetAsync("PermanentTimetable"));
+                    return true;
+                }
+                catch
+                {
+                    Shell.Current.DisplayAlert("Chyba získávání dat", "Tohle by se mělo spravit samo. " +
+                        "Pokud problém přetrvává, zkus se odhlásit a přihlásit znovu.", "Ok");
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> LoadOfflineData()
+        {
+            if (await SecureStorage.GetAsync("LoggedIn") == "true")
+            {
+                try
+                {
+                    userData = JsonConvert.DeserializeObject<UserData>(
+                        await SecureStorage.GetAsync("UserData"));
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        static bool IsSameIsoWeek(DateTime d1, DateTime d2)
+        {
+            (int year1, int week1) = GetIsoWeekAndYear(d1);
+            (int year2, int week2) = GetIsoWeekAndYear(d2);
+
+            return year1 == year2 && week1 == week2;
+        }
+
+        static (int isoYear, int isoWeek) GetIsoWeekAndYear(DateTime date)
+        {
+            // ISO 8601: používá pondělí jako první den týdne a pravidlo "FirstFourDayWeek"
+            var cal = CultureInfo.InvariantCulture.Calendar;
+            var weekRule = CalendarWeekRule.FirstFourDayWeek;
+            var firstDayOfWeek = DayOfWeek.Monday;
+
+            int week = cal.GetWeekOfYear(date, weekRule, firstDayOfWeek);
+
+            // Rok ISO týdne nemusí být stejný jako rok kalendářní
+            int year = date.Year;
+
+            // Oprava přelomů: poslední dny prosince mohou patřit do týdne příštího roku
+            if (week == 1 && date.Month == 12)
+                year++;
+            // první dny ledna mohou patřit do posledního týdne minulého roku
+            else if (week >= 52 && date.Month == 1)
+                year--;
+
+            return (year, week);
         }
 
         public static async Task<bool> LogIn(Uri school, string user, string pass)
@@ -152,7 +299,17 @@ namespace Hexagon
             Uri checkUri = new Uri(school, "/api");
             StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
 
-            HttpResponseMessage response = await client.GetAsync(checkUri);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(checkUri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -182,7 +339,16 @@ namespace Hexagon
                     StartTask("log_in", "Přihlašování uživatele " + user + " na " + loginUri.OriginalString);
 
                     HttpContent content = new StringContent("client_id=ANDR&grant_type=password&username=" + user + "&password=" + pass, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    response = await client.PostAsync(loginUri, content);
+                    try
+                    {
+                        response = await client.PostAsync(loginUri, content);
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        EndTask(false);
+                        OnLogInFinished?.Invoke(false);
+                        return false;
+                    }
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -221,8 +387,19 @@ namespace Hexagon
                         //Error
                         EndTask(false);
                         OnLogInFinished?.Invoke(false);
-                        Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
+                        string r = await response.Content.ReadAsStringAsync();
+                        FailResponse? fail = JsonConvert.DeserializeObject<FailResponse>(r);
+                        if(fail != null)
+                        {
+                            if (fail.error_description == "Špatný login nebo heslo.")
+                            {
+                                Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
                                 " Zkontroluj, jestli máš správně jméno a heslo", "Ok");
+                                return false;
+                            }
+                        }
+
+                        Shell.Current.DisplayAlert("Neznámá chyba", "Server pravděpodobně není dostupný", "Ok");
                         return false;
                     }
                 }
@@ -247,6 +424,7 @@ namespace Hexagon
             }
         }
 
+        public static bool refreshInvalid = false;
         public static async Task<bool> LogInRefresh()
         {
             if (await ValidateSavedCredentals() == false)
@@ -260,8 +438,17 @@ namespace Hexagon
             Uri checkUri = new(school, relativeUri:"/api");
             StartTask("endpoint_check", "Kontaktování " + checkUri.OriginalString);
 
-            HttpResponseMessage response = await client.GetAsync(checkUri);
-
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(checkUri);
+            }
+            catch(HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
             if (response.IsSuccessStatusCode)
             {
                 //OK
@@ -272,7 +459,16 @@ namespace Hexagon
                 StartTask("log_in", "Přihlašování uživatele pomocí refresh tokenu na " + loginUri.OriginalString);
 
                 HttpContent content = new StringContent("client_id=ANDR&grant_type=refresh_token&refresh_token=" + await SecureStorage.GetAsync("RefreshToken"), Encoding.UTF8, "application/x-www-form-urlencoded");
-                response = await client.PostAsync(loginUri, content);
+                try
+                {
+                    response = await client.PostAsync(loginUri, content);
+                }
+                catch (HttpRequestException ex)
+                {
+                    EndTask(false);
+                    OnLogInFinished?.Invoke(false);
+                    return false;
+                }
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -294,6 +490,38 @@ namespace Hexagon
                 }
                 else
                 {
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    FailResponse? fail = System.Text.Json.JsonSerializer.Deserialize<FailResponse>(responseContent);
+
+                    if (fail != null)
+                    {
+                        if (fail.error_description == "The specified refresh token is invalid." ||
+                            fail.error_description == "The specified refresh token has already been redeemed.")
+                        {
+                            if (await SecureStorage.GetAsync("Username") != null &&
+                                await SecureStorage.GetAsync("Password") != null)
+                            {
+                                bool r = await LogIn(school, await SecureStorage.GetAsync("Username"), await SecureStorage.GetAsync("Password"));
+                                if (!r)
+                                {
+                                    await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
+                                    await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                                        " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                                        "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+                                    refreshInvalid = true;
+                                }
+                            }
+                            else
+                            {
+                                await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
+                                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                                    " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                                    "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+                                refreshInvalid = true;
+                            }
+                        }
+                    }
+
                     //Error
                     EndTask(false);
                     OnLogInFinished?.Invoke(false);
@@ -316,12 +544,13 @@ namespace Hexagon
             await SecureStorage.SetAsync("School", school.ToString());
             Bakalari.school = school;
             await SecureStorage.SetAsync("RefreshToken", credentials.refresh_token);
+            refreshInvalid = false;
 
             //init refresh
-            await RefreshAll();
+            bool r = await RefreshAll();
 
-            EndTask(true);
-            OnLogInFinished?.Invoke(true);
+            EndTask(r);
+            OnLogInFinished?.Invoke(r);
         }
 
         public async static Task<bool> ValidateSavedCredentals()
@@ -358,10 +587,45 @@ namespace Hexagon
         public static Uri school;
         public static async Task<bool> RefreshAll()
         {
-            await RefreshActualTimetable();
-            await RefreshNextTimetable();
-            await RefreshPermanentTimetable();
-            return true;
+            UserData? u = await GetUserData();
+            if (u == null)
+            {
+                EndTask(false);
+                return false;
+            }
+            else
+            {
+                userData = u;
+            }
+            bool a = await RefreshActualTimetable();
+            if (!a)
+            {
+                EndTask(false);
+                return false;
+            }
+            bool b = await RefreshNextTimetable();
+            if(!b)
+            {
+                EndTask(false);
+                return false;
+            }
+            bool c = await RefreshPermanentTimetable();
+            if(!c)
+            {
+                EndTask(false);
+                return false;
+            }
+
+            if (a & b & c)
+            {
+                MainPage.Instance.RefreshQuickPanel();
+                return true;
+            }
+            else
+            {
+                EndTask(false);
+                return false;
+            }
         }
 
         public static Timetable actualTimetable;
@@ -386,7 +650,17 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_actual_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -396,6 +670,8 @@ namespace Hexagon
                 {
                     actualTimetable = timetableResponse;
                     await SecureStorage.SetAsync("ActualTimetable", responseBody);
+                    DateTime validUntil = DateTime.Today;
+                    await SecureStorage.SetAsync("ActualValid", validUntil.ToLongDateString());
                     EndTask(true);
                 }
                 else
@@ -430,7 +706,17 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_next_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -440,6 +726,8 @@ namespace Hexagon
                 {
                     nextTimetable = timetableResponse;
                     await SecureStorage.SetAsync("NextTimetable", responseBody);
+                    DateTime validUntil = DateTime.Today.AddDays(7);
+                    await SecureStorage.SetAsync("NextValid", validUntil.ToLongDateString());
                     EndTask(true);
                 }
                 else
@@ -474,7 +762,17 @@ namespace Hexagon
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
 
             StartTask("get_perma_timetable", "Přenášení dat z " + uri.OriginalString);
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -503,6 +801,85 @@ namespace Hexagon
 
         //Callbacks
         public static Action<bool> OnLogInFinished;
+
+        //Timetable Getters
+        public static TimetableHour? GetTimetableHour(Timetable table, TimetableAtom atom)
+        {
+            return table.Hours.FirstOrDefault((a) => a.Id == atom.HourId, null);
+        }
+
+        public static TimetableSubject? GetTimetableSubject(Timetable table, TimetableAtom atom)
+        {
+            return table.Subjects.FirstOrDefault((a) => a.Id == atom.SubjectId, null);
+        }
+
+        public static TimetableRoom? GetTimetableRoom(Timetable table, TimetableAtom atom)
+        {
+            return table.Rooms.FirstOrDefault((a) => a.Id == atom.RoomId, null);
+        }
+
+        //user data
+        public static async Task<UserData?> GetUserData()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return null;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return null;
+            }
+
+            Uri uri = new(school + "/api/3/user");
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_user", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return null;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                UserData? dataResponse = JsonConvert.DeserializeObject<UserData>(responseBody);
+                if (dataResponse is not null)
+                {
+                    await SecureStorage.SetAsync("UserData", responseBody);
+                    EndTask(true);
+                    return dataResponse;
+                }
+                else
+                {
+                    EndTask(false);
+                    return null;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return null;
+            }
+
+            return null;
+        }
+    }
+
+    //User class
+    public class UserData
+    {
+        public string UserUID { get; set; } = "";
+        public string FullName { get; set; } = "";
+        public string UserType { get; set; } = "";
     }
 
     //Timetable classes
@@ -601,5 +978,4 @@ namespace Hexagon
         public List<TimetableRoom> Rooms { get; set; } = new List<TimetableRoom>();
         public List<TimetableCycle> Cycles { get; set; } = new List<TimetableCycle>();
     }
-
 }
