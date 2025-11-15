@@ -28,6 +28,11 @@ namespace Hexagon
 
         public async void StartLoginProcess()
         {
+            try
+            {
+                Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
+            }
+            catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
                 await Navigation.PushModalAsync(new LogIn()); 

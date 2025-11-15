@@ -22,6 +22,7 @@ namespace Hexagon
         public static int TaskCount = 0;
         public static bool IsSynced = false;
         public static List<IDispatcherTimer> RunningTimers = new List<IDispatcherTimer>();
+        public static bool ProcessDetails = false;
 
         public static string StatusLabel = "";
         public static bool StatusActivity = false;
@@ -61,33 +62,48 @@ namespace Hexagon
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage") != null &&
                             Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage") != null)
                             {
-                                if (TaskCount > 1)
+                                if (ProcessDetails)
                                 {
-                                    if (TaskCount == 2)
+                                    if (TaskCount > 1)
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                        if (TaskCount == 2)
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + " a další " + (TaskCount - 1).ToString() + " úkol";
+                                        }
+                                        else
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                        }
                                     }
                                     else
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + " a dalších " + (TaskCount - 1).ToString() + " úkolů";
+                                        if (TaskCount == 0)
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                        }
+                                        else
+                                        {
+                                            Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
+                                            StatusLabel + "...";
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    if (TaskCount == 0)
+                                    if (TaskCount > 0)
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = "Synchronizace...";
                                     }
                                     else
                                     {
-                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text =
-                                        StatusLabel + "...";
+                                        Shell.Current.CurrentPage.FindByName<Label>("NetworkStatusLabel").Text = StatusLabel;
                                     }
                                 }
+
                                 Shell.Current.CurrentPage.FindByName<ActivityIndicator>("NetworkActivityIndicator").IsVisible =
-                                    StatusActivity;
+                                        StatusActivity;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkBadImage").IsVisible =
                                     BadImage;
                                 Shell.Current.CurrentPage.FindByName<Image>("NetworkGoodImage").IsVisible =
