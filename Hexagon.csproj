@@ -63,6 +63,7 @@
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
+		<MauiFont Update="Resources\Fonts\SpaceGrotesk-VariableFont_wght.ttf" Alias="SpaceGrotesk" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -115,6 +116,12 @@
 	    <Generator>MSBuild:UpdateGeneratedFiles</Generator>
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </AndroidResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiFont Update="Resources\Fonts\SpaceGrotesk-VariableFont_wght.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
 	</ItemGroup>
 
 </Project>
