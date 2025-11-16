@@ -123,8 +123,7 @@ namespace Hexagon
             BindableHorizontalLayout startLayout = new BindableHorizontalLayout
             {
                 WidthRequest = 25,
-                HeightRequest = 100,
-                Margin = 1
+                HeightRequest = 100
             };
             Border border = new Border
             {
@@ -135,7 +134,9 @@ namespace Hexagon
                 },
                 StrokeThickness = 0,
                 Background = new SolidColorBrush(HexagonColors.PanelColor()),
-                Content = startLayout
+                Content = startLayout,
+                VerticalOptions = LayoutOptions.Center,
+                Margin = new Thickness(1, 0)
             }; 
             AbsoluteLayout insideLayout = new AbsoluteLayout
             {
