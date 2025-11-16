@@ -161,10 +161,34 @@ namespace Hexagon
             insideLayout.SetLayoutBounds(timeLabel, new Rect(0.5, 0.5, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
             insideLayout.SetLayoutFlags(timeLabel, AbsoluteLayoutFlags.PositionProportional);
             insideLayout.Add(timeLabel);
-            startLayout.SetAppTheme(BindableHorizontalLayout.BackgroundProperty,
-                HexagonColors.Light(BoolToFloat(!isEnd), BoolToFloat(isEnd)), HexagonColors.Dark(BoolToFloat(!isEnd), BoolToFloat(isEnd)));
+            //startLayout.SetAppTheme(BindableHorizontalLayout.BackgroundProperty,
+            //    HexagonColors.Light(BoolToFloat(!isEnd), BoolToFloat(isEnd)), HexagonColors.Dark(BoolToFloat(!isEnd), BoolToFloat(isEnd)));
+            border.SizeChanged += (s, e) => ApplyHeaderTheme(border, isEnd);
+            Application.Current.RequestedThemeChanged += (s, e) => ApplyHeaderTheme(border, isEnd);
+
+            border.Dispatcher.Dispatch(() => ApplyHeaderTheme(border, isEnd));
 
             return border;
+        }
+
+        static void ApplyHeaderTheme(Microsoft.Maui.Controls.View frame, bool isEnd)
+        {
+            Brush brush;
+            if (Application.Current.RequestedTheme == AppTheme.Dark)
+            {
+                brush = HexagonColors.Gradient(true, isEnd);
+            }
+            else
+            {
+                brush = HexagonColors.Gradient(false, isEnd);
+            }
+
+            frame.Dispatcher.Dispatch(() =>
+            {
+                // odstranit a znovu nastavit
+                frame.Background = null;
+                frame.Background = brush;
+            });
         }
 
         static float BoolToFloat(bool val)
@@ -369,35 +393,33 @@ namespace Hexagon
 
     internal static class HexagonColors
     {
-        public static LinearGradientBrush Light(float up, float down)
+        public static LinearGradientBrush Gradient(bool isDarkTheme, bool isEnd)
         {
-            Application.Current.Resources.TryGetValue("GradientStart", out object start);
-            Application.Current.Resources.TryGetValue("GradientEnd", out object end);
-            return new LinearGradientBrush
-            {
-                StartPoint = new Point(0, 0),
-                EndPoint = new Point(0, 1),
-                GradientStops = new GradientStopCollection
-                {
-                    new GradientStop((Color)start, up),
-                    new GradientStop((Color)end, down)
-                }
-            };
-        }
+            isEnd = !isEnd;
 
-        public static LinearGradientBrush Dark(float up, float down)
-        {
-            Application.Current.Resources.TryGetValue("GradientStartDark", out object start);
-            Application.Current.Resources.TryGetValue("GradientEndDark", out object end);
+            // Vybereme správný set barev podle tématu
+            string startKey = isDarkTheme ? "GradientStartDark" : "GradientStart";
+            string endKey = isDarkTheme ? "GradientEndDark" : "GradientEnd";
+
+            Application.Current.Resources.TryGetValue(startKey, out object startRaw);
+            Application.Current.Resources.TryGetValue(endKey, out object endRaw);
+
+            Color startColor = (Color)startRaw;
+            Color endColor = (Color)endRaw;
+
+            // Pokud je "end" strana, obrátíme barvy – ale nikdy ne stop-position!
+            if (isEnd)
+                (startColor, endColor) = (endColor, startColor);
+
             return new LinearGradientBrush
             {
                 StartPoint = new Point(0, 0),
                 EndPoint = new Point(0, 1),
                 GradientStops = new GradientStopCollection
-                {
-                    new GradientStop((Color)start, up),
-                    new GradientStop((Color)end, down)
-                }
+            {
+                new GradientStop(startColor, 0f),
+                new GradientStop(endColor, 1f)
+            }
             };
         }
 
