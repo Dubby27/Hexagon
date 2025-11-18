@@ -61,6 +61,7 @@ namespace Hexagon
                 await Bakalari.RefreshAll();
                 RefreshQuickPanel();
             }
+            QuickTitle.HorizontalTextAlignment = TextAlignment.Center;
         }
 
         public void RefreshQuickPanel()
