@@ -8,7 +8,7 @@
     <ScrollView>
         <Grid>
             <VerticalStackLayout
-                VerticalOptions="Start"
+                VerticalOptions="{OnIdiom Phone=End, Default=Start}"
                 HorizontalOptions="End">
                 <Button
                     ImageSource="{AppThemeBinding Light=loadingdark.png, Dark=loading.png}"
@@ -84,8 +84,10 @@
                     HorizontalTextAlignment="Center"
                     IsVisible="False"
                     Margin="15,0"/>
-                <HorizontalStackLayout
-                    x:Name="QuickTimetable"/>
+                <Grid
+                    x:Name="QuickTimetable"
+                    HorizontalOptions="Center"
+                    Margin="15,0"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout

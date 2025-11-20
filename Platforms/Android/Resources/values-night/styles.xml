@@ -4,4 +4,7 @@
 		<item name="android:windowSplashScreenBackground">@color/colorPrimary</item>
 		<item name="android:windowLightStatusBar">false</item>
 	</style>
+	<style name="LaunchTheme" parent="Maui.SplashTheme">
+		<item name="android:windowBackground">@drawable/splash_screen</item>
+	</style>
 </resources>

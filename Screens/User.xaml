@@ -101,6 +101,27 @@
                             Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
                             CheckedChanged="ProcessDetailSwitch_Toggled"/>
                     </HorizontalStackLayout>
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center">
+                        <Label
+                            Text="Styl rozvrhu "
+                            FontFamily="SpaceGrotesk"
+                            Margin="15"
+                            VerticalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                            FontSize="18"/>
+                        <Picker
+                            x:Name="TimetableStylePicker"
+                            Margin="5"
+                            SelectedIndexChanged="TimetableStylePicker_SelectedIndexChanged">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                  <x:String>Scroll</x:String>
+                                  <x:String>Wrap (Beta)</x:String>
+                                </x:Array>
+                              </Picker.ItemsSource>
+                        </Picker>
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>

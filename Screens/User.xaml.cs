@@ -13,6 +13,7 @@ public partial class User : ContentPage
             UserName.Text = Bakalari.userData.FullName;
             SchoolURL.Text = Bakalari.school.ToString();
             ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
+            TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
         }
         catch { }
 	}
@@ -23,7 +24,7 @@ public partial class User : ContentPage
         Bakalari.credentials = null;
         Bakalari.IsSynced = false;
 
-        Bakalari.StatusLabel = "Odhl·öen";
+        Bakalari.StatusLabel = "Odhl√°≈°en";
         Bakalari.GoodImage = false;
         Bakalari.StatusActivity = false;
         Bakalari.BadImage = true;
@@ -38,15 +39,22 @@ public partial class User : ContentPage
 
     private void Button_Clicked_1(object sender, EventArgs e)
     {
-        Shell.Current.DisplayAlert("PokroËilÈ informace:",
+        Shell.Current.DisplayAlert("Pokro√®il√© informace:",
             "UserUID: " + Bakalari.userData.UserUID + ", " +
-            "Je RodiË: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
-            "Zav¯Ìt");
+            "Je Rodi√®: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
+            "Zav√∏√≠t");
     }
 
     private void ProcessDetailSwitch_Toggled(object sender, CheckedChangedEventArgs e)
     {
         Bakalari.ProcessDetails = e.Value;
         SecureStorage.SetAsync("ProcessDetails", e.Value.ToString());
+    }
+
+    private void TimetableStylePicker_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Bakalari.BetaQuickTimetable = TimetableStylePicker.SelectedIndex == 1;
+        SecureStorage.SetAsync("BetaQuickTimetable", (TimetableStylePicker.SelectedIndex == 1).ToString());
+        MainPage.RefreshOnAppear();
     }
 }

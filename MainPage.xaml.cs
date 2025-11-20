@@ -20,10 +20,20 @@ namespace Hexagon
             Instance = this;
         }
 
+        public static bool refreshOnAppear = false;
+
+        public static void RefreshOnAppear()
+        {
+            refreshOnAppear = true;
+        }
+
         protected override void OnAppearing()
         {
+            if (refreshOnAppear)
+            {
+                StartLoginProcess();
+            }
             base.OnAppearing();
-            StartLoginProcess();
         }
 
         public async void StartLoginProcess()
@@ -31,6 +41,7 @@ namespace Hexagon
             try
             {
                 Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
+                Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
@@ -67,6 +78,7 @@ namespace Hexagon
                 await Bakalari.RefreshAll();
                 RefreshQuickPanel();
             }
+            QuickTitle.HorizontalTextAlignment = TextAlignment.Center;
         }
 
         public void RefreshQuickPanel()
@@ -88,20 +100,25 @@ namespace Hexagon
             {
                 QuickLower.Text = panelStruct.lower;
             }
+            QuickTimetable.IsVisible = panelStruct.timetable != null;
             if (panelStruct.timetable != null)
             {
-                QuickTimetable = panelStruct.timetable;
-            }
-            else
-            {
-                QuickTimetable.IsVisible = false;
+                QuickTimetable.Clear();
+                QuickTimetable.Add(panelStruct.timetable);
+                //QuickTitle.Text = QuickTimetable.Children[0].Background.BackgroundColor.ToString();
             }
         }
 
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
-            await Bakalari.RefreshAll();
-            RefreshQuickPanel();
+            if(Bakalari.TaskCount == 0)
+            {
+                Button button = (Button)sender;
+                button.IsVisible = false;
+                await Bakalari.RefreshAll();
+                RefreshQuickPanel();
+                button.IsVisible = true;
+            }
         }
     }
 }
