@@ -106,7 +106,7 @@ namespace Hexagon
             {
                 if(scroll.DesiredSize.Width < views.DesiredSize.Width)
                 {
-                    scroll.Padding = new Thickness(5, 5, 5, 12);
+                    scroll.Padding = new Thickness(5, 5, 5, DeviceInfo.Platform == DevicePlatform.WinUI ? 12 : 5);
                 }
                 else
                 {
