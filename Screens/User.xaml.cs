@@ -24,7 +24,7 @@ public partial class User : ContentPage
         Bakalari.credentials = null;
         Bakalari.IsSynced = false;
 
-        Bakalari.StatusLabel = "Odhl·öen";
+        Bakalari.StatusLabel = "Odhl√°≈°en";
         Bakalari.GoodImage = false;
         Bakalari.StatusActivity = false;
         Bakalari.BadImage = true;
@@ -39,10 +39,10 @@ public partial class User : ContentPage
 
     private void Button_Clicked_1(object sender, EventArgs e)
     {
-        Shell.Current.DisplayAlert("PokroËilÈ informace:",
+        Shell.Current.DisplayAlert("Pokro√®il√© informace:",
             "UserUID: " + Bakalari.userData.UserUID + ", " +
-            "Je RodiË: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
-            "Zav¯Ìt");
+            "Je Rodi√®: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
+            "Zav√∏√≠t");
     }
 
     private void ProcessDetailSwitch_Toggled(object sender, CheckedChangedEventArgs e)
