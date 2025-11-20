@@ -79,14 +79,30 @@ namespace Hexagon
                 Offset = new Point(9, 9),
                 Radius = 30
             };
-            FlexLayout views = new FlexLayout
+            HorizontalStackLayout views = new HorizontalStackLayout
             {
                 Background = new SolidColorBrush(HexagonColors.PanelColor()),
-                Wrap = FlexWrap.Wrap,
-                Direction = FlexDirection.Row,
+                HorizontalOptions = LayoutOptions.Center
+            };
+            ScrollView scroll = new ScrollView
+            {
                 HorizontalOptions = LayoutOptions.Center,
-                AlignContent = FlexAlignContent.Center,
-                Padding = 5
+                Content = views,
+                Orientation = ScrollOrientation.Horizontal,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Never,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Default,
+                Padding = new Thickness(5, 5, 5, 12)
+            };
+            scroll.SizeChanged += (s, e) =>
+            {
+                if(scroll.DesiredSize.Width < views.DesiredSize.Width)
+                {
+                    scroll.Padding = new Thickness(5, 5, 5, 12);
+                }
+                else
+                {
+                    scroll.Padding = new Thickness(5);
+                }
             };
             Border border = new Border
             {
@@ -96,7 +112,7 @@ namespace Hexagon
                 },
                 StrokeThickness = 0,
                 Background = new SolidColorBrush(HexagonColors.PanelColor()),
-                Content = views,
+                Content = scroll,
                 Shadow = shadow
             };
 
