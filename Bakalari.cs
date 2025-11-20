@@ -18,11 +18,14 @@ namespace Hexagon
         public static LoginResponse? credentials;
         public static UserData? userData;
 
+        //Options
+        public static bool BetaQuickTimetable = false;
+        public static bool ProcessDetails = false;
+
         //Task Management
         public static int TaskCount = 0;
         public static bool IsSynced = false;
         public static List<IDispatcherTimer> RunningTimers = new List<IDispatcherTimer>();
-        public static bool ProcessDetails = false;
 
         public static string StatusLabel = "";
         public static bool StatusActivity = false;

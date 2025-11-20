@@ -13,6 +13,7 @@ public partial class User : ContentPage
             UserName.Text = Bakalari.userData.FullName;
             SchoolURL.Text = Bakalari.school.ToString();
             ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
+            TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
         }
         catch { }
 	}
@@ -48,5 +49,12 @@ public partial class User : ContentPage
     {
         Bakalari.ProcessDetails = e.Value;
         SecureStorage.SetAsync("ProcessDetails", e.Value.ToString());
+    }
+
+    private void TimetableStylePicker_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Bakalari.BetaQuickTimetable = TimetableStylePicker.SelectedIndex == 1;
+        SecureStorage.SetAsync("BetaQuickTimetable", (TimetableStylePicker.SelectedIndex == 1).ToString());
+        MainPage.RefreshOnAppear();
     }
 }

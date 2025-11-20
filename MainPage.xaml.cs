@@ -20,11 +20,28 @@ namespace Hexagon
             Instance = this;
         }
 
+        public static bool refreshOnAppear = false;
+
+        public static void RefreshOnAppear()
+        {
+            refreshOnAppear = true;
+        }
+
+        protected override void OnAppearing()
+        {
+            if (refreshOnAppear)
+            {
+                StartLoginProcess();
+            }
+            base.OnAppearing();
+        }
+
         public async void StartLoginProcess()
         {
             try
             {
                 Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
+                Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")

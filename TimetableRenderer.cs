@@ -79,10 +79,19 @@ namespace Hexagon
                 Offset = new Point(9, 9),
                 Radius = 30
             };
-            HorizontalStackLayout views = new HorizontalStackLayout
+            Layout views = new HorizontalStackLayout
             {
                 Background = new SolidColorBrush(HexagonColors.PanelColor()),
                 HorizontalOptions = LayoutOptions.Center
+            };
+            FlexLayout flexviews = new FlexLayout
+            {
+                Background = new SolidColorBrush(HexagonColors.PanelColor()),
+                Wrap = FlexWrap.Wrap,
+                Direction = FlexDirection.Row,
+                HorizontalOptions = LayoutOptions.Center,
+                AlignContent = FlexAlignContent.Center,
+                Padding = 5
             };
             ScrollView scroll = new ScrollView
             {
@@ -112,9 +121,13 @@ namespace Hexagon
                 },
                 StrokeThickness = 0,
                 Background = new SolidColorBrush(HexagonColors.PanelColor()),
-                Content = scroll,
+                Content = Bakalari.BetaQuickTimetable ? flexviews : scroll,
                 Shadow = shadow
             };
+            if (Bakalari.BetaQuickTimetable)
+            {
+                views = flexviews;
+            }
 
             //TIME HEADER
             var startHeader = CreateTimeHeader(
