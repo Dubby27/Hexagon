@@ -467,7 +467,7 @@ namespace Hexagon
             Application.Current.Resources.TryGetValue("OffBlack", out object value);
             return DeviceInfo.Idiom == DeviceIdiom.Phone ?
                 Application.Current.RequestedTheme == AppTheme.Light ?
-                    Colors.WhiteSmoke : Colors.Black :
+                    Colors.WhiteSmoke : (Color)value :
                 Application.Current.RequestedTheme == AppTheme.Light ?
                     Colors.WhiteSmoke : (Color)value;
         }
