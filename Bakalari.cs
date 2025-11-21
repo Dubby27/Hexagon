@@ -590,6 +590,10 @@ namespace Hexagon
         public static Uri school;
         public static async Task<bool> RefreshAll()
         {
+            if(TaskCount > 0)
+            {
+                return true;
+            }
             UserData? u = await GetUserData();
             if (u == null)
             {

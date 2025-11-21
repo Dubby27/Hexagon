@@ -15,8 +15,8 @@
                     FontFamily="SpaceGrotesk"
                     FontSize="24"
                     TextColor="White"
-                    HeightRequest="24"
-                    WidthRequest="24"
+                    HeightRequest="50"
+                    WidthRequest="50"
                     Background="Transparent"
                     Clicked="Button_Clicked_1"/>
             </VerticalStackLayout>
@@ -141,7 +141,7 @@
             <BoxView
                 HeightRequest="1"
                 VerticalOptions="End"
-                BackgroundColor="{AppThemeBinding Light=LightGray, Dark=Black}"
+                BackgroundColor="{AppThemeBinding Light=LightGray, Dark={StaticResource BackBlack}}"
                 IsVisible="{OnIdiom Phone=True, Default=False}">
                 <BoxView.Shadow>
                     <Shadow

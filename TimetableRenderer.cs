@@ -455,11 +455,12 @@ namespace Hexagon
 
         public static Color PanelColor()
         {
+            Application.Current.Resources.TryGetValue("BackBlack", out object value);
             return DeviceInfo.Idiom == DeviceIdiom.Phone ?
                 Application.Current.RequestedTheme == AppTheme.Light ?
-                    Colors.White : Colors.Black :
+                    Colors.White : (Color)value :
                 Application.Current.RequestedTheme == AppTheme.Light ?
-                    Colors.White : Colors.Black ;
+                    Colors.White : (Color)value;
         }
 
         public static Color BackgroundColor()

@@ -10,7 +10,7 @@
             Margin="5">
             <Border
                 StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
+                BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
                 VerticalOptions="Center"
                 HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
                 Padding="10"
@@ -70,7 +70,7 @@
             </Border>
             <Border
                 StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light=White, Dark=Black}"
+                BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
                 VerticalOptions="Center"
                 HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
                 Padding="10"
@@ -187,7 +187,7 @@
         <BoxView
             HeightRequest="1"
             VerticalOptions="End"
-            BackgroundColor="{AppThemeBinding Light=LightGray, Dark=Black}"
+            BackgroundColor="{AppThemeBinding Light=LightGray, Dark={StaticResource BackBlack}}"
             IsVisible="{OnIdiom Phone=True, Default=False}">
             <BoxView.Shadow>
                 <Shadow
