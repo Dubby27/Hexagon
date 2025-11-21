@@ -118,7 +118,7 @@ namespace Hexagon
                                 }
                             }
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             //ignore
                         }

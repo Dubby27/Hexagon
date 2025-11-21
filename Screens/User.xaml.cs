@@ -4,7 +4,9 @@ namespace Hexagon;
 
 public partial class User : ContentPage
 {
-	public User()
+    bool appearedOnce = false;
+
+    public User()
 	{
 		InitializeComponent();
 
@@ -15,8 +17,27 @@ public partial class User : ContentPage
             ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
             TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
         }
-        catch { }
-	}
+        catch(Exception ex) { }
+
+        appearedOnce = true;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (appearedOnce)
+        {
+            try
+            {
+                UserName.Text = Bakalari.userData.FullName;
+                SchoolURL.Text = Bakalari.school.ToString();
+                ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
+                TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
+            }
+            catch (Exception ex) { }
+        }
+    }
 
     private async void Button_Clicked(object sender, EventArgs e)
     {

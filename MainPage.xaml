@@ -126,7 +126,7 @@
                         Margin="5"/>
                     <Label
                         x:Name="NetworkStatusLabel"
-                        Text="Aktualizováno"
+                        Text="Načítání..."
                         FontFamily="SpaceGrotesk"
                         VerticalTextAlignment="Center"
                         HorizontalOptions="Fill"
