@@ -126,7 +126,7 @@
                         Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
                         Text="Zpětná Vazba"
                         FontFamily="SpaceGrotesk"
-                        FontSize="24"
+                        FontSize="18"
                         TextColor="{AppThemeBinding Light=Black, Dark=White}"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
