@@ -57,4 +57,9 @@ public partial class User : ContentPage
         SecureStorage.SetAsync("BetaQuickTimetable", (TimetableStylePicker.SelectedIndex == 1).ToString());
         MainPage.RefreshOnAppear();
     }
+
+    private void Button_Clicked_2(object sender, EventArgs e)
+    {
+        Browser.Default.OpenAsync("https://forms.gle/Q6Ex43wiMrZVnF9WA");
+    }
 }
