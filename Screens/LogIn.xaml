@@ -30,6 +30,15 @@
                 Placeholder="URL Bakalářů Školy"
                 Focused="SchoolEntry_Focused"
                 Unfocused="SchoolEntry_Unfocused"/>
+            <Button
+                x:Name="SchoolFinderButton"
+                Text="Najít Školu"
+                FontSize="16"
+                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                Margin="5"
+                FontFamily="SpaceGrotesk"
+                Clicked="SchoolFinderButton_Clicked"
+                Background="{AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}"/>
             <Entry
                 x:Name="UsernameEntry"
                 Text=""

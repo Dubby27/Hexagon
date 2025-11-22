@@ -296,6 +296,49 @@ namespace Hexagon
             return (year, week);
         }
 
+        public static List<SchoolListEntry>? schoolList;
+
+        public static async Task<bool> GetSchoolList()
+        {
+            //log in
+            Uri listUrl = new Uri("https://vitskalicky.gitlab.io/bakalari-schools-list/schoolsList.json");
+            StartTask("log_in", "Získávání seznamu na " + listUrl);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(listUrl);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                return false;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    schoolList = System.Text.Json.JsonSerializer.Deserialize<List<SchoolListEntry>>(responseContent);
+                    EndTask(true);
+                    return true;
+                }
+                catch
+                {
+                    //Error
+                    EndTask(false);
+                    return false;
+                }
+            }
+            else
+            {
+                //Error
+                EndTask(false);
+                return false;
+            }
+        }
+
         public static async Task<bool> LogIn(Uri school, string user, string pass)
         {
             //adress check
@@ -394,7 +437,7 @@ namespace Hexagon
                         FailResponse? fail = JsonConvert.DeserializeObject<FailResponse>(r);
                         if(fail != null)
                         {
-                            if (fail.error_description == "Špatný login nebo heslo.")
+                            if (fail.error_description.Contains("Špatný login nebo heslo."))
                             {
                                 Shell.Current.DisplayAlert("Špatné údaje", "Nepodařilo se přihlásit podle zadaných údajů." +
                                 " Zkontroluj, jestli máš správně jméno a heslo", "Ok");
@@ -554,6 +597,7 @@ namespace Hexagon
 
             EndTask(r);
             OnLogInFinished?.Invoke(r);
+            MainPage.RefreshQuickPanelExt();
         }
 
         public async static Task<bool> ValidateSavedCredentals()
@@ -902,6 +946,14 @@ namespace Hexagon
         public string UserUID { get; set; } = "";
         public string FullName { get; set; } = "";
         public string UserType { get; set; } = "";
+    }
+
+    //School list class
+    public class SchoolListEntry
+    {
+        public string name { get; set; } = "";
+        public string url { get; set; } = "";
+        public string id { get; set; } = "";
     }
 
     //Timetable classes

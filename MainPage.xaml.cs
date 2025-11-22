@@ -46,7 +46,7 @@ namespace Hexagon
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
-                await Navigation.PushModalAsync(new LogIn()); 
+                await Shell.Current.Navigation.PushModalAsync(new LogIn()); 
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {

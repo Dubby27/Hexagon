@@ -103,6 +103,9 @@
 	  <MauiXaml Update="Screens\LogIn.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Screens\SchoolFinder.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Screens\User.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

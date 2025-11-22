@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hexagon.Screens.SchoolFinder">
+    <Grid>
+        <Border
+            StrokeThickness="0"
+            BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+            VerticalOptions="Center"
+            HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+            Padding="10"
+            Margin="5">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow
+                    Radius="30"
+                    Opacity="0.2"
+                    Offset="9,9"/>
+            </Border.Shadow>
+
+            <VerticalStackLayout>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <Button
+                        Text="&lt;"
+                        FontFamily="SpaceGrotesk"
+                        FontSize="24"
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Clicked="BackButton_Clicked"
+                        Margin="10"/>
+                    <Label
+                        Text="Vyhledávač Škol"
+                        FontFamily="SpaceGrotesk"
+                        FontAttributes="Bold"
+                        LineBreakMode="WordWrap"
+                        FontSize="36"
+                        HorizontalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        Margin="5"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center"
+                    x:Name="LoadingLayout">
+                    <ActivityIndicator
+                        x:Name="SchoolFinderActivityIndicator"
+                        IsRunning="True"
+                        Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        IsVisible="True"
+                        Margin="15"/>
+                    <Label
+                        x:Name="LoadingLabel"
+                        Text="Získávání seznamu..."
+                        FontFamily="SpaceGrotesk"
+                        LineBreakMode="WordWrap"
+                        FontSize="28"
+                        HorizontalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        Margin="5"/>
+                </HorizontalStackLayout>
+                <Entry
+                    x:Name="SchoolSearchEntry"
+                    Placeholder="Hledat školu..."
+                    FontFamily="SpaceGrotesk"
+                    FontSize="24"
+                    Margin="5"
+                    TextChanged="SchoolSearchEntry_TextChanged"
+                    IsVisible="False"/>
+                <ListView
+                    x:Name="SchoolListView"
+                    IsVisible="False"
+                    Margin="5"
+                    SelectionMode="Single"
+                    ItemSelected="SchoolListView_ItemSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell
+                                Text="{Binding name}"
+                                Detail="{Binding url}"
+                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                DetailColor="{AppThemeBinding Light={StaticResource DarkGray}, Dark={StaticResource LightGray}}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </VerticalStackLayout>
+        </Border>
+        
+        <VerticalStackLayout
+            x:Name="NetworkStatusBar"
+            VerticalOptions="End"
+            HorizontalOptions="Fill"
+            BackgroundColor="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}">
+
+            <HorizontalStackLayout
+                VerticalOptions="Fill"
+                HorizontalOptions="Fill">
+
+                <ActivityIndicator
+                    x:Name="NetworkActivityIndicator"
+                    IsRunning="True"
+                    Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    WidthRequest="15"
+                    HeightRequest="15"
+                    IsVisible="False"
+                    Margin="10"/>
+                <Image
+                    x:Name="NetworkBadImage"
+                    Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    Margin="5"/>
+                <Image
+                    x:Name="NetworkGoodImage"
+                    Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    IsVisible="False"
+                    Margin="5"/>
+                <Label
+                    x:Name="NetworkStatusLabel"
+                    Text="Odhlášen"
+                    FontFamily="SpaceGrotesk"
+                    VerticalTextAlignment="Center"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    LineBreakMode="CharacterWrap"
+                    FontSize="18"
+                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    Margin="5"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -4,12 +4,25 @@ namespace Hexagon.Screens;
 
 public partial class LogIn : ContentPage
 {
-	  public LogIn()
+
+    public string? SchoolURL;
+
+    public LogIn()
 	  {
 	    InitializeComponent();
         NetworkActivityIndicator.IsVisible = false;
         NetworkGoodImage.IsVisible = false;
         NetworkStatusLabel.Text = "Odhlášen";
+      }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if(SchoolURL != null)
+        {
+            SchoolEntry.Text = SchoolURL;
+            SchoolURL = null;
+        }
     }
 
     protected override bool OnBackButtonPressed()
@@ -91,5 +104,10 @@ public partial class LogIn : ContentPage
         {
             //Shell.Current.DisplayAlert("Chyba přihlášení", "Přihlášení se nezdařilo. Zkontroluj, zda máš správně zadanou adresu školy, uživatelské jméno a heslo.", "Ok");
         }
+    }
+
+    private void SchoolFinderButton_Clicked(object sender, EventArgs e)
+    {
+        Shell.Current.Navigation.PushAsync(new SchoolFinder(this));
     }
 }
