@@ -22,7 +22,7 @@
 
             <VerticalStackLayout>
                 <HorizontalStackLayout
-                    HorizontalOptions="Center">
+                    HorizontalOptions="Fill">
                     <Button
                         Text="&lt;"
                         FontFamily="SpaceGrotesk"
@@ -34,6 +34,7 @@
                         Margin="10"/>
                     <Label
                         Text="Vyhledávač Škol"
+                        FontAutoScalingEnabled="True"
                         FontFamily="SpaceGrotesk"
                         FontAttributes="Bold"
                         LineBreakMode="WordWrap"
@@ -81,9 +82,7 @@
                         <DataTemplate>
                             <TextCell
                                 Text="{Binding name}"
-                                Detail="{Binding url}"
-                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                                DetailColor="{AppThemeBinding Light={StaticResource DarkGray}, Dark={StaticResource LightGray}}"/>
+                                Detail="{Binding url}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
