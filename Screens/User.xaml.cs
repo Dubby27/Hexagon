@@ -60,10 +60,10 @@ public partial class User : ContentPage
 
     private void Button_Clicked_1(object sender, EventArgs e)
     {
-        Shell.Current.DisplayAlert("Pokroèilé informace:",
+        Shell.Current.DisplayAlert("Pokročilé informace:",
             "UserUID: " + Bakalari.userData.UserUID + ", " +
-            "Je Rodiè: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
-            "Zavøít");
+            "Je Rodič: " + (Bakalari.userData.UserType == "parents" ? "ano" : "ne"),
+            "Zavřít");
     }
 
     private void ProcessDetailSwitch_Toggled(object sender, CheckedChangedEventArgs e)
@@ -82,5 +82,10 @@ public partial class User : ContentPage
     private void Button_Clicked_2(object sender, EventArgs e)
     {
         Browser.Default.OpenAsync("https://forms.gle/Q6Ex43wiMrZVnF9WA");
+    }
+
+    private void About_Clicked(object sender, EventArgs e)
+    {
+        Shell.Current.Navigation.PushAsync(new Screens.About());
     }
 }

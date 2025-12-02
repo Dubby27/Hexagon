@@ -122,16 +122,29 @@
                               </Picker.ItemsSource>
                         </Picker>
                     </HorizontalStackLayout>
-                    <Button
-                        Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
-                        Text="Zpětná Vazba"
-                        FontFamily="SpaceGrotesk"
-                        FontSize="18"
-                        TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
-                        Clicked="Button_Clicked_2"
-                        Margin="5"/>
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center">
+                        <Button
+                            Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                            Text="Zpětná Vazba"
+                            FontFamily="SpaceGrotesk"
+                            FontSize="18"
+                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Clicked="Button_Clicked_2"
+                            Margin="5"/>
+                        <Button
+                            Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                            Text="O Aplikaci"
+                            FontFamily="SpaceGrotesk"
+                            FontSize="18"
+                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Clicked="About_Clicked"
+                            Margin="5"/>
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>
