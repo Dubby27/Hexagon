@@ -25,8 +25,7 @@ namespace Hexagon
             foreach (TimetableHour hour in timetable.Hours)
             {
                 TimetableAtom? thisClass = day.Atoms.FirstOrDefault((a) =>
-                    a.HourId == hour.Id && a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed"
-                    && a.Change.Description != "" && !a.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase)),
+                    a.HourId == hour.Id && (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")),
                     null);
                 if(thisClass != null )
                 {

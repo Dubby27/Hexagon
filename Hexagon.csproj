@@ -89,6 +89,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
 		<PackageReference Include="Microsoft.Maui.Graphics.Text.Markdig" Version="9.0.110" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="Sentry.Maui" Version="5.16.2" />
 	</ItemGroup>
 
 	<ItemGroup>
