@@ -17,6 +17,7 @@ namespace Hexagon
         public static HttpClient client = new HttpClient();
         public static LoginResponse? credentials;
         public static UserData? userData;
+        public static EventResponse? userEventData;
 
         //Options
         public static bool BetaQuickTimetable = false;
@@ -253,6 +254,8 @@ namespace Hexagon
                 {
                     userData = JsonConvert.DeserializeObject<UserData>(
                         await SecureStorage.GetAsync("UserData"));
+                    userEventData = JsonConvert.DeserializeObject<EventResponse>(
+                        await SecureStorage.GetAsync("UserEventData"));
                     return true;
                 }
                 catch
@@ -648,6 +651,16 @@ namespace Hexagon
             {
                 userData = u;
             }
+            EventResponse? ue = await GetUserEventData();
+            if (u == null)
+            {
+                EndTask(false);
+                return false;
+            }
+            else
+            {
+                userEventData = ue;
+            }
             bool a = await RefreshActualTimetable();
             if (!a)
             {
@@ -938,6 +951,61 @@ namespace Hexagon
 
             return null;
         }
+
+        //events
+        public static async Task<EventResponse?> GetUserEventData()
+        {
+            if (await ValidateSavedCredentals() == false)
+            {
+                return null;
+            }
+            else if (credentials == null)
+            {
+                await LogInRefresh();
+                return null;
+            }
+
+            Uri uri = new(school + "/api/3/events/my?from=" + DateTime.Today.ToString("yyyy-MM-dd"));
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credentials.access_token);
+
+            StartTask("get_user_events", "Přenášení dat z " + uri.OriginalString);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                EndTask(false);
+                OnLogInFinished?.Invoke(false);
+                return null;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                EventResponse? dataResponse = JsonConvert.DeserializeObject<EventResponse>(responseBody);
+                if (dataResponse is not null)
+                {
+                    await SecureStorage.SetAsync("UserEvents", responseBody);
+                    EndTask(true);
+                    return dataResponse;
+                }
+                else
+                {
+                    EndTask(false);
+                    return null;
+                }
+            }
+            else
+            {
+                EndTask(false);
+                return null;
+            }
+
+            return null;
+        }
     }
 
     //User class
@@ -946,6 +1014,35 @@ namespace Hexagon
         public string UserUID { get; set; } = "";
         public string FullName { get; set; } = "";
         public string UserType { get; set; } = "";
+    }
+
+    //Event class
+
+    public class EventResponse
+    {
+        public List<Event> events;
+    }
+
+    public class Event
+    {
+        public string Title;
+        public string Description;
+        public List<EventTime> Times;
+    }
+
+    public class EventTime
+    {
+        public bool WholeDay;
+        public string StartTime;
+        public string EndTime;
+        public EventType EventType;
+    }
+
+    public class EventType
+    {
+        public string Id;
+        public string Abbrev;
+        public string Name;
     }
 
     //School list class

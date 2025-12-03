@@ -300,30 +300,40 @@ namespace Hexagon
                 }
                 else if (atom.Change != null && (atom.Change.ChangeType == "Removed" || atom.Change.ChangeType == "Canceled"))
                 {
-                    Label subjectLabel = new Label
+                    Label subjectLabel = new Label();
+                    Label teacherLabel = new Label();
+                    if (QuickPanel.HasEvent(DateTime.Parse(Bakalari.GetTimetableHour(timetable, atom).BeginTime), 
+                        DateTime.Parse(Bakalari.GetTimetableHour(timetable, atom).EndTime)))
                     {
-                        Text = "X",
-                        FontFamily = "SpaceGrotesk",
-                        FontAttributes = FontAttributes.Bold,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        VerticalTextAlignment = TextAlignment.Center,
-                        LineBreakMode = LineBreakMode.NoWrap,
-                        FontSize = 24,
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
-                    };
-                    Label teacherLabel = new Label
+
+                    }
+                    else
                     {
-                        Text = "Zrušeno",
-                        FontFamily = "SpaceGrotesk",
-                        FontAttributes = FontAttributes.Italic,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        VerticalTextAlignment = TextAlignment.Center,
-                        LineBreakMode = LineBreakMode.NoWrap,
-                        FontSize = 10,
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.End
-                    };
+                        subjectLabel = new Label
+                        {
+                            Text = "X",
+                            FontFamily = "SpaceGrotesk",
+                            FontAttributes = FontAttributes.Bold,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            LineBreakMode = LineBreakMode.NoWrap,
+                            FontSize = 24,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center
+                        };
+                        teacherLabel = new Label
+                        {
+                            Text = "Zrušeno",
+                            FontFamily = "SpaceGrotesk",
+                            FontAttributes = FontAttributes.Italic,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            LineBreakMode = LineBreakMode.NoWrap,
+                            FontSize = 10,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.End
+                        };
+                    }
                     insideLayout.Add(subjectLabel);
                     insideLayout.Add(teacherLabel);
                 }

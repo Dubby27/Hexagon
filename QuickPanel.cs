@@ -233,16 +233,19 @@ namespace Hexagon
                                 //je víc volných hodin
                                 if (firstClass.HourId - today.Atoms[0].HourId > 4)
                                 {
+                                    HasEvent();
                                     panelStruct.upper = "Prvních " + (firstClass.HourId - today.Atoms[0].HourId) + " hodin je zrušeno, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                                 }
                                 else
                                 {
+                                    HasEvent();
                                     panelStruct.upper = "První " + (firstClass.HourId - today.Atoms[0].HourId) + " hodiny jsou zrušeny, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                                 }
                             }
                             else
                             {
                                 //je jedna volná hodina
+                                HasEvent();
                                 panelStruct.upper = "První hodina je zrušená, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                             }
                             panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
@@ -387,6 +390,14 @@ namespace Hexagon
             panelStruct.lower = "Pro jistotu zkonroluj web vašich Bakalářů";
 
             return panelStruct;
+        }
+
+        public static bool HasEvent(DateTime start, DateTime end)
+        {
+            //vyfiltrovat dnesni
+            List<Event> todayEvents = Bakalari.userEventData.events.FindAll((a) =>
+                DateTime.Parse(a.Times[0].StartTime).ToString("yyyy-MM-dd") == start.ToString("yyyy-MM-dd"));
+            return true;
         }
 
         public static IDispatcherTimer autoRefreshTimer;
