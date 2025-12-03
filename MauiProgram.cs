@@ -40,6 +40,11 @@ namespace Hexagon
                         new PlatformThemeService().SetNavBarColor(clr);
                     }
 #endif
+                })
+                .UseSentry(options =>
+                {
+                    options.Dsn = "https://b64e38c62eb479c42ce466a9a391f9d3@o4510159806988288.ingest.de.sentry.io/4510159817277520";
+                    options.Debug = true;
                 });
 
 #if DEBUG
