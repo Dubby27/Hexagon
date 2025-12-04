@@ -347,7 +347,7 @@ namespace Hexagon
                             {
                                 //volná hodina
                                 panelStruct.upper = "Je volná hodina\nPříští hodina je";
-                                panelStruct.lower = panelStruct.lower + " o " + Bakalari.GetTimetableHour(current, nextClass)
+                                panelStruct.lower = panelStruct.lower + " v " + Bakalari.GetTimetableHour(current, nextClass)
                                     .BeginTime;
                             }
                             else
