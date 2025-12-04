@@ -233,19 +233,19 @@ namespace Hexagon
                                 //je víc volných hodin
                                 if (firstClass.HourId - today.Atoms[0].HourId > 4)
                                 {
-                                    HasEvent();
+                                    //HasEvent();
                                     panelStruct.upper = "Prvních " + (firstClass.HourId - today.Atoms[0].HourId) + " hodin je zrušeno, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                                 }
                                 else
                                 {
-                                    HasEvent();
+                                    //HasEvent();
                                     panelStruct.upper = "První " + (firstClass.HourId - today.Atoms[0].HourId) + " hodiny jsou zrušeny, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                                 }
                             }
                             else
                             {
                                 //je jedna volná hodina
-                                HasEvent();
+                                //HasEvent();
                                 panelStruct.upper = "První hodina je zrušená, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                             }
                             panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
@@ -394,10 +394,29 @@ namespace Hexagon
 
         public static bool HasEvent(DateTime start, DateTime end)
         {
-            //vyfiltrovat dnesni
-            List<Event> todayEvents = Bakalari.userEventData.events.FindAll((a) =>
-                DateTime.Parse(a.Times[0].StartTime).ToString("yyyy-MM-dd") == start.ToString("yyyy-MM-dd"));
-            return true;
+            if (Bakalari.userEventData != null && Bakalari.userEventData.events.Count != 0)
+            {
+                //vyfiltrovat dnesni
+                List<Event> todayEvents = Bakalari.userEventData.events.FindAll((a) =>
+                    DateTime.Parse(a.Times[0].StartTime).ToString("yyyy-MM-dd") == start.ToString("yyyy-MM-dd"));
+                Trace.WriteLine(DateTime.Parse(Bakalari.userEventData.events[0].Times[0].StartTime).ToString("yyyy-MM-dd"));
+                Trace.WriteLine(start.ToString("yyyy-MM-dd"));
+                foreach (Event ev in todayEvents)
+                {
+                    Trace.WriteLine(ev.Title);
+                    Trace.WriteLine(ev.Times[0].StartTime);
+                    Trace.WriteLine(end);
+                    if(DateTime.Parse(ev.Times[0].StartTime) < end && DateTime.Parse(ev.Times[0].EndTime) > start)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static IDispatcherTimer autoRefreshTimer;

@@ -21,7 +21,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>Hexagøn</ApplicationTitle>
+		<ApplicationTitle>Hexagon</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.dubby27.hexagon</ApplicationId>

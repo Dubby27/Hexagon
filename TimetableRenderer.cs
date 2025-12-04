@@ -301,10 +301,34 @@ namespace Hexagon
                 {
                     Label subjectLabel = new Label();
                     Label teacherLabel = new Label();
-                    if (QuickPanel.HasEvent(DateTime.Parse(Bakalari.GetTimetableHour(timetable, atom).BeginTime), 
-                        DateTime.Parse(Bakalari.GetTimetableHour(timetable, atom).EndTime)))
+                    DateTime start = DateTime.Today.AddDays(1).Add(TimeSpan.Parse(Bakalari.GetTimetableHour(timetable, atom).BeginTime));
+                    DateTime end = DateTime.Today.AddDays(1).Add(TimeSpan.Parse(Bakalari.GetTimetableHour(timetable, atom).EndTime));
+                    if (QuickPanel.HasEvent(start, end))
                     {
-
+                        subjectLabel = new Label
+                        {
+                            Text = "A",
+                            FontFamily = "SpaceGrotesk",
+                            FontAttributes = FontAttributes.Bold,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            LineBreakMode = LineBreakMode.NoWrap,
+                            FontSize = 24,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center
+                        };
+                        teacherLabel = new Label
+                        {
+                            Text = "Akce",
+                            FontFamily = "SpaceGrotesk",
+                            FontAttributes = FontAttributes.Italic,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            LineBreakMode = LineBreakMode.NoWrap,
+                            FontSize = 10,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.End
+                        };
                     }
                     else
                     {
