@@ -214,7 +214,7 @@ namespace Hexagon
                     if (DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime) > DateTime.Now)
                     {
                         //PŘED HODINAMI
-                        if(firstClass == today.Atoms[0])
+                        if (firstClass == today.Atoms[0])
                         {
                             panelStruct.upper = "Škola ještě nezačala.\nPrvní hodina je";
                             panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
@@ -228,34 +228,45 @@ namespace Hexagon
                         }
                         else
                         {
-                            if(firstClass.HourId - today.Atoms[0].HourId > 1)
+                            if (firstClass.HourId - today.Atoms[0].HourId > 1)
                             {
                                 //je víc volných hodin
                                 if (firstClass.HourId - today.Atoms[0].HourId > 4)
                                 {
-                                    //HasEvent();
                                     panelStruct.upper = "Prvních " + (firstClass.HourId - today.Atoms[0].HourId) + " hodin je zrušeno, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                                 }
                                 else
                                 {
-                                    //HasEvent();
                                     panelStruct.upper = "První " + (firstClass.HourId - today.Atoms[0].HourId) + " hodiny jsou zrušeny, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                                 }
                             }
                             else
                             {
                                 //je jedna volná hodina
-                                //HasEvent();
                                 panelStruct.upper = "První hodina je zrušená, škola začíná " + Bakalari.GetTimetableHour(current, firstClass).BeginTime + "\nPrvní hodina je";
                             }
-                            panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
-                                Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
-                            string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
-                            if (nextRoom != null)
+                            if (HasEvent(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime),
+                                    DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).EndTime)))
                             {
-                                panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                                panelStruct.upper = "První hodiny je";
+                                panelStruct.title = "Akce Školy";
+                                panelStruct.lower = Bakalari.GetTimetableHour(current, firstClass).BeginTime + " - "
+                                    + GetEvent(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime),
+                                    DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).EndTime)).Times[0].EndTime;
+                                ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).EndTime));
                             }
-                            ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime));
+                            else
+                            {
+                                panelStruct.title = firstClass.Change != null ? firstClass.Change.ChangeType == "Canceled" ? firstClass.Change.Description :
+                                    Bakalari.GetTimetableSubject(current, firstClass).Name : Bakalari.GetTimetableSubject(current, firstClass).Name;
+                                string? nextRoom = Bakalari.GetTimetableRoom(current, firstClass)?.Abbrev;
+                                if (nextRoom != null)
+                                {
+                                    panelStruct.lower = panelStruct.lower + " v " + nextRoom;
+                                }
+                                ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, firstClass).BeginTime));
+                            }
+                                
                         }
                     }
                     else
@@ -355,25 +366,35 @@ namespace Hexagon
                                 //prestavka
                                 panelStruct.upper = "Je přestávka\nPříští hodina je";
                             }
-                            string nextSubject = "";
-                            if (nextClass.Change == null)
+                            if (nextClass.HourId - beforeClass.HourId > 1 && HasEvent(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime),
+                                    DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).EndTime)))
                             {
-                                nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
+                                panelStruct.upper = "Právě je";
+                                panelStruct.title = "Akce Školy";
+                                panelStruct.lower = "Končí " + GetEvent(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime),
+                                    DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).EndTime)).Times[0].EndTime;
                             }
                             else
                             {
-                                if (nextClass.Change.ChangeType == "Canceled" && !nextClass.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    nextSubject = nextClass.Change.Description;
-                                }
-                                else
+                                string nextSubject = "";
+                                if (nextClass.Change == null)
                                 {
                                     nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
                                 }
+                                else
+                                {
+                                    if (nextClass.Change.ChangeType == "Canceled" && !nextClass.Change.Description.Contains("zruš", comparisonType: StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        nextSubject = nextClass.Change.Description;
+                                    }
+                                    else
+                                    {
+                                        nextSubject = Bakalari.GetTimetableSubject(current, nextClass).Name;
+                                    }
+                                }
+                                panelStruct.title = nextSubject;
+                                ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime));
                             }
-                            panelStruct.title = nextSubject;
-                            ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime));
-                            //
                         }
                     }
                 }
@@ -416,6 +437,33 @@ namespace Hexagon
             else
             {
                 return false;
+            }
+        }
+
+        public static Event GetEvent(DateTime start, DateTime end)
+        {
+            if (Bakalari.userEventData != null && Bakalari.userEventData.events.Count != 0)
+            {
+                //vyfiltrovat dnesni
+                List<Event> todayEvents = Bakalari.userEventData.events.FindAll((a) =>
+                    DateTime.Parse(a.Times[0].StartTime).ToString("yyyy-MM-dd") == start.ToString("yyyy-MM-dd"));
+                Trace.WriteLine(DateTime.Parse(Bakalari.userEventData.events[0].Times[0].StartTime).ToString("yyyy-MM-dd"));
+                Trace.WriteLine(start.ToString("yyyy-MM-dd"));
+                foreach (Event ev in todayEvents)
+                {
+                    Trace.WriteLine(ev.Title);
+                    Trace.WriteLine(ev.Times[0].StartTime);
+                    Trace.WriteLine(end);
+                    if (DateTime.Parse(ev.Times[0].StartTime) < end && DateTime.Parse(ev.Times[0].EndTime) > start)
+                    {
+                        return ev;
+                    }
+                }
+                return null;
+            }
+            else
+            {
+                return null;
             }
         }
 
