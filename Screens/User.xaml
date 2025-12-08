@@ -124,6 +124,29 @@
                     </HorizontalStackLayout>
                     <HorizontalStackLayout
                         HorizontalOptions="Center">
+                        <Label
+                            Text="Spořič dat "
+                            FontFamily="SpaceGrotesk"
+                            Margin="15"
+                            VerticalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                            FontSize="18"/>
+
+                        <Picker
+                            x:Name="DataSavingPicker"
+                            Margin="5"
+                            SelectedIndexChanged="DataSavingPicker_SelectedIndexChanged">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Vypnuto</x:String>
+                                    <x:String>Lehký (Synchronizace při startu)</x:String>
+                                    <x:String>Úplný (Pouze manuální synchronizace)</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center">
                         <Button
                             Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
                             Text="Zpětná Vazba"

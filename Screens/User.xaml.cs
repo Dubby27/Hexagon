@@ -88,4 +88,9 @@ public partial class User : ContentPage
     {
         Shell.Current.Navigation.PushAsync(new Screens.About());
     }
+
+    private void DataSavingPicker_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
 }
