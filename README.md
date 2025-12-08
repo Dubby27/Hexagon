@@ -7,7 +7,7 @@ Tento projekt využívá @bakalari-api/bakalari-api-v3
 ## Rychlý Panel
 Úvodní stránka zobraující přesně to, co se v dané chvíli hodí, například další hodinu a učebnu, konec volné hodiny nebo rozvrh na další den.
 ## Offline Režim
-Hexagon automaticky ukládá vaše informace, aby jsi při nedostatku dat nebo výpadku serverů mohl/a nerušeně pokračovat se svým dnem.
+Hexagon automaticky ukládá vaše informace pro případ nedostatku dat nebo výpadku školního serveru.
 
 # Plánováno
 ## Moduly
