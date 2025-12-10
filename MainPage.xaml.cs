@@ -42,6 +42,7 @@ namespace Hexagon
             {
                 Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
                 Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
+                Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
@@ -63,7 +64,15 @@ namespace Hexagon
                     }
                 }
                 await Bakalari.LoadOfflineData();
-                await Bakalari.LogInRefresh();
+                if(Bakalari.DataSaver < 2)
+                {
+                    await Bakalari.LogInRefresh();
+                }
+                else
+                {
+                    Bakalari.StartTask("data_saver", "");
+                    Bakalari.EndTask(false);
+                }
                 try
                 {
                     RefreshQuickPanel();
@@ -75,7 +84,10 @@ namespace Hexagon
             }
             if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
-                await Bakalari.RefreshAll();
+                if(Bakalari.DataSaver == 0)
+                {
+                    await Bakalari.RefreshAll();
+                }
                 RefreshQuickPanel();
             }
             QuickTitle.HorizontalTextAlignment = TextAlignment.Center;

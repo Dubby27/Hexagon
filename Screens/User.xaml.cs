@@ -13,9 +13,13 @@ public partial class User : ContentPage
         try
         {
             UserName.Text = Bakalari.userData.FullName;
-            SchoolURL.Text = Bakalari.school.ToString();
+            if(Bakalari.school != null)
+            {
+                SchoolURL.Text = Bakalari.school.ToString();
+            }
             ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
             TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
+            DataSavingPicker.SelectedIndex = Bakalari.DataSaver;
         }
         catch(Exception ex) { }
 
@@ -31,7 +35,10 @@ public partial class User : ContentPage
             try
             {
                 UserName.Text = Bakalari.userData.FullName;
-                SchoolURL.Text = Bakalari.school.ToString();
+                if (Bakalari.school != null)
+                {
+                    SchoolURL.Text = Bakalari.school.ToString();
+                }
                 ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
                 TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
             }
@@ -91,6 +98,7 @@ public partial class User : ContentPage
 
     private void DataSavingPicker_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+        Bakalari.DataSaver = DataSavingPicker.SelectedIndex;
+        SecureStorage.SetAsync("DataSaver", DataSavingPicker.SelectedIndex.ToString());
     }
 }

@@ -22,6 +22,7 @@ namespace Hexagon
         //Options
         public static bool BetaQuickTimetable = false;
         public static bool ProcessDetails = false;
+        public static int DataSaver = 0;
 
         //Task Management
         public static int TaskCount = 0;
@@ -988,7 +989,7 @@ namespace Hexagon
                 EventResponse? dataResponse = JsonConvert.DeserializeObject<EventResponse>(responseBody);
                 if (dataResponse is not null)
                 {
-                    await SecureStorage.SetAsync("UserEvents", responseBody);
+                    await SecureStorage.SetAsync("UserEventData", responseBody);
                     EndTask(true);
                     return dataResponse;
                 }

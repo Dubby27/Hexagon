@@ -4,173 +4,178 @@
              x:Class="Hexagon.User"
              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=WhiteSmoke, Dark=OffBlack}, Default={AppThemeBinding Light=White, Dark=OffBlack}}">
     <Grid>
-        <VerticalStackLayout
-            Padding="5,5"
-            VerticalOptions="Center"
-            Margin="5">
-            <Border
-                StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+        <ScrollView
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            Padding="0, 0, 0, 32">
+            <VerticalStackLayout
+                Padding="5,5"
                 VerticalOptions="Center"
-                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
-                Padding="10"
                 Margin="5">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10"/>
-                </Border.StrokeShape>
-                <Border.Shadow>
-                    <Shadow
-                        Radius="30"
-                        Opacity="0.2"
-                        Offset="9,9"/>
-                </Border.Shadow>
+                <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                    </Border.Shadow>
 
-                <VerticalStackLayout
-                    Padding="15, 10, 15, 15">
-                    <Label
-                        x:Name="UserName"
-                        Text="UserName"
-                        FontFamily="SpaceGrotesk"
-                        FontAttributes="Bold"
-                        LineBreakMode="WordWrap"
-                        FontSize="48"
-                        HorizontalTextAlignment="Center"
-                        Padding="5"/>
-                    <Label
-                        x:Name="SchoolURL"
-                        Text="SchoolURL"
-                        FontFamily="SpaceGrotesk"
-                        LineBreakMode="WordWrap"
-                        FontSize="20"
-                        HorizontalTextAlignment="Center"
-                        Padding="5"
-                        Margin="5, 0, 5, 10"/>
-                    <HorizontalStackLayout
-                        HorizontalOptions="Center">
-                        <Button
-                            Text="Odhlásit"
+                    <VerticalStackLayout
+                        Padding="15, 10, 15, 15">
+                        <Label
+                            x:Name="UserName"
+                            Text="UserName"
                             FontFamily="SpaceGrotesk"
-                            FontSize="24"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Clicked="Button_Clicked"
-                            Margin="5"/>
-                        <Button
-                            Text="Info"
+                            FontAttributes="Bold"
+                            LineBreakMode="WordWrap"
+                            FontSize="48"
+                            HorizontalTextAlignment="Center"
+                            Padding="5"/>
+                        <Label
+                            x:Name="SchoolURL"
+                            Text="SchoolURL"
                             FontFamily="SpaceGrotesk"
-                            FontSize="24"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Clicked="Button_Clicked_1"
-                            Margin="5"/>
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
-            <Border
-                StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
-                VerticalOptions="Center"
-                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
-                Padding="10"
-                Margin="5">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10"/>
-                </Border.StrokeShape>
-                <Border.Shadow>
-                    <Shadow
-                        Radius="30"
-                        Opacity="0.2"
-                        Offset="9,9"/>
-                </Border.Shadow>
+                            LineBreakMode="WordWrap"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Padding="5"
+                            Margin="5, 0, 5, 10"/>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <Button
+                                Text="Odhlásit"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Clicked="Button_Clicked"
+                                Margin="5"/>
+                            <Button
+                                Text="Info"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Clicked="Button_Clicked_1"
+                                Margin="5"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                    </Border.Shadow>
 
-                <VerticalStackLayout>
-                    <HorizontalStackLayout
-                        HorizontalOptions="Center">
-                        <Label
-                            Text="Podrobné hlášení procesu "
-                            FontFamily="SpaceGrotesk"
-                            Margin="15"
-                            VerticalTextAlignment="Center"
-                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            FontSize="18"/>
-                        <CheckBox
-                            x:Name="ProcessDetailSwitch"
-                            Margin="5"
-                            Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
-                            CheckedChanged="ProcessDetailSwitch_Toggled"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout
-                        HorizontalOptions="Center">
-                        <Label
-                            Text="Styl rozvrhu "
-                            FontFamily="SpaceGrotesk"
-                            Margin="15"
-                            VerticalTextAlignment="Center"
-                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            FontSize="18"/>
-                        <Picker
-                            x:Name="TimetableStylePicker"
-                            Margin="5"
-                            SelectedIndexChanged="TimetableStylePicker_SelectedIndexChanged">
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                  <x:String>Scroll</x:String>
-                                  <x:String>Wrap (Beta)</x:String>
-                                </x:Array>
-                              </Picker.ItemsSource>
-                        </Picker>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout
-                        HorizontalOptions="Center">
-                        <Label
-                            Text="Spořič dat "
-                            FontFamily="SpaceGrotesk"
-                            Margin="15"
-                            VerticalTextAlignment="Center"
-                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            FontSize="18"/>
+                    <VerticalStackLayout>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <Label
+                                Text="Podrobné hlášení procesu "
+                                FontFamily="SpaceGrotesk"
+                                Margin="15"
+                                VerticalTextAlignment="Center"
+                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                FontSize="18"/>
+                            <CheckBox
+                                x:Name="ProcessDetailSwitch"
+                                Margin="5"
+                                Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                                CheckedChanged="ProcessDetailSwitch_Toggled"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <Label
+                                Text="Styl rozvrhu "
+                                FontFamily="SpaceGrotesk"
+                                Margin="15"
+                                VerticalTextAlignment="Center"
+                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                FontSize="18"/>
+                            <Picker
+                                x:Name="TimetableStylePicker"
+                                Margin="5"
+                                SelectedIndexChanged="TimetableStylePicker_SelectedIndexChanged">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Scroll</x:String>
+                                        <x:String>Wrap (Beta)</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <Label
+                                Text="Spořič dat "
+                                FontFamily="SpaceGrotesk"
+                                Margin="15"
+                                VerticalTextAlignment="Center"
+                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                FontSize="18"/>
 
-                        <Picker
-                            x:Name="DataSavingPicker"
-                            Margin="5"
-                            SelectedIndexChanged="DataSavingPicker_SelectedIndexChanged">
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>Vypnuto</x:String>
-                                    <x:String>Lehký (Synchronizace při startu)</x:String>
-                                    <x:String>Úplný (Pouze manuální synchronizace)</x:String>
-                                </x:Array>
-                            </Picker.ItemsSource>
-                        </Picker>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout
-                        HorizontalOptions="Center">
-                        <Button
-                            Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
-                            Text="Zpětná Vazba"
-                            FontFamily="SpaceGrotesk"
-                            FontSize="18"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Clicked="Button_Clicked_2"
-                            Margin="5"/>
-                        <Button
-                            Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
-                            Text="O Aplikaci"
-                            FontFamily="SpaceGrotesk"
-                            FontSize="18"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Clicked="About_Clicked"
-                            Margin="5"/>
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
-        </VerticalStackLayout>
+                            <Picker
+                                x:Name="DataSavingPicker"
+                                Margin="5"
+                                SelectedIndexChanged="DataSavingPicker_SelectedIndexChanged">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Vypnuto</x:String>
+                                        <x:String>Lehký (Synchronizace při startu)</x:String>
+                                        <x:String>Úplný (Pouze manuální synchronizace)</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <Button
+                                Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                                Text="Zpětná Vazba"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="18"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Clicked="Button_Clicked_2"
+                                Margin="5"/>
+                            <Button
+                                Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                                Text="O Aplikaci"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="18"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Clicked="About_Clicked"
+                                Margin="5"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
         
         <VerticalStackLayout
             x:Name="NetworkStatusBar"
