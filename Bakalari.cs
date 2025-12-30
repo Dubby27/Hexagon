@@ -216,8 +216,8 @@ namespace Hexagon
                     {
                         actualTimetable = JsonConvert.DeserializeObject<Timetable>(
                             await SecureStorage.GetAsync("PermanentTimetable"));
-                        Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
-                            " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
+                        //Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
+                        //    " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
                     }
 
                     if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))

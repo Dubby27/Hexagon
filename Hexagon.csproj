@@ -27,7 +27,7 @@
 		<ApplicationId>com.dubby27.hexagon</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>25.12.3</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>25.12.4</ApplicationDisplayVersion>
 		<ApplicationVersion></ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
@@ -47,7 +47,11 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" />
+		<!-- App icon for Windows -->
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" Include="Resources\AppIcon\appiconpc.svg" />
+
+		<!-- App icon for all other platforms -->
+		<MauiIcon Include="Resources\AppIcon\appiconback.svg" ForegroundFile="Resources\AppIcon\appicon.svg" Color="#FFFFFF" Resize="false" ForegroundScale="0.65" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" BaseSize="128,128" />
@@ -70,17 +74,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Platforms\Android\Resources\drawable\appicon.svg" />
-	  <None Remove="Platforms\Android\Resources\drawable\appicondark.svg" />
 	  <None Remove="Platforms\Android\Resources\drawable\splash_screen.xml" />
 	  <None Remove="Platforms\Android\Resources\drawable\splash_screen_night.xml" />
 	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
+	  <None Remove="Resources\AppIcon\appicon.svg" />
 	  <None Remove="Resources\Images\icondark.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AndroidResource Include="Platforms\Android\Resources\drawable\appicon.svg" />
-	  <AndroidResource Include="Platforms\Android\Resources\drawable\appicondark.svg" />
+	  <AndroidResource Include="Platforms\Android\Resources\drawable\icon.svg" />
+	  <AndroidResource Include="Platforms\Android\Resources\drawable\icondark.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

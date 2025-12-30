@@ -34,8 +34,7 @@
                         Margin="10"/>
                     <Label
                         Text="Vyhledávač Škol"
-                        FontAutoScalingEnabled="True"
-                        FontSize="36"
+                        FontSize="28"
                         FontFamily="SpaceGrotesk"
                         FontAttributes="Bold"
                         LineBreakMode="WordWrap"
