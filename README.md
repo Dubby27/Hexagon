@@ -1,7 +1,7 @@
 # Hexagon
-(WIP) Alternativní klient pro Bakaláře
-Podporuje Windows a Android (MacOS a iOS již brzy)
-Tento projekt využívá @bakalari-api/bakalari-api-v3
+(WIP) Alternativní klient pro Bakaláře  
+Podporuje Windows a Android (MacOS a iOS již brzy)  
+Tento projekt využívá [Bakaláři API](https://github.com/bakalari-api/bakalari-api-v3)
 
 # Funkce
 ## Rychlý Panel
