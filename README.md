@@ -18,4 +18,6 @@ Hexagon automaticky ukládá vaše informace pro případ nedostatku dat nebo v�
 - Komens
 
 # Disclaimer
-Tato aplikace není nijak podporována ani spojena se společností BAKALÁŘI software s.r.o.
+Tato aplikace není nijak podporována ani spojena se společností BAKALÁŘI software s.r.o.  
+Využívá [Sentry](https://sentry.io), který sbírá chybová data včetně informací o zařízení.  
+Seznam škol je načítán [odtud](https://gitlab.com/vitSkalicky/bakalari-schools-list)
