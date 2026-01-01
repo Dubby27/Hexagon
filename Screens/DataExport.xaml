@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hexagon.Screens.DataExport">
+    <Grid>
+        <ScrollView
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            Padding="0, 0, 0, 32">
+            <Grid
+                Padding="5,5"
+                VerticalOptions="Fill"
+                Margin="5">
+                <VerticalStackLayout
+                    VerticalOptions="Center"
+                    Margin="5">
+                    <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                        </Border.Shadow>
+                        
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Margin="5">
+                            <Label
+                                Text="Stálý Rozvrh"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                Margin="5"/>
+                            <Button
+                                x:Name="ExportPermanentScheduleButton"
+                                Text="Export"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Margin="5"
+                                Clicked="ExportPermanentScheduleButton_Clicked"/>
+                        </HorizontalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+
+        <VerticalStackLayout
+            x:Name="NetworkStatusBar"
+            MaximumHeightRequest="32"
+            VerticalOptions="{OnIdiom Phone=Start, Default=End}"
+            HorizontalOptions="Fill"
+            BackgroundColor="{OnIdiom Phone={AppThemeBinding Light={StaticResource GradientStart}, Dark={StaticResource GradientStartDark}}, 
+            Default={AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}}">
+
+            <HorizontalStackLayout
+                VerticalOptions="Fill"
+                HorizontalOptions="Fill">
+
+                <ActivityIndicator
+                    x:Name="NetworkActivityIndicator"
+                    IsRunning="True"
+                    Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    WidthRequest="15"
+                    HeightRequest="15"
+                    IsVisible="False"
+                    Margin="10"/>
+                <Image
+                    x:Name="NetworkBadImage"
+                    Source="{AppThemeBinding Light=baddark.png, Dark=bad.png}" 
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    IsVisible="False"
+                    Margin="5"/>
+                <Image
+                    x:Name="NetworkGoodImage"
+                    Source="{AppThemeBinding Light=gooddark.png, Dark=good.png}" 
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    IsVisible="False"
+                    Margin="5"/>
+                <Label
+                    x:Name="NetworkStatusLabel"
+                    Text="Aktualizováno"
+                    FontFamily="SpaceGrotesk"
+                    VerticalTextAlignment="Center"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    LineBreakMode="CharacterWrap" 
+                    FontSize="18"
+                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    Margin="5"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

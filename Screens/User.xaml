@@ -175,6 +175,19 @@
                                     Clicked="About_Clicked"
                                     Margin="5"/>
                             </HorizontalStackLayout>
+                            <HorizontalStackLayout
+                                HorizontalOptions="Center">
+                                <Button
+                                    Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                                    Text="Export Dat"
+                                    FontFamily="SpaceGrotesk"
+                                    FontSize="18"
+                                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    Clicked="ExportRaw_Clicked"
+                                    Margin="5"/>
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
                 </VerticalStackLayout>

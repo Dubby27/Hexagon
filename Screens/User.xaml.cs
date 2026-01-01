@@ -96,6 +96,11 @@ public partial class User : ContentPage
         Shell.Current.Navigation.PushAsync(new Screens.About());
     }
 
+    private void ExportRaw_Clicked(object sender, EventArgs e)
+    {
+        Shell.Current.Navigation.PushAsync(new Screens.DataExport());
+    }
+
     private void DataSavingPicker_SelectedIndexChanged(object sender, EventArgs e)
     {
         Bakalari.DataSaver = DataSavingPicker.SelectedIndex;
