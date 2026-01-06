@@ -27,7 +27,7 @@
 		<ApplicationId>com.dubby27.hexagon</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>25.12.4</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>26.1.1</ApplicationDisplayVersion>
 		<ApplicationVersion></ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
@@ -92,7 +92,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
 		<PackageReference Include="Microsoft.Maui.Graphics.Text.Markdig" Version="9.0.110" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-		<PackageReference Include="Sentry.Maui" Version="5.16.2" />
+		<PackageReference Include="Sentry.Maui" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
