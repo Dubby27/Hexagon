@@ -196,18 +196,23 @@ namespace Hexagon
             required public string BaseUrl { get; set; }
         }
 
+        public static DateTime actualValid;
+        public static DateTime nextValid;
+
         public static async Task<bool> LoadOfflineTimetables()
         {
             if(await SecureStorage.GetAsync("LoggedIn") == "true")
             {
                 try
                 {
-                    if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("ActualValid")), DateTime.Today))
+                    actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
+                    nextValid = DateTime.Parse(await SecureStorage.GetAsync("NextValid"));
+                    if (IsSameIsoWeek(actualValid, DateTime.Today))
                     {
                         actualTimetable = JsonConvert.DeserializeObject<Timetable>(
                             await SecureStorage.GetAsync("ActualTimetable"));
                     }
-                    else if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today))
+                    else if (IsSameIsoWeek(nextValid, DateTime.Today))
                     {
                         actualTimetable = JsonConvert.DeserializeObject<Timetable>(
                             await SecureStorage.GetAsync("NextTimetable"));
