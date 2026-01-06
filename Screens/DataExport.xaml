@@ -40,6 +40,7 @@
                                 FontFamily="SpaceGrotesk"
                                 FontSize="24"
                                 HorizontalOptions="Center"
+                                VerticalTextAlignment="Center"
                                 Margin="5"/>
                             <Button
                                 x:Name="ExportPermanentScheduleButton"
@@ -49,6 +50,178 @@
                                 HorizontalOptions="Center"
                                 Margin="5"
                                 Clicked="ExportPermanentScheduleButton_Clicked"/>
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                        </Border.Shadow>
+
+                        <VerticalStackLayout>
+                            <HorizontalStackLayout
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="5">
+                                <Label
+                                    Text="Aktuální Rozvrh"
+                                    FontFamily="SpaceGrotesk"
+                                    FontSize="24"
+                                    HorizontalOptions="Center"
+                                    VerticalTextAlignment="Center"
+                                    Margin="5"/>
+                                <Button
+                                    x:Name="ExportActualScheduleButton"
+                                    Text="Export"
+                                    FontFamily="SpaceGrotesk"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    Margin="5"
+                                    Clicked="ExportActualScheduleButton_Clicked"/>
+                            </HorizontalStackLayout>
+                            <Label
+                                x:Name="ActualScheduleUpdateLabel"
+                                Text="Aktualizováno "
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                VerticalTextAlignment="Center"
+                                Margin="5"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                        </Border.Shadow>
+
+                        <VerticalStackLayout>
+                            <HorizontalStackLayout
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="5">
+                                <Label
+                                    Text="Příští Týden"
+                                    FontFamily="SpaceGrotesk"
+                                    FontSize="24"
+                                    HorizontalOptions="Center"
+                                    VerticalTextAlignment="Center"
+                                    Margin="5"/>
+                                <Button
+                                    x:Name="ExportNextScheduleButton"
+                                    Text="Export"
+                                    FontFamily="SpaceGrotesk"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    Margin="5"
+                                    Clicked="ExportNextScheduleButton_Clicked"/>
+                            </HorizontalStackLayout>
+                            <Label
+                                x:Name="NextScheduleUpdateLabel"
+                                Text="Aktualizováno "
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                VerticalTextAlignment="Center"
+                                Margin="5"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                        </Border.Shadow>
+    
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Margin="5">
+                            <Label
+                                Text="Data Uživatele"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                VerticalTextAlignment="Center"
+                                Margin="5"/>
+                            <Button
+                                x:Name="ExportUserDataButton"
+                                Text="Export"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Margin="5"
+                                Clicked="ExportUserDataButton_Clicked"/>
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource BackBlack}}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                    Padding="10"
+                    Margin="5">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow
+                            Radius="30"
+                            Opacity="0.2"
+                            Offset="9,9"/>
+                        </Border.Shadow>
+    
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Margin="5">
+                            <Label
+                                Text="Události"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                VerticalTextAlignment="Center"
+                                Margin="5"/>
+                            <Button
+                                x:Name="ExportEventsButton"
+                                Text="Export"
+                                FontFamily="SpaceGrotesk"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Margin="5"
+                                Clicked="ExportEventsButton_Clicked"/>
                         </HorizontalStackLayout>
                     </Border>
                 </VerticalStackLayout>
