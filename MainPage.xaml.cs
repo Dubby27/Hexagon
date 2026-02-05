@@ -84,7 +84,8 @@ namespace Hexagon
             }
             if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
-                if(Bakalari.DataSaver == 0)
+                RefreshQuickPanel();
+                if (Bakalari.DataSaver == 0)
                 {
                     await Bakalari.RefreshAll();
                 }
