@@ -275,8 +275,7 @@ namespace Hexagon
                             DateTime.Parse(Bakalari.GetTimetableHour(current, a).EndTime) > DateTime.Now &&
                             (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
 
-                        TimetableAtom? nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
-                            (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
+                        TimetableAtom? nextClass = today.Atoms[today.Atoms.IndexOf(currentClass) + 1];
 
                         if (currentClass != null)
                         {
@@ -337,9 +336,18 @@ namespace Hexagon
                             }
                             else
                             {
-                                //POSLEDNI HODINA
-                                panelStruct.lower = "Toto je poslední hodina";
-                                //
+                                if (today.Atoms.Last() == currentClass)
+                                {
+                                    //POSLEDNI HODINA
+                                    panelStruct.lower = "Toto je poslední hodina";
+                                    //
+                                }
+                                else
+                                {
+                                    //PRISTI VOLNA HODINA
+                                    panelStruct.lower = "Další hodina je volná";
+                                    //
+                                }
                             }
                             ScheduleQuickPanelRefresh(DateTime.Parse(Bakalari.GetTimetableHour(current, currentClass).EndTime));
                             //
@@ -374,8 +382,18 @@ namespace Hexagon
                                 panelStruct.lower = "Končí " + GetEvent(DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).BeginTime),
                                     DateTime.Parse(Bakalari.GetTimetableHour(current, nextClass).EndTime)).Times[0].EndTime;
                             }
+                            else if(nextClass == null && !(nextClass.HourId - beforeClass.HourId > 1))
+                            {
+                                nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
+                                    (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
+                                panelStruct.upper = "Právě je";
+                                panelStruct.title = "Volná Hodina";
+                                panelStruct.lower = "Další hodina je " + Bakalari.GetTimetableSubject(current, nextClass).Name + " v " + Bakalari.GetTimetableHour(current, nextClass).BeginTime;
+                            }
                             else
                             {
+                                nextClass = today.Atoms.FirstOrDefault((a) => DateTime.Parse(Bakalari.GetTimetableHour(current, a).BeginTime) > DateTime.Now &&
+                                    (a.Change == null || (a.Change.ChangeType != "Canceled" && a.Change.ChangeType != "Removed")), null);
                                 string nextSubject = "";
                                 if (nextClass.Change == null)
                                 {
