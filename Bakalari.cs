@@ -142,7 +142,15 @@ namespace Hexagon
                     {
                         StatusActivity = false;
                         GoodImage = true;
-                        StatusLabel = "Aktualizováno";
+                        StatusLabel = "Aktualizováno ";
+                        if(actualValid.Date == DateTime.Today.Date)
+                        {
+                            StatusLabel += actualValid.ToString("HH:mm");
+                        }
+                        else
+                        {
+                            StatusLabel += "před " + (DateTime.Today.Date - actualValid.Date).Days +" dny";
+                        }
                     }
                     else
                     {
@@ -740,8 +748,8 @@ namespace Hexagon
                 {
                     actualTimetable = timetableResponse;
                     await SecureStorage.SetAsync("ActualTimetable", responseBody);
-                    DateTime validUntil = DateTime.Today;
-                    await SecureStorage.SetAsync("ActualValid", validUntil.ToLongDateString());
+                    DateTime validUntil = DateTime.Now;
+                    await SecureStorage.SetAsync("ActualValid", validUntil.ToString("yyyy.MM.dd HH:mm"));
                     EndTask(true);
                 }
                 else
@@ -796,8 +804,8 @@ namespace Hexagon
                 {
                     nextTimetable = timetableResponse;
                     await SecureStorage.SetAsync("NextTimetable", responseBody);
-                    DateTime validUntil = DateTime.Today.AddDays(7);
-                    await SecureStorage.SetAsync("NextValid", validUntil.ToLongDateString());
+                    DateTime validUntil = DateTime.Now.AddDays(7);
+                    await SecureStorage.SetAsync("NextValid", validUntil.ToString("yyyy.MM.dd HH:mm"));
                     EndTask(true);
                 }
                 else
