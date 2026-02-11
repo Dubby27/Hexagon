@@ -100,6 +100,7 @@
                                     FontFamily="SpaceGrotesk"
                                     Margin="15"
                                     VerticalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
                                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                                     FontSize="18"/>
                                 <CheckBox
@@ -115,6 +116,7 @@
                                     FontFamily="SpaceGrotesk"
                                     Margin="15"
                                     VerticalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
                                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                                     FontSize="18"/>
                                 <CheckBox
@@ -130,6 +132,7 @@
                                     FontFamily="SpaceGrotesk"
                                     Margin="15"
                                     VerticalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
                                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                                     FontSize="18"/>
                                 <Picker
@@ -151,6 +154,7 @@
                                     FontFamily="SpaceGrotesk"
                                     Margin="15"
                                     VerticalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
                                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                                     FontSize="18"/>
 

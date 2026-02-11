@@ -10,6 +10,10 @@ namespace Hexagon
         {
             if(Instance != null)
             {
+                if(Instance.loggingIn)
+                {
+                    return;
+                }
                 Instance.StartLoginProcess();
             }
         }
@@ -29,12 +33,14 @@ namespace Hexagon
 
         protected override void OnAppearing()
         {
-            if (refreshOnAppear)
+            if (refreshOnAppear && !loggingIn)
             {
                 StartLoginProcess();
             }
             base.OnAppearing();
         }
+
+        public bool loggingIn = false;
 
         public async void StartLoginProcess()
         {
@@ -52,6 +58,7 @@ namespace Hexagon
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
+                loggingIn = true;
                 await Shell.Current.Navigation.PushModalAsync(new LogIn()); 
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
