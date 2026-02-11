@@ -42,7 +42,12 @@ namespace Hexagon
             {
                 Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
                 Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
-                Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
+                Bakalari.UpdateTime = await SecureStorage.GetAsync("UpdateTime") != "True";
+                if (await SecureStorage.GetAsync("DataSaver") != null)
+                {
+                    Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
+                }
+                Bakalari.actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
@@ -51,8 +56,32 @@ namespace Hexagon
             }
             if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
-                bool r = await Bakalari.LoadOfflineTimetables();
-                if (r)
+                if(Bakalari.actualTimetable != null)
+                {
+                    bool r = await Bakalari.LoadOfflineTimetables();
+                    if (r)
+                    {
+                        try
+                        {
+                            RefreshQuickPanel();
+                        }
+                        catch
+                        {
+                            //fail
+                        }
+                    }
+                    await Bakalari.LoadOfflineData();
+                }
+                if(Bakalari.DataSaver < 2)
+                {
+                    await Bakalari.LogInRefresh();
+                }
+                else
+                {
+                    Bakalari.StartTask("data_saver", "");
+                    Bakalari.EndTask(false);
+                }
+                if(Bakalari.actualTimetable != null)
                 {
                     try
                     {
@@ -63,33 +92,17 @@ namespace Hexagon
                         //fail
                     }
                 }
-                await Bakalari.LoadOfflineData();
-                if(Bakalari.DataSaver < 2)
-                {
-                    await Bakalari.LogInRefresh();
-                }
-                else
-                {
-                    Bakalari.StartTask("data_saver", "");
-                    Bakalari.EndTask(false);
-                }
-                try
-                {
-                    RefreshQuickPanel();
-                }
-                catch
-                {
-                    //fail
-                }
             }
             if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
-                RefreshQuickPanel();
+                if(Bakalari.actualTimetable != null)
+                {
+                    RefreshQuickPanel();
+                }
                 if (Bakalari.DataSaver == 0)
                 {
                     await Bakalari.RefreshAll();
                 }
-                RefreshQuickPanel();
             }
             QuickTitle.HorizontalTextAlignment = TextAlignment.Center;
         }

@@ -111,6 +111,21 @@
                             <HorizontalStackLayout
                                 HorizontalOptions="Center">
                                 <Label
+                                    Text="Zobrazovat čas poslední aktualizace "
+                                    FontFamily="SpaceGrotesk"
+                                    Margin="15"
+                                    VerticalTextAlignment="Center"
+                                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                    FontSize="18"/>
+                                <CheckBox
+                                    x:Name="UpdateTimeSwitch"
+                                    Margin="5"
+                                    Color="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
+                                    CheckedChanged="UpdateTimeSwitch_CheckedChanged"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout
+                                HorizontalOptions="Center">
+                                <Label
                                     Text="Styl rozvrhu "
                                     FontFamily="SpaceGrotesk"
                                     Margin="15"
