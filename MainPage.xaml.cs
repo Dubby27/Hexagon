@@ -42,11 +42,12 @@ namespace Hexagon
             {
                 Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
                 Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
-                if(await SecureStorage.GetAsync("DataSaver") != null)
+                Bakalari.UpdateTime = await SecureStorage.GetAsync("UpdateTime") != "True";
+                if (await SecureStorage.GetAsync("DataSaver") != null)
                 {
                     Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
-                    Bakalari.actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
                 }
+                Bakalari.actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")

@@ -20,6 +20,7 @@ public partial class User : ContentPage
             ProcessDetailSwitch.IsChecked = Bakalari.ProcessDetails;
             TimetableStylePicker.SelectedIndex = Bakalari.BetaQuickTimetable ? 1 : 0;
             DataSavingPicker.SelectedIndex = Bakalari.DataSaver;
+            UpdateTimeSwitch.IsChecked = Bakalari.UpdateTime;
         }
         catch(Exception ex) { }
 
@@ -105,5 +106,13 @@ public partial class User : ContentPage
     {
         Bakalari.DataSaver = DataSavingPicker.SelectedIndex;
         SecureStorage.SetAsync("DataSaver", DataSavingPicker.SelectedIndex.ToString());
+    }
+
+    private void UpdateTimeSwitch_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        Bakalari.UpdateTime = e.Value;
+        SecureStorage.SetAsync("UpdateTime", (!e.Value).ToString());
+        Bakalari.StartTask("status_reset", "Resetuji status...");
+        Bakalari.EndTask(Bakalari.LastTaskResult);
     }
 }

@@ -22,6 +22,7 @@ namespace Hexagon
         //Options
         public static bool BetaQuickTimetable = false;
         public static bool ProcessDetails = false;
+        public static bool UpdateTime = true;
         public static int DataSaver = 0;
 
         //Task Management
@@ -131,8 +132,11 @@ namespace Hexagon
             }
         }
 
+        public static bool LastTaskResult = true;
+
         public static void EndTask(bool result)
         {
+            LastTaskResult = result;
             if (TaskCount > 0)
             {
                 TaskCount--;
@@ -143,15 +147,18 @@ namespace Hexagon
                         StatusActivity = false;
                         GoodImage = true;
                         StatusLabel = "Aktualizováno ";
-                        if(actualValid.Date == DateTime.Today.Date)
+                        if (UpdateTime)
                         {
-                            StatusLabel += actualValid.ToString("HH:mm");
-                        }
-                        else
-                        {
-                            StatusLabel += "před " + (DateTime.Today.Date - actualValid.Date).Days +" dny";
-                            Trace.WriteLine(DateTime.Today);
-                            Trace.WriteLine(actualValid);
+                            if (actualValid.Date == DateTime.Today.Date)
+                            {
+                                StatusLabel += actualValid.ToString("HH:mm");
+                            }
+                            else
+                            {
+                                StatusLabel += "před " + (DateTime.Today.Date - actualValid.Date).Days + " dny";
+                                Trace.WriteLine(DateTime.Today);
+                                Trace.WriteLine(actualValid);
+                            }
                         }
                     }
                     else
@@ -172,7 +179,20 @@ namespace Hexagon
                 {
                     StatusActivity = false;
                     GoodImage = true;
-                    StatusLabel = "Aktualizováno";
+                    StatusLabel = "Aktualizováno ";
+                    if (UpdateTime)
+                    {
+                        if (actualValid.Date == DateTime.Today.Date)
+                        {
+                            StatusLabel += actualValid.ToString("HH:mm");
+                        }
+                        else
+                        {
+                            StatusLabel += "před " + (DateTime.Today.Date - actualValid.Date).Days + " dny";
+                            Trace.WriteLine(DateTime.Today);
+                            Trace.WriteLine(actualValid);
+                        }
+                    }
                 }
                 else
                 {
