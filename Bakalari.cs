@@ -752,7 +752,6 @@ namespace Hexagon
                     await SecureStorage.SetAsync("ActualTimetable", responseBody);
                     DateTime validUntil = DateTime.Now;
                     await SecureStorage.SetAsync("ActualValid", validUntil.ToString("O"));
-                    Trace.WriteLine(validUntil.ToString("O"));
                     actualValid = validUntil;
                     EndTask(true);
                 }
@@ -809,7 +808,8 @@ namespace Hexagon
                     nextTimetable = timetableResponse;
                     await SecureStorage.SetAsync("NextTimetable", responseBody);
                     DateTime validUntil = DateTime.Now.AddDays(7);
-                    await SecureStorage.SetAsync("NextValid", validUntil.ToString("yyyy.MM.dd HH:mm"));
+                    await SecureStorage.SetAsync("NextValid", validUntil.ToString("O"));
+                    nextValid = validUntil;
                     EndTask(true);
                 }
                 else
