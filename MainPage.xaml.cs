@@ -45,6 +45,7 @@ namespace Hexagon
                 if(await SecureStorage.GetAsync("DataSaver") != null)
                 {
                     Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
+                    Bakalari.actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
                 }
             }
             catch(Exception ex) { }

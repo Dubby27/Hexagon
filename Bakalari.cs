@@ -150,6 +150,8 @@ namespace Hexagon
                         else
                         {
                             StatusLabel += "před " + (DateTime.Today.Date - actualValid.Date).Days +" dny";
+                            Trace.WriteLine(DateTime.Today);
+                            Trace.WriteLine(actualValid);
                         }
                     }
                     else
@@ -749,7 +751,9 @@ namespace Hexagon
                     actualTimetable = timetableResponse;
                     await SecureStorage.SetAsync("ActualTimetable", responseBody);
                     DateTime validUntil = DateTime.Now;
-                    await SecureStorage.SetAsync("ActualValid", validUntil.ToString("yyyy.MM.dd HH:mm"));
+                    await SecureStorage.SetAsync("ActualValid", validUntil.ToString("O"));
+                    Trace.WriteLine(validUntil.ToString("O"));
+                    actualValid = validUntil;
                     EndTask(true);
                 }
                 else
