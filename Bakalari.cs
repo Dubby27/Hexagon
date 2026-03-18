@@ -559,19 +559,13 @@ namespace Hexagon
                                 bool r = await LogIn(school, await SecureStorage.GetAsync("Username"), await SecureStorage.GetAsync("Password"));
                                 if (!r)
                                 {
-                                    await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
-                                    await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
-                                        " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
-                                        "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+                                    await RelogIn(true);
                                     refreshInvalid = true;
                                 }
                             }
                             else
                             {
-                                await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
-                                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
-                                    " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
-                                    "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+                                await RelogIn(true);
                                 refreshInvalid = true;
                             }
                         }
@@ -613,29 +607,42 @@ namespace Hexagon
         {
             if (await SecureStorage.GetAsync("School") is not string school)
             {
-                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
-                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                await RelogIn(false);
                 return false;
             }
             else if (string.IsNullOrEmpty(school))
             {
-                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
-                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                await RelogIn(false);
                 return false;
             }
             else if(await SecureStorage.GetAsync("RefreshToken") is not string token)
             {
-                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
-                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                await RelogIn(false);
                 return false;
             }
             else if (string.IsNullOrEmpty(token))
             {
-                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
-                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
+                await RelogIn(false);
                 return false;
             }
             Bakalari.school = new Uri(await SecureStorage.GetAsync("School"));
+            return true;
+        }
+
+        public static async Task<bool> RelogIn(bool refreshInvalid)
+        {
+            if(refreshInvalid)
+            {
+                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                    " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                    "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+            }
+            MainPage.loggingIn = true;
+            await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
             return true;
         }
 

@@ -36,6 +36,8 @@ namespace Hexagon
             base.OnAppearing();
         }
 
+        public static bool loggingIn = false;
+
         public async void StartLoginProcess()
         {
             try
@@ -47,9 +49,13 @@ namespace Hexagon
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
-                await Shell.Current.Navigation.PushModalAsync(new LogIn()); 
+                if (!loggingIn)
+                {
+                    loggingIn = true;
+                    await Shell.Current.Navigation.PushModalAsync(new LogIn());
+                }
             }
-            if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
+            else if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
                 bool r = await Bakalari.LoadOfflineTimetables();
                 if (r)
@@ -82,7 +88,7 @@ namespace Hexagon
                     //fail
                 }
             }
-            if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
+            else if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
                 if(Bakalari.DataSaver == 0)
                 {
