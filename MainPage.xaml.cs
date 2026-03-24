@@ -96,7 +96,8 @@ namespace Hexagon
             }
             else if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
-                if(Bakalari.DataSaver == 0)
+                RefreshQuickPanel();
+                if (Bakalari.DataSaver == 0)
                 {
                     await Bakalari.RefreshAll();
                 }
@@ -139,6 +140,7 @@ namespace Hexagon
             {
                 Button button = (Button)sender;
                 button.IsVisible = false;
+                RefreshQuickPanel();
                 await Bakalari.RefreshAll();
                 RefreshQuickPanel();
                 button.IsVisible = true;
