@@ -42,9 +42,15 @@ namespace Hexagon
         {
             try
             {
-                Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
-                Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
-                Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
+                if(await SecureStorage.GetAsync("LoggedIn") == "true")
+                {
+                    Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
+                    Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
+                    if (!string.IsNullOrEmpty(await SecureStorage.GetAsync("DataSaver")))
+                    {
+                        Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
+                    }
+                }
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
