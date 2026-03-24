@@ -62,6 +62,7 @@ public partial class User : ContentPage
         SecureStorage.Remove("School");
         SecureStorage.Remove("RefreshToken");
 
+        MainPage.loggingIn = true;
         await Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
     }
 
