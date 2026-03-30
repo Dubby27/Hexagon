@@ -98,7 +98,6 @@ public partial class LogIn : ContentPage
                 _ = SecureStorage.SetAsync("Username", UsernameEntry.Text);
                 _ = SecureStorage.SetAsync("Password", PasswordEntry.Text);
             }
-            MainPage.loggingIn = false;
             _ = Shell.Current.Navigation.PopToRootAsync(true);
         }
         else

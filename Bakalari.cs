@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Maui.Extensions;
-using Hexagon.Screens;
+﻿using Hexagon.Screens;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -560,13 +559,19 @@ namespace Hexagon
                                 bool r = await LogIn(school, await SecureStorage.GetAsync("Username"), await SecureStorage.GetAsync("Password"));
                                 if (!r)
                                 {
-                                    await RelogIn(true);
+                                    await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
+                                    await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                                        " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                                        "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
                                     refreshInvalid = true;
                                 }
                             }
                             else
                             {
-                                await RelogIn(true);
+                                await Shell.Current.Navigation.PushAsync(new Hexagon.Screens.LogIn());
+                                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
+                                    " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
+                                    "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
                                 refreshInvalid = true;
                             }
                         }
@@ -599,10 +604,6 @@ namespace Hexagon
             //init refresh
             bool r = await RefreshAll();
 
-            //check for update
-            dismissedVersion = await SecureStorage.GetAsync("DismissedVersion");
-            await CheckLatestVersion(false);
-
             EndTask(r);
             OnLogInFinished?.Invoke(r);
             MainPage.RefreshQuickPanelExt();
@@ -612,42 +613,29 @@ namespace Hexagon
         {
             if (await SecureStorage.GetAsync("School") is not string school)
             {
-                await RelogIn(false);
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
                 return false;
             }
             else if (string.IsNullOrEmpty(school))
             {
-                await RelogIn(false);
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
                 return false;
             }
             else if(await SecureStorage.GetAsync("RefreshToken") is not string token)
             {
-                await RelogIn(false);
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
                 return false;
             }
             else if (string.IsNullOrEmpty(token))
             {
-                await RelogIn(false);
+                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
+                await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
                 return false;
             }
             Bakalari.school = new Uri(await SecureStorage.GetAsync("School"));
-            return true;
-        }
-
-        public static async Task<bool> RelogIn(bool refreshInvalid)
-        {
-            if(refreshInvalid)
-            {
-                await Shell.Current.DisplayAlert("Přihlášení vypršelo", "Musíš zadat své údaje znova." +
-                    " Pokud povolíš uložení údajů, Hexagon bude tvoje přihlášení obnovovat za tebe.\n" +
-                    "Pomocí tlačitka zpět můžeš přeskočit toto přihlášení a zobrazit jen uložená data.", "Ok");
-            }
-            else
-            {
-                await Shell.Current.DisplayAlert("Chyba Připojení", "Nepodařilo se přihlásit pomocí uložených údajů. Prosím, přihlašte se znovu.", "OK");
-            }
-            MainPage.loggingIn = true;
-            await Shell.Current.Navigation.PushModalAsync(new LogIn(), false);
             return true;
         }
 
@@ -705,67 +693,6 @@ namespace Hexagon
             }
             else
             {
-                EndTask(false);
-                return false;
-            }
-        }
-
-        public static string localVersion = "a26.3.1";
-        public static string dismissedVersion = "";
-        public static string latestVersion;
-
-
-
-        public static async Task<bool> CheckLatestVersion(bool force)
-        {
-            StartTask("check_version", "Kontrola aktualizací...");
-            HttpResponseMessage response;
-            try
-            {
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/Dubby27/Hexagon/releases/latest");
-
-                client.DefaultRequestHeaders.Clear();
-                request.Headers.Add("Accept", "application/vnd.github+json");
-                request.Headers.Add("X-GitHub-Api-Version", "2026-03-10");
-                request.Headers.Add("User-Agent", "HexagonClient");
-
-                response = await client.SendAsync(request);
-            }
-            catch (HttpRequestException ex)
-            {
-                EndTask(false);
-                return false;
-            }
-            if (response.IsSuccessStatusCode)
-            {
-                string responseContent = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    latestVersion = System.Text.Json.JsonSerializer.Deserialize<Release>(responseContent).tag_name;
-                    if(localVersion != latestVersion && (latestVersion != dismissedVersion || force))
-                    {
-                        if (force)
-                        {
-                            User.Instance.ShowUpdateAvailable(System.Text.Json.JsonSerializer.Deserialize<Release>(responseContent));
-                        }
-                        else
-                        {
-                            MainPage.Instance.ShowUpdateAvailable(System.Text.Json.JsonSerializer.Deserialize<Release>(responseContent));
-                        }
-                    }
-                    EndTask(true);
-                    return true;
-                }
-                catch
-                {
-                    //Error
-                    EndTask(false);
-                    return false;
-                }
-            }
-            else
-            {
-                //Error
                 EndTask(false);
                 return false;
             }
@@ -1085,12 +1012,6 @@ namespace Hexagon
 
             return null;
         }
-    }
-
-    //Release class
-    public class Release
-    {
-        public string tag_name { get; set; } = "";
     }
 
     //User class

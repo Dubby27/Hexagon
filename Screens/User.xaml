@@ -187,16 +187,6 @@
                                     HorizontalOptions="Center"
                                     Clicked="ExportRaw_Clicked"
                                     Margin="5"/>
-                                <Button
-                                    Background="{AppThemeBinding Light={StaticResource GradientEnd}, Dark={StaticResource GradientEndDark}}"
-                                    Text="Aktualizace"
-                                    FontFamily="SpaceGrotesk"
-                                    FontSize="18"
-                                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    Clicked="Update_Clicked"
-                                    Margin="5"/>
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>

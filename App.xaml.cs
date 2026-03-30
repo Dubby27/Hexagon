@@ -35,6 +35,11 @@ namespace Hexagon
             Current.RequestedThemeChanged += (s, a) =>
             {
                 UpdateThemeColor(Microsoft.Maui.ApplicationModel.Platform.CurrentActivity, null);
+                if(Shell.Current.CurrentPage.ClassId == "LoginPage")
+                {
+                    Shell.Current.Navigation.PopToRootAsync();
+                    Shell.Current.Navigation.PushModalAsync(new LogIn());
+                }
             };
 #endif
 

@@ -36,32 +36,20 @@ namespace Hexagon
             base.OnAppearing();
         }
 
-        public static bool loggingIn = false;
-
         public async void StartLoginProcess()
         {
             try
             {
-                if(await SecureStorage.GetAsync("LoggedIn") == "true")
-                {
-                    Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
-                    Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
-                    if (!string.IsNullOrEmpty(await SecureStorage.GetAsync("DataSaver")))
-                    {
-                        Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
-                    }
-                }
+                Bakalari.ProcessDetails = await SecureStorage.GetAsync("ProcessDetails") == "True";
+                Bakalari.BetaQuickTimetable = await SecureStorage.GetAsync("BetaQuickTimetable") == "True";
+                Bakalari.DataSaver = int.Parse(await SecureStorage.GetAsync("DataSaver"));
             }
             catch(Exception ex) { }
             if (await SecureStorage.GetAsync("LoggedIn") != "true")
             {
-                if (!loggingIn)
-                {
-                    loggingIn = true;
-                    await Shell.Current.Navigation.PushModalAsync(new LogIn());
-                }
+                await Shell.Current.Navigation.PushModalAsync(new LogIn()); 
             }
-            else if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
+            if (await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials == null)
             {
                 bool r = await Bakalari.LoadOfflineTimetables();
                 if (r)
@@ -94,10 +82,9 @@ namespace Hexagon
                     //fail
                 }
             }
-            else if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
+            if(await SecureStorage.GetAsync("LoggedIn") == "true" && Bakalari.credentials != null)
             {
-                RefreshQuickPanel();
-                if (Bakalari.DataSaver == 0)
+                if(Bakalari.DataSaver == 0)
                 {
                     await Bakalari.RefreshAll();
                 }
@@ -140,23 +127,9 @@ namespace Hexagon
             {
                 Button button = (Button)sender;
                 button.IsVisible = false;
-                RefreshQuickPanel();
                 await Bakalari.RefreshAll();
                 RefreshQuickPanel();
                 button.IsVisible = true;
-            }
-        }
-
-        public async void ShowUpdateAvailable(Release details)
-        {
-            bool answer = await DisplayAlert("Aktualizace k dispozici", $"Je dostupná aktualizace {details.tag_name}, chcete ji stáhnout?", "Ne", "Ano");
-            if(!answer)
-            {
-                Browser.Default.OpenAsync("https://github.com/Dubby27/Hexagon/releases/latest");
-            }
-            else
-            {
-                SecureStorage.SetAsync("DismissedVersion", details.tag_name);
             }
         }
     }
