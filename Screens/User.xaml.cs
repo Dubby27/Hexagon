@@ -5,10 +5,12 @@ namespace Hexagon;
 public partial class User : ContentPage
 {
     bool appearedOnce = false;
+    public static User Instance;
 
     public User()
 	{
 		InitializeComponent();
+        Instance = this;
 
         try
         {
@@ -62,6 +64,7 @@ public partial class User : ContentPage
         SecureStorage.Remove("School");
         SecureStorage.Remove("RefreshToken");
 
+        MainPage.loggingIn = true;
         await Navigation.PushModalAsync(new Hexagon.Screens.LogIn());
     }
 
@@ -105,5 +108,23 @@ public partial class User : ContentPage
     {
         Bakalari.DataSaver = DataSavingPicker.SelectedIndex;
         SecureStorage.SetAsync("DataSaver", DataSavingPicker.SelectedIndex.ToString());
+    }
+
+    private void Update_Clicked(object sender, EventArgs e)
+    {
+        Bakalari.CheckLatestVersion(true);
+    }
+
+    public async void ShowUpdateAvailable(Release details)
+    {
+        bool answer = await DisplayAlert("Aktualizace k dispozici", $"Je dostupná aktualizace {details.tag_name}, chcete ji stáhnout?", "Ne", "Ano");
+        if (!answer)
+        {
+            Browser.Default.OpenAsync("https://github.com/Dubby27/Hexagon/releases/latest");
+        }
+        else
+        {
+            SecureStorage.SetAsync("DismissedVersion", details.tag_name);
+        }
     }
 }
