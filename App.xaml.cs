@@ -21,6 +21,8 @@ namespace Hexagon
         {
             Shell shell = DeviceInfo.Idiom == Microsoft.Maui.Devices.DeviceIdiom.Phone ? new PhoneShell() : new DesktopShell();
             window = new Window(shell);
+            window.Width = 900;
+            window.Height = 700;
 
             window.TitleBar = new TitleBar
             {
@@ -35,11 +37,6 @@ namespace Hexagon
             Current.RequestedThemeChanged += (s, a) =>
             {
                 UpdateThemeColor(Microsoft.Maui.ApplicationModel.Platform.CurrentActivity, null);
-                if(Shell.Current.CurrentPage.ClassId == "LoginPage")
-                {
-                    Shell.Current.Navigation.PopToRootAsync();
-                    Shell.Current.Navigation.PushModalAsync(new LogIn());
-                }
             };
 #endif
 
