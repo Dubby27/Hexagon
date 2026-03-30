@@ -710,7 +710,7 @@ namespace Hexagon
             }
         }
 
-        public static string localVersion = "a26.3.1 bub";
+        public static string localVersion = "a26.3.1";
         public static string dismissedVersion = "";
         public static string latestVersion;
 
