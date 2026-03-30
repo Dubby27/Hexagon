@@ -21,6 +21,8 @@ namespace Hexagon
         {
             Shell shell = DeviceInfo.Idiom == Microsoft.Maui.Devices.DeviceIdiom.Phone ? new PhoneShell() : new DesktopShell();
             window = new Window(shell);
+            window.Width = 900;
+            window.Height = 700;
 
             window.TitleBar = new TitleBar
             {
