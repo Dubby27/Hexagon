@@ -206,38 +206,45 @@ namespace Hexagon
             {
                 try
                 {
-                    actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
-                    nextValid = DateTime.Parse(await SecureStorage.GetAsync("NextValid"));
-                    if (IsSameIsoWeek(actualValid, DateTime.Today))
+                    if(await SecureStorage.GetAsync("ActualValid") != null) actualValid = DateTime.Parse(await SecureStorage.GetAsync("ActualValid"));
+                    if (await SecureStorage.GetAsync("NextValid") != null) nextValid = DateTime.Parse(await SecureStorage.GetAsync("NextValid"));
+                    if(actualValid.Year > 2000)
                     {
-                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
-                            await SecureStorage.GetAsync("ActualTimetable"));
-                    }
-                    else if (IsSameIsoWeek(nextValid, DateTime.Today))
-                    {
-                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
-                            await SecureStorage.GetAsync("NextTimetable"));
-                    }
-                    else
-                    {
-                        actualTimetable = JsonConvert.DeserializeObject<Timetable>(
-                            await SecureStorage.GetAsync("PermanentTimetable"));
-                        //Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
-                        //    " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
+                        if (IsSameIsoWeek(actualValid, DateTime.Today))
+                        {
+                            actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                                await SecureStorage.GetAsync("ActualTimetable"));
+                        }
+                        else if (IsSameIsoWeek(nextValid, DateTime.Today))
+                        {
+                            actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                                await SecureStorage.GetAsync("NextTimetable"));
+                        }
+                        else
+                        {
+                            actualTimetable = JsonConvert.DeserializeObject<Timetable>(
+                                await SecureStorage.GetAsync("PermanentTimetable"));
+                            //Shell.Current.DisplayAlert("Pozor", "Uložený aktuální  rozvrh je příliš zastaralý." +
+                            //    " Data budou odvozena ze stálého rozvrhu.", "Rozumím");
+                        }
                     }
 
-                    if (IsSameIsoWeek(DateTime.Parse(await SecureStorage.GetAsync("NextValid")), DateTime.Today.AddDays(7)))
+                    if(nextValid.Year > 2000)
                     {
-                        nextTimetable = JsonConvert.DeserializeObject<Timetable>(
-                            await SecureStorage.GetAsync("NextTimetable"));
-                    }
-                    else
-                    {
-                        nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                        if (IsSameIsoWeek(nextValid, DateTime.Today.AddDays(7)))
+                        {
+                            nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                                await SecureStorage.GetAsync("NextTimetable"));
+                        }
+                        else
+                        {
+                            nextTimetable = JsonConvert.DeserializeObject<Timetable>(
+                                await SecureStorage.GetAsync("PermanentTimetable"));
+                        }
+                        permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
                             await SecureStorage.GetAsync("PermanentTimetable"));
                     }
-                    permanentTimetable = JsonConvert.DeserializeObject<Timetable>(
-                        await SecureStorage.GetAsync("PermanentTimetable"));
+
                     return true;
                 }
                 catch
@@ -259,10 +266,10 @@ namespace Hexagon
             {
                 try
                 {
-                    userData = JsonConvert.DeserializeObject<UserData>(
-                        await SecureStorage.GetAsync("UserData"));
-                    userEventData = JsonConvert.DeserializeObject<EventResponse>(
-                        await SecureStorage.GetAsync("UserEventData"));
+                    if(await SecureStorage.GetAsync("UserData") != null) userData = JsonConvert.DeserializeObject<UserData>
+                        (await SecureStorage.GetAsync("UserData"));
+                    if(await SecureStorage.GetAsync("UserEventData") != null) userEventData = JsonConvert.DeserializeObject<EventResponse>
+                        (await SecureStorage.GetAsync("UserEventData"));
                     return true;
                 }
                 catch

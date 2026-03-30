@@ -26,8 +26,9 @@ namespace Hexagon
             //null check
             if(Bakalari.actualTimetable == null || Bakalari.nextTimetable == null || Bakalari.permanentTimetable == null)
             {
-                panelStruct.title = "Chyba";
-                panelStruct.lower = "Nejsou dostupná žádná uložená data";
+                panelStruct.title = "Načítání...";
+                panelStruct.lower = "Probíhá synchronizace dat";
+                return panelStruct;
             }
 
             //get today
