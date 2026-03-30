@@ -146,5 +146,18 @@ namespace Hexagon
                 button.IsVisible = true;
             }
         }
+
+        public async void ShowUpdateAvailable(Release details)
+        {
+            bool answer = await DisplayAlert("Aktualizace k dispozici", $"Je dostupná aktualizace {details.tag_name}, chcete ji stáhnout?", "Ne", "Ano");
+            if(!answer)
+            {
+                Browser.Default.OpenAsync("https://github.com/Dubby27/Hexagon/releases/latest");
+            }
+            else
+            {
+                SecureStorage.SetAsync("DismissedVersion", details.tag_name);
+            }
+        }
     }
 }
