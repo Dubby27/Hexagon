@@ -35,8 +35,8 @@
 		<ApplicationId>com.dubby27.hexagon</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>26.1.2</ApplicationDisplayVersion>
-		<ApplicationVersion></ApplicationVersion>
+		<ApplicationDisplayVersion>26.3.1</ApplicationDisplayVersion>
+		<ApplicationVersion>26.3.1</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
