@@ -7,7 +7,7 @@
         <ScrollView
             HorizontalOptions="Fill"
             VerticalOptions="Fill"
-            Padding="0, 0, 0, 32">
+            Padding="{OnIdiom Phone=0, Default={Thickness Bottom=32}}">
             <Grid
                 Padding="5,5"
                 VerticalOptions="Fill"
