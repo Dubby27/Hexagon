@@ -23,24 +23,6 @@ namespace Hexagon
                     fonts.AddFont("SpaceGrotesk-VariableFont_wght.ttf", "SpaceGrotesk");
                 })
                 .UseMauiCommunityToolkit()
-                .ConfigureLifecycleEvents(events =>
-                {
-#if ANDROID
-                    events.AddAndroid(android => android
-                    // The statusbar color needs to be updated after the activity has been created
-                    .OnCreate((activity, bundle) => UpdateThemeColor(activity, bundle))
-                    );
-                    static void UpdateThemeColor(Activity activity, Bundle bundle)
-                    {
-                        bool success = App.Current.RequestedTheme == AppTheme.Light ? App.Current.Resources.TryGetValue("GradientStart", out object color) : App.Current.Resources.TryGetValue("GradientStartDark", out color);
-                        Color clr = (Color)color;
-                        new PlatformThemeService().SetStatusBarColor(clr);
-                        success = App.Current.RequestedTheme == AppTheme.Light ? App.Current.Resources.TryGetValue("GradientEnd", out color) : App.Current.Resources.TryGetValue("GradientEndDark", out color);
-                        clr = (Color)color;
-                        new PlatformThemeService().SetNavBarColor(clr);
-                    }
-#endif
-                })
                 .UseSentry(options =>
                 {
                     options.Dsn = "https://b64e38c62eb479c42ce466a9a391f9d3@o4510159806988288.ingest.de.sentry.io/4510159817277520";
