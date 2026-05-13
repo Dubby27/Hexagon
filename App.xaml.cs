@@ -33,27 +33,9 @@ namespace Hexagon
             {
                 Hexagon.MainPage.RefreshQuickPanelExt();
             };
-#if ANDROID
-            Current.RequestedThemeChanged += (s, a) =>
-            {
-                UpdateThemeColor(Microsoft.Maui.ApplicationModel.Platform.CurrentActivity, null);
-            };
-#endif
 
             return window;
         }
-
-#if ANDROID
-        static void UpdateThemeColor(Android.App.Activity activity, Bundle bundle)
-        {
-            bool success = App.Current.RequestedTheme == AppTheme.Light ? App.Current.Resources.TryGetValue("GradientStart", out object color) : App.Current.Resources.TryGetValue("GradientStartDark", out color);
-            Color clr = (Color)color;
-            new PlatformThemeService().SetStatusBarColor(clr);
-            success = App.Current.RequestedTheme == AppTheme.Light ? App.Current.Resources.TryGetValue("GradientEnd", out color) : App.Current.Resources.TryGetValue("GradientEndDark", out color);
-            clr = (Color)color;
-            new PlatformThemeService().SetNavBarColor(clr);
-        }
-#endif
     }
 }
 
